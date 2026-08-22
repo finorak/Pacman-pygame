@@ -9,7 +9,7 @@ install:
 	$(UV) sync
 
 run:
-	$(UV) run $(NAME)
+	$(UV) run $(NAME) config.json
 
 debug:
 	$(UV) run python -m pdb $(NAME)
