@@ -7,26 +7,18 @@ DIRECTION_SETTING: dict[str, dict[str, int]] = {
         "left": {
             "x": -1,
             "y": 0,
-            "x_direction": -1,
-            "y_direction": 0,
             },
         "right": {
             "x": 1,
             "y": 0,
-            "x_direction": 1,
-            "y_direction": 0,
             },
         "up": {
             "x": 0,
             "y": -1,
-            "x_direction": 0,
-            "y_direction": -1,
             },
         "down": {
             "x": 0,
             "y": 1,
-            "x_direction": 0,
-            "y_direction": 1,
             },
         }
 

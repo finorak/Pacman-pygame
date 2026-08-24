@@ -15,7 +15,6 @@ class BasePlayer(ABC):
             life: int,
     ) -> None:
         super().__init__()
-        # surface is where to place the player.
         self._state: str = "left"
         self._frames = frames
         self._life = life
@@ -78,11 +77,11 @@ class BasePlayer(ABC):
 
     def _update_position(self, dt: float) -> None:
         self._rect.x += self.speed * DIRECTION_SETTING[
-                self.state]['x_direction'] * dt
+                self.state]['x'] * dt
         self._rect.y += self.speed * DIRECTION_SETTING[
-                self.state]['y_direction'] * dt
-        self.x = int(self._rect.y // CELL_SIZE)
-        self.y = int(self._rect.x // CELL_SIZE)
+                self.state]['y'] * dt
+        self.x = int(self._rect.x // CELL_SIZE)
+        self.y = int(self._rect.y // CELL_SIZE)
 
     def base_update(self, dt: float) -> None:
         self.frame_index += 7 * dt
@@ -101,6 +100,7 @@ class BasePlayer(ABC):
     ) -> bool:
         old_x, old_y = current_pos
         new_x, new_y = new_pos
-        if (new_x < 0 or new_x >= len(maze)) or (new_y < 0 or new_y >= len(maze[0])):
+        if (new_x < 0 or new_x >= len(maze)) \
+                or (new_y < 0 or new_y >= len(maze[0])):
             return False
         return maze[old_x][old_y] & maze[new_x][new_y] != 0

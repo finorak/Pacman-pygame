@@ -22,7 +22,11 @@ class Ghost(BasePlayer):
 
     def update(self, dt: float, maze: list[list[int]]) -> None:
         self.base_update(dt)
-        if not self.cell_is_valid((self.x, self.y), (self.x + 1, self.y + 1), maze):
+        if not self.cell_is_valid(
+                (self.x, self.y),
+                (self.x + 1, self.y + 1),
+                maze
+        ):
             return
         self._update_position(dt)
 

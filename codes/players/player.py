@@ -26,10 +26,11 @@ class Player(BasePlayer):
             dt: float,
             maze: list[list[int]]
     ) -> None:
-        self.get_input(maze)
         self.base_update(dt)
+        self.get_input(maze)
         if not self.get_input(maze):
             return
+        print(self.x, self.y)
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
@@ -37,18 +38,19 @@ class Player(BasePlayer):
 
     def get_input(self, maze: list[list[int]]) -> bool:
         keys = pygame.key.get_just_pressed()
-        temp_state: str = self.state
+        self.state: str = self.state
         if keys[pygame.K_DOWN]:
-            temp_state = "down"
+            self.state = "down"
         elif keys[pygame.K_UP]:
-            temp_state = "up"
+            self.state = "up"
         elif keys[pygame.K_RIGHT]:
-            temp_state = "right"
+            self.state = "right"
         elif keys[pygame.K_LEFT]:
-            temp_state = "left"
-        dx: int = DIRECTION_SETTING[temp_state]['x']
-        dy: int = DIRECTION_SETTING[temp_state]['y']
-        if not self.cell_is_valid((self.x, self.y), (self.x + dx, self.y + dy), maze):
-            return False
-        self.state = temp_state
-        return True
+            self.state = "left"
+        dx: int = DIRECTION_SETTING[self.state]['x']
+        dy: int = DIRECTION_SETTING[self.state]['y']
+        return self.cell_is_valid(
+                (self.x, self.y),
+                (self.x + dx, self.y + dy),
+                maze
+                )

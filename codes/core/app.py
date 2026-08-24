@@ -15,7 +15,11 @@ class Data:
     def __init__(self, config_path: str) -> None:
         pygame.init()
         self.data = GameModel(config_path=config_path)
-        self.maze_gen = MazeGenerator()
+        self.maze_gen = MazeGenerator(size=(16, 16))
+        for row in self.maze_gen.maze:
+            for col in row:
+                print(f"{hex(col)[2:]}", end="")
+            print()
         self.load_asset()
 
     def load_asset(self, ) -> None:
