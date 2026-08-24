@@ -30,7 +30,6 @@ class Player(BasePlayer):
         self.get_input(maze)
         if not self.get_input(maze):
             return
-        print(self.x, self.y)
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:

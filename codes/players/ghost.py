@@ -1,3 +1,4 @@
+import random
 from typing import Any
 
 from pygame import Surface
@@ -15,16 +16,33 @@ class Ghost(BasePlayer):
         super().__init__(frames, pos, life)
         self.speed = 130
         self.state = "right"
-        self._target: tuple[int, int] = (0, 0)
+        # the target of the ghost
+        self._target: list[int] = [0, 0]
+        print(*self.target)
 
     def draw(self, screen: Surface) -> None:
         screen.blit(self.image, self._rect)
 
+    def _cell_reached(self) -> bool:
+        return [self.x, self.y] == self.target
+
     def update(self, dt: float, maze: list[list[int]]) -> None:
+        # TODO: update this function because it start to
+        # be full of random things
         self.base_update(dt)
+        if self._cell_reached():
+            directions = [-1, 0, 1]
+            self.target = [
+                random.choice(directions),
+                random.choice(directions)
+                ]
+            print(self.target)
         if not self.cell_is_valid(
                 (self.x, self.y),
-                (self.x + 1, self.y + 1),
+                (
+                    self.x + self.target[0],
+                    self.y + self.target[1]
+                ),
                 maze
         ):
             return
@@ -34,9 +52,9 @@ class Ghost(BasePlayer):
         ...
 
     @property
-    def target(self) -> tuple[int, int]:
+    def target(self) -> list[int]:
         return self._target
 
     @target.setter
-    def target(self, value: tuple[int, int]) -> None:
+    def target(self, value: list[int]) -> None:
         self._target = value

@@ -23,4 +23,4 @@ DIRECTION_SETTING: dict[str, dict[str, int]] = {
         }
 
 # SUPPOSED CELL SIZE
-CELL_SIZE: int = 50
+CELL_SIZE: int = 59

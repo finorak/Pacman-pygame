@@ -1,8 +1,6 @@
 import os
 
 import pygame
-
-# from codes.players.ghost import Ghost
 from mazegenerator import MazeGenerator
 
 from codes.parsing.parse import GameModel
@@ -15,7 +13,10 @@ class Data:
     def __init__(self, config_path: str) -> None:
         pygame.init()
         self.data = GameModel(config_path=config_path)
-        self.maze_gen = MazeGenerator(size=(16, 16))
+        self.maze_gen = MazeGenerator(
+                size=(16, 16),
+                seed=self.data.seed
+                )
         for row in self.maze_gen.maze:
             for col in row:
                 print(f"{hex(col)[2:]}", end="")
@@ -23,6 +24,7 @@ class Data:
         self.load_asset()
 
     def load_asset(self, ) -> None:
+        # TODO: MIGHT PUT THESE INSIDE `setting` later on.
         self.player_frames: dict[str, list[pygame.Surface]] = {
             dir_.split("-")[-1]: load_img_from_dir(
                 os.path.join("assets", "pacman", dir_))
@@ -55,14 +57,19 @@ class App(Data):
     ) -> None:
         super().__init__(config_path)
         self.screen = pygame.display.set_mode(screen_size)
-        self.player = Player(self.player_frames, (0, 0), 3)
+        self.player = Player(
+                self.player_frames,
+                (0, 0),
+                self.data.player_life
+                )
         self.ghosts = [
                 Ghost(
                     self.ghost_frames[ghost_color],
                     pos=(0, 0),
                     life=1
                     )
-                for ghost_color in self.ghost_frames]
+                for ghost_color in self.ghost_frames
+                ]
         pygame.display.set_caption("Pacman")
 
     def run(self) -> None:
