@@ -1,9 +1,12 @@
 from typing import Any
 
-from pygame import Surface
 import pygame
+from pygame import Surface
+
+from ..setting import (
+    DIRECTION_SETTING,
+)
 from .base import BasePlayer
-from ..setting import PLAYER_FRAME_SETTING
 
 
 class Player(BasePlayer):
@@ -11,24 +14,30 @@ class Player(BasePlayer):
             self, frames: Any, pos: tuple[int, int], life: int
             ) -> None:
         super().__init__(frames, pos, life)
-        self.state: str = "left"
-        self.player_rect = self.frames[self.state][
-                self.current_frame_index
-                ].get_rect(topleft=(0, 0))
-
+        self.state = "right"
 
     def draw(self, screen: Surface) -> None:
-        screen.blit(
-                self.frames[self.state][self.current_frame_index],
-                self.player_rect
-                )
+        # here, screen is the maze surface not the
+        # main window/surface.
+        screen.blit(self.image, self._rect)
 
-    def update(self, dt: float) -> None:
-        self.player_rect.x += PLAYER_FRAME_SETTING[self.state]['speed_x'] * dt
-        self.player_rect.x += PLAYER_FRAME_SETTING[self.state]['speed_x'] * dt
+    def update(
+            self,
+            dt: float,
+            maze: list[list[int]]
+    ) -> None:
+        self.base_update(dt)
+        self.get_input(maze)
+        if not self.get_input(maze):
+            return
+        self._update_position(dt)
 
-    def get_input(self) -> None:
+    def reset(self, *arg: Any, **kwarg: Any) -> None:
+        ...
+
+    def get_input(self, maze: list[list[int]]) -> bool:
         keys = pygame.key.get_just_pressed()
+        self.state: str = self.state
         if keys[pygame.K_DOWN]:
             self.state = "down"
         elif keys[pygame.K_UP]:
@@ -37,3 +46,10 @@ class Player(BasePlayer):
             self.state = "right"
         elif keys[pygame.K_LEFT]:
             self.state = "left"
+        dx: int = DIRECTION_SETTING[self.state]['x']
+        dy: int = DIRECTION_SETTING[self.state]['y']
+        return self.cell_is_valid(
+                (self.x, self.y),
+                (self.x + dx, self.y + dy),
+                maze
+                )
