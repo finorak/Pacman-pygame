@@ -7,6 +7,7 @@ from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
 from codes.utilities.utils import load_img_from_dir
+from ..algorithm.path_finding import Algorithme
 
 
 class Data:
@@ -17,10 +18,10 @@ class Data:
                 size=(16, 16),
                 seed=self.data.seed
                 )
-        for row in self.maze_gen.maze:
-            for col in row:
-                print(f"{hex(col)[2:]}", end="")
-            print()
+        algorithm = Algorithme((0, 0), (15, 15))
+        paths = algorithm.bfs(self.maze_gen.maze)
+        for index, cell in enumerate(paths):
+            print(cell, end=" => " if index < len(paths) else "\n")
         self.load_asset()
 
     def load_asset(self, ) -> None:
