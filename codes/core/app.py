@@ -6,8 +6,9 @@ import pygame
 from mazegenerator import MazeGenerator
 
 from codes.parsing.parse import GameModel
+from codes.players.ghost import Ghost
 from codes.players.player import Player
-from codes.utilities.utils import load_img_dir
+from codes.utilities.utils import load_img_from_dir
 
 
 class Data:
@@ -19,16 +20,41 @@ class Data:
 
     def load_asset(self, ) -> None:
         self.player_frames: dict[str, list[pygame.Surface]] = {
-            dir_.split("-")[-1]:load_img_dir(os.path.join("assets", "pacman", dir_))
+            dir_.split("-")[-1]:load_img_from_dir(
+                os.path.join("assets", "pacman", dir_))
             for dir_ in os.listdir(os.path.join("assets", "pacman"))
         }
+        self.ghost_frames: dict[str, dict[str, list[pygame.Surface]]] = {
+                ghost_color: {
+                    ghost_direction.split("-")[-1]:load_img_from_dir(
+                        os.path.join(
+                            "assets", "ghosts", ghost_color, ghost_direction
+                            )
+                        )
+                    for ghost_direction in os.listdir(
+                        os.path.join(
+                            "assets", "ghosts", ghost_color
+                            )
+                        )
+                    }
+                for ghost_color in os.listdir(
+                    os.path.join("assets", "ghosts")
+                    )
+                }
 
 
 class App(Data):
-    def __init__(self, config_path) -> None:
+    def __init__(self, config_path: str, screen_size: tuple[int, int] = (1280, 950)) -> None:
         super().__init__(config_path)
-        self.screen = pygame.display.set_mode((1280, 950))
+        self.screen = pygame.display.set_mode(screen_size)
         self.player = Player(self.player_frames, (0, 0), 3)
+        self.ghosts = [
+                Ghost(
+                    self.ghost_frames[ghost_color],
+                    pos=(0, 0),
+                    life=1
+                    )
+                for ghost_color in self.ghost_frames]
         pygame.display.set_caption("Pacman")
 
     def run(self) -> None:
@@ -36,7 +62,6 @@ class App(Data):
         clock = pygame.time.Clock()
         while running:
             dt = clock.tick() / 1000
-            self.player.get_input()
             self.draw(self.screen)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -45,7 +70,7 @@ class App(Data):
             self.update(dt)
 
     def draw(self, screen: pygame.Surface) -> None:
-        self.screen.fill("white")
+        self.screen.fill("black")
         self.player.draw(screen)
 
     def update(self, dt: float) -> None:
