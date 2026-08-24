@@ -59,7 +59,9 @@ class GameModel(BaseModel):
         self._instance_checker(self.height, int)
         pacgum_and_score = game_setting.get("pacgum_and_score")
         if pacgum_and_score is None:
-            raise ConfigError("Pacgum and setting key missing or is equal to 0.")
+            raise ConfigError(
+                    "Pacgum and setting key missing or is equal to 0."
+                    )
         self.pacgum_number: int = pacgum_and_score.get("number")
         self._instance_checker(self.pacgum_number, int)
         self.points_per_pacgum: int = pacgum_and_score.get("points_per_pacgum")

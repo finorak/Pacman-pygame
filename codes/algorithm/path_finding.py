@@ -36,4 +36,6 @@ class Algorithme:
             maze: list[tuple[int, int]],
             current_cell: tuple[int, int]
     ) -> list[tuple[int, int]]:
-        ...
+        neighboors: list[tuple[int, int]] = []
+        _ = NORTH, SOUTH, EAST, WEST
+        return neighboors

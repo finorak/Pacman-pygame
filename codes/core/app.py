@@ -20,13 +20,13 @@ class Data:
 
     def load_asset(self, ) -> None:
         self.player_frames: dict[str, list[pygame.Surface]] = {
-            dir_.split("-")[-1]:load_img_from_dir(
+            dir_.split("-")[-1]: load_img_from_dir(
                 os.path.join("assets", "pacman", dir_))
             for dir_ in os.listdir(os.path.join("assets", "pacman"))
         }
         self.ghost_frames: dict[str, dict[str, list[pygame.Surface]]] = {
                 ghost_color: {
-                    ghost_direction.split("-")[-1]:load_img_from_dir(
+                    ghost_direction.split("-")[-1]: load_img_from_dir(
                         os.path.join(
                             "assets", "ghosts", ghost_color, ghost_direction
                             )
@@ -44,7 +44,11 @@ class Data:
 
 
 class App(Data):
-    def __init__(self, config_path: str, screen_size: tuple[int, int] = (1280, 950)) -> None:
+    def __init__(
+            self,
+            config_path: str,
+            screen_size: tuple[int, int] = (1280, 950)
+    ) -> None:
         super().__init__(config_path)
         self.screen = pygame.display.set_mode(screen_size)
         self.player = Player(self.player_frames, (0, 0), 3)
@@ -67,12 +71,16 @@ class App(Data):
                 if event.type == pygame.QUIT:
                     running = False
                     break
-            self.update(dt)
+            self.update(dt, self.maze_gen.maze)
 
     def draw(self, screen: pygame.Surface) -> None:
         self.screen.fill("black")
         self.player.draw(screen)
+        for ghost in self.ghosts:
+            ghost.draw(screen)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, maze: list[list[int]]) -> None:
         pygame.display.update()
-        self.player.update(dt)
+        self.player.update(dt, maze)
+        for ghost in self.ghosts:
+            ghost.update(dt, maze)
