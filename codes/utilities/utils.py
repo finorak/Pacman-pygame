@@ -5,6 +5,10 @@ from typing import Any
 import pygame
 
 
+def get_path(*arg: str) -> str:
+    return os.path.join(*arg)
+
+
 def load_img_from_dir(dir_path: str) -> list[Any]:
     res: list[pygame.Surface] = []
     for file in listdir(dir_path):

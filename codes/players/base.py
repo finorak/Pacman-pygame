@@ -83,7 +83,7 @@ class BasePlayer(ABC):
         self.x = int(self._rect.x // CELL_SIZE)
         self.y = int(self._rect.y // CELL_SIZE)
 
-    def base_update(self, dt: float) -> None:
+    def frame_update(self, dt: float) -> None:
         self.frame_index += 7 * dt
         self.image = pygame.transform.scale(
                 self._frames[self.state][

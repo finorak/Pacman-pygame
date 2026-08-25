@@ -29,7 +29,7 @@ class Ghost(BasePlayer):
     def update(self, dt: float, maze: list[list[int]]) -> None:
         # TODO: update this function because it start to
         # be full of random things
-        self.base_update(dt)
+        self.frame_update(dt)
         if self._cell_reached():
             directions = [-1, 0, 1]
             self.target = [

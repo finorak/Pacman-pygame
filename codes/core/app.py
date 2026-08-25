@@ -6,7 +6,7 @@ from mazegenerator import MazeGenerator
 from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
-from codes.utilities.utils import load_img_from_dir
+from codes.utilities.utils import load_img_from_dir, get_path
 
 
 class Data:
@@ -26,25 +26,27 @@ class Data:
     def load_asset(self, ) -> None:
         # TODO: MIGHT PUT THESE INSIDE `setting` later on.
         self.player_frames: dict[str, list[pygame.Surface]] = {
-            dir_.split("-")[-1]: load_img_from_dir(
-                os.path.join("assets", "pacman", dir_))
-            for dir_ in os.listdir(os.path.join("assets", "pacman"))
+            player_direction.split("-")[-1]: load_img_from_dir(
+                get_path("assets", "pacman", player_direction))
+            for player_direction in os.listdir(
+                get_path("assets", "pacman")
+                )
         }
         self.ghost_frames: dict[str, dict[str, list[pygame.Surface]]] = {
                 ghost_color: {
                     ghost_direction.split("-")[-1]: load_img_from_dir(
-                        os.path.join(
+                        get_path(
                             "assets", "ghosts", ghost_color, ghost_direction
                             )
                         )
                     for ghost_direction in os.listdir(
-                        os.path.join(
+                        get_path(
                             "assets", "ghosts", ghost_color
                             )
                         )
                     }
                 for ghost_color in os.listdir(
-                    os.path.join("assets", "ghosts")
+                    get_path("assets", "ghosts")
                     )
                 }
 

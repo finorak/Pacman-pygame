@@ -26,7 +26,7 @@ class Player(BasePlayer):
             dt: float,
             maze: list[list[int]]
     ) -> None:
-        self.base_update(dt)
+        self.frame_update(dt)
         self.get_input(maze)
         if not self.get_input(maze):
             return
@@ -37,14 +37,13 @@ class Player(BasePlayer):
 
     def get_input(self, maze: list[list[int]]) -> bool:
         keys = pygame.key.get_just_pressed()
-        self.state: str = self.state
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             self.state = "down"
-        elif keys[pygame.K_UP]:
+        elif keys[pygame.K_UP] or keys[pygame.K_w]:
             self.state = "up"
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.state = "right"
-        elif keys[pygame.K_LEFT]:
+        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.state = "left"
         dx: int = DIRECTION_SETTING[self.state]['x']
         dy: int = DIRECTION_SETTING[self.state]['y']
