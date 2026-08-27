@@ -6,7 +6,7 @@ from mazegenerator import MazeGenerator
 from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
-from codes.utilities.utils import load_img_from_dir, get_path
+from codes.utilities import get_path, load_img_from_dir
 
 
 class Data:

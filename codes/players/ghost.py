@@ -3,28 +3,31 @@ from typing import Any
 
 from pygame import Surface
 
+from codes.setting import TARGET_DIRECTION
+from codes.utilities import cell_is_valid
+
 from .base import BasePlayer
 
 
 class Ghost(BasePlayer):
+    # When this is on, every
+    # ghost can be eaten.
+    CAN_BE_EATEN: bool = False
+
     def __init__(
-            self,
-            frames: dict[str, list[Surface]],
-            pos: tuple[int, int],
-            life: int
-            ) -> None:
+            self, frames: dict[str, list[Surface]],
+            pos: tuple[int, int], life: int
+    ) -> None:
         super().__init__(frames, pos, life)
         self.speed = 130
-        self.state = "right"
         # the target of the ghost
-        self._target: list[int] = [0, 0]
-        print(*self.target)
+        self._target: tuple[int, int] = pos
 
     def draw(self, screen: Surface) -> None:
-        screen.blit(self.image, self._rect)
+        screen.blit(self.image, self.rect)
 
     def _cell_reached(self) -> bool:
-        return [self.x, self.y] == self.target
+        return self._x == self._target[0] and self._y == self._target[1]
 
     def update(self, dt: float, maze: list[list[int]]) -> None:
         # TODO: update this function because it start to
@@ -32,29 +35,29 @@ class Ghost(BasePlayer):
         self.frame_update(dt)
         if self._cell_reached():
             directions = [-1, 0, 1]
-            self.target = [
-                random.choice(directions),
-                random.choice(directions)
-                ]
-            print(self.target)
-        if not self.cell_is_valid(
-                (self.x, self.y),
-                (
-                    self.x + self.target[0],
-                    self.y + self.target[1]
-                ),
-                maze
-        ):
-            return
+            target = (
+                    random.choice(directions),
+                    random.choice(directions)
+                    )
+            x, y = target
+            if (
+                    target not in TARGET_DIRECTION
+                    or not cell_is_valid(
+                        (self._x, self._y),
+                        (self._x + x, self._y + y),
+                        maze
+                        )
+            ):
+                return
+            self._target = target
+            self._state = TARGET_DIRECTION[target]
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
         ...
 
-    @property
-    def target(self) -> list[int]:
-        return self._target
-
-    @target.setter
-    def target(self, value: list[int]) -> None:
-        self._target = value
+    # UPdate state of all ghost, to can('t) be eaten.
+    @classmethod
+    def update_ghost_state(cls: Any) -> 'Ghost':
+        Ghost.CAN_BE_EATEN = not Ghost.CAN_BE_EATEN
+        return cls

@@ -3,9 +3,12 @@ from typing import Any
 import pygame
 from pygame import Surface
 
-from ..setting import (
+from codes.players.ghost import Ghost
+from codes.setting import (
     DIRECTION_SETTING,
 )
+from codes.utilities import cell_is_valid
+
 from .base import BasePlayer
 
 
@@ -14,12 +17,11 @@ class Player(BasePlayer):
             self, frames: Any, pos: tuple[int, int], life: int
             ) -> None:
         super().__init__(frames, pos, life)
-        self.state = "right"
 
     def draw(self, screen: Surface) -> None:
         # here, screen is the maze surface not the
         # main window/surface.
-        screen.blit(self.image, self._rect)
+        screen.blit(self.image, self.rect)
 
     def update(
             self,
@@ -37,18 +39,24 @@ class Player(BasePlayer):
 
     def get_input(self, maze: list[list[int]]) -> bool:
         keys = pygame.key.get_just_pressed()
+        temp_state: str = self._state
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self.state = "down"
+            temp_state = "down"
         elif keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.state = "up"
+            temp_state = "up"
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.state = "right"
+            temp_state = "right"
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.state = "left"
-        dx: int = DIRECTION_SETTING[self.state]['x']
-        dy: int = DIRECTION_SETTING[self.state]['y']
-        return self.cell_is_valid(
-                (self.x, self.y),
-                (self.x + dx, self.y + dy),
+            temp_state = "left"
+        dx: int = DIRECTION_SETTING[temp_state]['x']
+        dy: int = DIRECTION_SETTING[temp_state]['y']
+        if cell_is_valid(
+                (self._x, self._y),
+                (self._x + dx, self._y + dy),
                 maze
-                )
+        ):
+            self._state = temp_state
+        return self._state == temp_state
+
+    def update_ghost_state(self) -> None:
+        Ghost.update_ghost_state()
