@@ -19,13 +19,10 @@ class Player(BasePlayer):
         super().__init__(frames, pos, life)
 
     def draw(self, screen: Surface) -> None:
-        # here, screen is the maze surface not the
-        # main window/surface.
         screen.blit(self.image, self.rect)
 
     def update(
-            self,
-            dt: float,
+            self, dt: float,
             maze: list[list[int]]
     ) -> None:
         self.frame_update(dt)

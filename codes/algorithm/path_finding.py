@@ -4,9 +4,7 @@ from codes.setting import EAST, NORTH, SOUTH, WEST
 
 
 class Algorithm:
-    def __init__(
-            self,
-    ) -> None:
+    def __init__(self) -> None:
         pass
 
     def bfs(
@@ -51,6 +49,7 @@ class Algorithm:
                 break
             paths.append(current)
             current = came_from[current]
+        paths.reverse()
         return paths
 
     def _find_neighboors(

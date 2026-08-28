@@ -6,7 +6,7 @@ from pygame import Surface
 
 from codes.algorithm import Algorithm
 from codes.setting import TARGET_DIRECTION
-from codes.utilities import cell_is_valid
+from codes.utilities import cell_is_valid, get_state
 
 from .base import BasePlayer
 
@@ -22,7 +22,7 @@ class Ghost(BasePlayer):
     ) -> None:
         super().__init__(frames, pos, life)
         self.speed = 120
-        self._radius: int = 20
+        self._radius: int = 4
         # the target of the ghost
         self._target: tuple[int, int] = pos
         self.algorithm = Algorithm()
@@ -46,39 +46,17 @@ class Ghost(BasePlayer):
     ) -> list[tuple[int, int]]:
         return self.algorithm.bfs(current_pos, player_pos, maze)
 
-    def _get_state(
-            self, target_pos: tuple[int, int],
-            current_pos: tuple[int, int]
-    ) -> tuple[int, int]:
-        """
-        ```
-        (5, 6) -> (5, 6)
-               -> (5, 7)
-               -> (4, 6)
-               -> (3, 6)
-        ```
-        """
-        cx, cy = current_pos
-        tx, ty = target_pos
-        if tx == cx:
-            if ty > cy:
-                return (0, 1)
-            return (0, -1)
-        if ty == cy:
-            if tx > cx:
-                return (1, 0)
-        return (-1, 0)
-
     def _update_target(
             self, player_pos: tuple[int, int],
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
         if self._is_in_range(player_pos):
-            print(self._find_path(self.pos, player_pos, maze))
-        #     paths = self._find_path(self.pos, player_pos, maze)
-        #     new_state = self._get_state(paths[0], self.pos)
-        #     return TARGET_DIRECTION[new_state], True, paths[0]
-        target = random.choice(list(TARGET_DIRECTION))
+            paths = self._find_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
+        target = random.choice([*TARGET_DIRECTION])
         dx, dy = target
         if not cell_is_valid(
                     (self._x, self._y),
