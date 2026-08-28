@@ -4,6 +4,7 @@ from typing import Any
 
 from pygame import Surface
 
+from codes.algorithm import Algorithm
 from codes.setting import TARGET_DIRECTION
 from codes.utilities import cell_is_valid
 
@@ -24,6 +25,7 @@ class Ghost(BasePlayer):
         self._radius: int = 20
         # the target of the ghost
         self._target: tuple[int, int] = pos
+        self.algorithm = Algorithm()
 
     def draw(self, screen: Surface) -> None:
         screen.blit(self.image, self.rect)
@@ -42,7 +44,7 @@ class Ghost(BasePlayer):
             player_pos: tuple[int, int], 
             maze: list[list[int]]
     ) -> list[tuple[int, int]]:
-        return [current_pos]
+        return self.algorithm.bfs(current_pos, player_pos, maze)
 
     def _get_state(
             self, target_pos: tuple[int, int],
@@ -71,7 +73,8 @@ class Ghost(BasePlayer):
             self, player_pos: tuple[int, int],
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
-        # if self._is_in_range(player_pos):
+        if self._is_in_range(player_pos):
+            print(self._find_path(self.pos, player_pos, maze))
         #     paths = self._find_path(self.pos, player_pos, maze)
         #     new_state = self._get_state(paths[0], self.pos)
         #     return TARGET_DIRECTION[new_state], True, paths[0]

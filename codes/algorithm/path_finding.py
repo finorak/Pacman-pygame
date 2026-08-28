@@ -1,15 +1,20 @@
 from collections import deque
 
-from ..setting import EAST, NORTH, SOUTH, WEST
+from codes.setting import EAST, NORTH, SOUTH, WEST
 
 
-class Algorithme:
+class Algorithm:
     def __init__(
             self,
     ) -> None:
         pass
 
-    def bfs(self, start_pos: tuple[int, int], end_pos: tuple[int, int], maze: list[list[int]]) -> list[tuple[int, int]]:
+    def bfs(
+            self,
+            start_pos: tuple[int, int],
+            end_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
         stack = deque([start_pos])
         came_from: dict[tuple[int, int], tuple[int, int] | None] = {
                 start_pos: None
@@ -22,14 +27,14 @@ class Algorithme:
             if current in visited:
                 continue
             visited.add(current)
-            neighboors: list[tuple[int, int]] = self._find_neighboors(maze, current)
+            neighboors: list[tuple[int, int]] = self._find_neighboors(
+                    maze, current)
             filtered_cells: list[tuple[int, int]] = []
             for cell in neighboors:
                 if cell in visited:
                     continue
                 filtered_cells.append(cell)
                 came_from[cell] = current
-            print(filtered_cells)
             stack.extend(filtered_cells)
         return []
 
