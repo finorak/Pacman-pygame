@@ -22,8 +22,7 @@ class Player(BasePlayer):
         screen.blit(self.image, self.rect)
 
     def update(
-            self,
-            dt: float,
+            self, dt: float,
             maze: list[list[int]]
     ) -> None:
         self.frame_update(dt)

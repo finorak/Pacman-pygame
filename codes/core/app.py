@@ -3,7 +3,6 @@ import os
 import pygame
 from mazegenerator import MazeGenerator
 
-from codes.algorithm.path_finding import Algorithm
 from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
@@ -18,10 +17,6 @@ class Data:
                 size=(16, 16),
                 seed=self.data.seed
                 )
-        algorithm = Algorithm()
-        paths = algorithm.bfs((0, 0), (15, 15), self.maze_gen.maze)
-        for index, cell in enumerate(paths):
-            print(cell, end=" => " if index < len(paths) else "\n")
         self.load_asset()
 
     def load_asset(self, ) -> None:

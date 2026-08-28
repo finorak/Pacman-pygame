@@ -4,9 +4,7 @@ from codes.setting import EAST, NORTH, SOUTH, WEST
 
 
 class Algorithm:
-    def __init__(
-            self,
-    ) -> None:
+    def __init__(self) -> None:
         pass
 
     def bfs(

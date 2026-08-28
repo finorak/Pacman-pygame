@@ -36,3 +36,28 @@ def cell_is_valid(
         return maze[old_x][old_y] & maze[new_x][new_y] != 0
     except IndexError:
         return False
+
+def get_state(
+        target_pos: tuple[int, int],
+        current_pos: tuple[int, int]
+) -> tuple[int, int]:
+    """
+    ```
+    curr_pos -> target_pos
+    (5, 6) -> (5, 6)
+            -> (5, 7)
+            -> (4, 6)
+            -> (3, 6)
+    ```
+    """
+    cx, cy = current_pos
+    tx, ty = target_pos
+    if tx == cx:
+        if ty > cy:
+            return (0, 1)
+        return (0, -1)
+    if ty == cy:
+        if tx > cx:
+            return (1, 0)
+    return (-1, 0)
+

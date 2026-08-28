@@ -4,7 +4,7 @@ from typing import Any
 import pygame
 from pygame import Surface
 
-from ..setting import CELL_SIZE, DIRECTION_SETTING
+from codes.setting import CELL_SIZE, DIRECTION_SETTING
 
 
 class BasePlayer(ABC):

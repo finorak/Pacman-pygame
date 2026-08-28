@@ -1,6 +1,6 @@
 import sys
 
-from codes.core.app import App
+from codes.core import App
 
 
 def main() -> None:
