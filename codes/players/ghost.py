@@ -1,60 +1,113 @@
+import math
 import random
 from typing import Any
 
 from pygame import Surface
 
+from codes.setting import TARGET_DIRECTION
+from codes.utilities import cell_is_valid
+
 from .base import BasePlayer
 
 
 class Ghost(BasePlayer):
+    # When this is on, every
+    # ghost can be eaten.
+    CAN_BE_EATEN: bool = False
+
     def __init__(
-            self,
-            frames: dict[str, list[Surface]],
-            pos: tuple[int, int],
-            life: int
-            ) -> None:
+            self, frames: dict[str, list[Surface]],
+            pos: tuple[int, int], life: int
+    ) -> None:
         super().__init__(frames, pos, life)
-        self.speed = 130
-        self.state = "right"
+        self.speed = 120
+        self._radius: int = 20
         # the target of the ghost
-        self._target: list[int] = [0, 0]
-        print(*self.target)
+        self._target: tuple[int, int] = pos
 
     def draw(self, screen: Surface) -> None:
-        screen.blit(self.image, self._rect)
+        screen.blit(self.image, self.rect)
 
-    def _cell_reached(self) -> bool:
-        return [self.x, self.y] == self.target
+    def _is_in_range(self, player_pos: tuple[int, int]) -> bool:
+        px, py = player_pos
+        x = math.pow(px - self._x, 2)
+        y = math.pow(py - self._y, 2)
+        return (x + y) <= math.pow(self._radius, 2)
 
-    def update(self, dt: float, maze: list[list[int]]) -> None:
-        # TODO: update this function because it start to
-        # be full of random things
-        self.base_update(dt)
-        if self._cell_reached():
-            directions = [-1, 0, 1]
-            self.target = [
-                random.choice(directions),
-                random.choice(directions)
-                ]
-            print(self.target)
-        if not self.cell_is_valid(
-                (self.x, self.y),
-                (
-                    self.x + self.target[0],
-                    self.y + self.target[1]
-                ),
-                maze
+    def _target_reached(self) -> bool:
+        return (self._x, self._y) == self._target
+
+    def _find_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int], 
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        return [current_pos]
+
+    def _get_state(
+            self, target_pos: tuple[int, int],
+            current_pos: tuple[int, int]
+    ) -> tuple[int, int]:
+        """
+        ```
+        (5, 6) -> (5, 6)
+               -> (5, 7)
+               -> (4, 6)
+               -> (3, 6)
+        ```
+        """
+        cx, cy = current_pos
+        tx, ty = target_pos
+        if tx == cx:
+            if ty > cy:
+                return (0, 1)
+            return (0, -1)
+        if ty == cy:
+            if tx > cx:
+                return (1, 0)
+        return (-1, 0)
+
+    def _update_target(
+            self, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> tuple[str, bool, tuple[int, int]]:
+        # if self._is_in_range(player_pos):
+        #     paths = self._find_path(self.pos, player_pos, maze)
+        #     new_state = self._get_state(paths[0], self.pos)
+        #     return TARGET_DIRECTION[new_state], True, paths[0]
+        target = random.choice(list(TARGET_DIRECTION))
+        dx, dy = target
+        if not cell_is_valid(
+                    (self._x, self._y),
+                    (self._x + dx, self._y + dy),
+                    maze
         ):
-            return
+            return self._state, False, self.pos
+        return (
+                TARGET_DIRECTION[target],
+                True,
+                (self._x + dx, self._y + dy)
+            )
+
+    def update(
+            self, dt: float, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> None:
+        self.frame_update(dt)
+        if self._target_reached():
+            next_state, move_ghost, next_target = self._update_target(
+                    player_pos, maze)
+            if not move_ghost:
+                return
+            self._state = next_state
+            self._target = next_target
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
         ...
 
-    @property
-    def target(self) -> list[int]:
-        return self._target
-
-    @target.setter
-    def target(self, value: list[int]) -> None:
-        self._target = value
+    # UPdate state of all ghost, to can('t) be eaten.
+    @classmethod
+    def update_ghost_state(cls: Any) -> 'Ghost':
+        cls.CAN_BE_EATEN = not cls.CAN_BE_EATEN
+        return cls
