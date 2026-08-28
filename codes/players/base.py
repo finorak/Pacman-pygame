@@ -19,7 +19,6 @@ class BasePlayer(ABC):
         self._frames = frames
         self._life = life
         self._x, self._y = self.start_pos = pos
-        self._pos: tuple[int, int] = pos
         self._frame_index: float = 0
         self.image = pygame.transform.scale(
                 frames[self._state][0].convert_alpha(), (16, 16)
@@ -43,10 +42,6 @@ class BasePlayer(ABC):
     @property
     def pos(self) -> tuple[int, int]:
         return self._x, self._y
-
-    @pos.setter
-    def pos(self, value: tuple[int, int]) -> None:
-        self._pos = value
 
     def _update_position(self, dt: float) -> None:
         self.rect.x += self.speed * DIRECTION_SETTING[
