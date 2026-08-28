@@ -20,10 +20,12 @@ class Ghost(BasePlayer):
     ) -> None:
         super().__init__(frames, pos, life)
         self.speed = 130
+        self._radius: int = 20
         # the target of the ghost
         self._target: tuple[int, int] = pos
 
     def draw(self, screen: Surface) -> None:
+        # pygame.draw.circle(screen, "green", self.rect.topleft, self._radius, 20)
         screen.blit(self.image, self.rect)
 
     def _cell_reached(self) -> bool:
@@ -33,24 +35,19 @@ class Ghost(BasePlayer):
         # TODO: update this function because it start to
         # be full of random things
         self.frame_update(dt)
+        print("target", self._target)
+        # moving in random direction
         if self._cell_reached():
-            directions = [-1, 0, 1]
-            target = (
-                    random.choice(directions),
-                    random.choice(directions)
-                    )
-            x, y = target
-            if (
-                    target not in TARGET_DIRECTION
-                    or not cell_is_valid(
+            target = random.choice(list(TARGET_DIRECTION))
+            dx, dy = target
+            if not cell_is_valid(
                         (self._x, self._y),
-                        (self._x + x, self._y + y),
+                        (self._x + dx, self._y + dy),
                         maze
-                        )
             ):
                 return
-            self._target = target
             self._state = TARGET_DIRECTION[target]
+            self._target = (self._x + dx, self._y + dy)
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
