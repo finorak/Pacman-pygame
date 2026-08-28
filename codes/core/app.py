@@ -84,7 +84,7 @@ class App(Data):
                 if event.type == pygame.QUIT:
                     running = False
                     break
-            self.update(dt, self.maze_gen.maze)
+            self.update(dt, self.player.pos, self.maze_gen.maze)
 
     def draw(self, screen: pygame.Surface) -> None:
         self.screen.fill("black")
@@ -92,8 +92,11 @@ class App(Data):
         for ghost in self.ghosts:
             ghost.draw(screen)
 
-    def update(self, dt: float, maze: list[list[int]]) -> None:
+    def update(
+            self, dt: float, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> None:
         pygame.display.update()
         self.player.update(dt, maze)
         for ghost in self.ghosts:
-            ghost.update(dt, maze)
+            ghost.update(dt, player_pos, maze)

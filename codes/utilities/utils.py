@@ -31,6 +31,8 @@ def cell_is_valid(
     if (0 > new_x or new_x >= len(maze)) or (0 > new_y or new_y >= len(maze[0])):
         return False
     try:
+        if maze[new_x][new_y] == 15:
+            return False
         return maze[old_x][old_y] & maze[new_x][new_y] != 0
     except IndexError:
         return False

@@ -1,3 +1,4 @@
+import math
 import random
 from typing import Any
 
@@ -19,35 +20,87 @@ class Ghost(BasePlayer):
             pos: tuple[int, int], life: int
     ) -> None:
         super().__init__(frames, pos, life)
-        self.speed = 130
+        self.speed = 120
         self._radius: int = 20
         # the target of the ghost
         self._target: tuple[int, int] = pos
 
     def draw(self, screen: Surface) -> None:
-        # pygame.draw.circle(screen, "green", self.rect.topleft, self._radius, 20)
         screen.blit(self.image, self.rect)
 
-    def _cell_reached(self) -> bool:
-        return self._x == self._target[0] and self._y == self._target[1]
+    def _is_in_range(self, player_pos: tuple[int, int]) -> bool:
+        px, py = player_pos
+        x = math.pow(px - self._x, 2)
+        y = math.pow(py - self._y, 2)
+        return (x + y) <= math.pow(self._radius, 2)
 
-    def update(self, dt: float, maze: list[list[int]]) -> None:
-        # TODO: update this function because it start to
-        # be full of random things
+    def _target_reached(self) -> bool:
+        return (self._x, self._y) == self._target
+
+    def _find_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int], 
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        return [current_pos]
+
+    def _get_state(
+            self, target_pos: tuple[int, int],
+            current_pos: tuple[int, int]
+    ) -> tuple[int, int]:
+        """
+        ```
+        (5, 6) -> (5, 6)
+               -> (5, 7)
+               -> (4, 6)
+               -> (3, 6)
+        ```
+        """
+        cx, cy = current_pos
+        tx, ty = target_pos
+        if tx == cx:
+            if ty > cy:
+                return (0, 1)
+            return (0, -1)
+        if ty == cy:
+            if tx > cx:
+                return (1, 0)
+        return (-1, 0)
+
+    def _update_target(
+            self, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> tuple[str, bool, tuple[int, int]]:
+        # if self._is_in_range(player_pos):
+        #     paths = self._find_path(self.pos, player_pos, maze)
+        #     new_state = self._get_state(paths[0], self.pos)
+        #     return TARGET_DIRECTION[new_state], True, paths[0]
+        target = random.choice(list(TARGET_DIRECTION))
+        dx, dy = target
+        if not cell_is_valid(
+                    (self._x, self._y),
+                    (self._x + dx, self._y + dy),
+                    maze
+        ):
+            return self._state, False, self.pos
+        return (
+                TARGET_DIRECTION[target],
+                True,
+                (self._x + dx, self._y + dy)
+            )
+
+    def update(
+            self, dt: float, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> None:
         self.frame_update(dt)
-        print("target", self._target)
-        # moving in random direction
-        if self._cell_reached():
-            target = random.choice(list(TARGET_DIRECTION))
-            dx, dy = target
-            if not cell_is_valid(
-                        (self._x, self._y),
-                        (self._x + dx, self._y + dy),
-                        maze
-            ):
+        if self._target_reached():
+            next_state, move_ghost, next_target = self._update_target(
+                    player_pos, maze)
+            if not move_ghost:
                 return
-            self._state = TARGET_DIRECTION[target]
-            self._target = (self._x + dx, self._y + dy)
+            self._state = next_state
+            self._target = next_target
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
@@ -56,5 +109,5 @@ class Ghost(BasePlayer):
     # UPdate state of all ghost, to can('t) be eaten.
     @classmethod
     def update_ghost_state(cls: Any) -> 'Ghost':
-        Ghost.CAN_BE_EATEN = not Ghost.CAN_BE_EATEN
+        cls.CAN_BE_EATEN = not cls.CAN_BE_EATEN
         return cls
