@@ -3,10 +3,11 @@ import os
 import pygame
 from mazegenerator import MazeGenerator
 
+from codes.algorithm.path_finding import Algorithm
 from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
-from codes.utilities import get_path, load_img_from_dir
+from codes.utilities.utils import get_path, load_img_from_dir
 
 
 class Data:
@@ -17,10 +18,10 @@ class Data:
                 size=(16, 16),
                 seed=self.data.seed
                 )
-        for row in self.maze_gen.maze:
-            for col in row:
-                print(f"{hex(col)[2:]}", end="")
-            print()
+        algorithm = Algorithm()
+        paths = algorithm.bfs((0, 0), (15, 15), self.maze_gen.maze)
+        for index, cell in enumerate(paths):
+            print(cell, end=" => " if index < len(paths) else "\n")
         self.load_asset()
 
     def load_asset(self, ) -> None:
