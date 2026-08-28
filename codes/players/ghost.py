@@ -22,7 +22,7 @@ class Ghost(BasePlayer):
     ) -> None:
         super().__init__(frames, pos, life)
         self.speed = 120
-        self._radius: int = 4
+        self._radius: int = 3
         # the target of the ghost
         self._target: tuple[int, int] = pos
         self.algorithm = Algorithm()
@@ -30,11 +30,12 @@ class Ghost(BasePlayer):
     def draw(self, screen: Surface) -> None:
         screen.blit(self.image, self.rect)
 
-    def _is_in_range(self, player_pos: tuple[int, int]) -> bool:
+    def player_in_range(self, player_pos: tuple[int, int]) -> bool:
         px, py = player_pos
         x = math.pow(px - self._x, 2)
         y = math.pow(py - self._y, 2)
-        return (x + y) <= math.pow(self._radius, 2)
+        r = math.pow(self._radius, 2)
+        return (x + y) <= r
 
     def _target_reached(self) -> bool:
         return (self._x, self._y) == self._target
@@ -50,7 +51,7 @@ class Ghost(BasePlayer):
             self, player_pos: tuple[int, int],
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
-        if self._is_in_range(player_pos):
+        if self.player_in_range(player_pos):
             paths = self._find_path(self.pos, player_pos, maze)
             if not paths:
                 return self._state, False, self.pos
@@ -58,10 +59,12 @@ class Ghost(BasePlayer):
             return TARGET_DIRECTION[new_state], True, paths[0]
         target = random.choice([*TARGET_DIRECTION])
         dx, dy = target
-        if not cell_is_valid(
+        if (
+                not cell_is_valid(
                     (self._x, self._y),
                     (self._x + dx, self._y + dy),
                     maze
+                    )
         ):
             return self._state, False, self.pos
         return (
@@ -71,13 +74,16 @@ class Ghost(BasePlayer):
             )
 
     def update(
-            self, dt: float, player_pos: tuple[int, int],
+            self, dt: float, player: Any,
             maze: list[list[int]]
     ) -> None:
+        """
+        player -> Player instance
+        """
         self.frame_update(dt)
         if self._target_reached():
             next_state, move_ghost, next_target = self._update_target(
-                    player_pos, maze)
+                    player.pos, maze)
             if not move_ghost:
                 return
             self._state = next_state
