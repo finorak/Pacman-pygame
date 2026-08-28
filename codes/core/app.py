@@ -18,8 +18,8 @@ class Data:
                 size=(16, 16),
                 seed=self.data.seed
                 )
-        algorithm = Algorithme((0, 0), (15, 15))
-        paths = algorithm.bfs(self.maze_gen.maze)
+        algorithm = Algorithme()
+        paths = algorithm.bfs((0, 0), (15, 15), self.maze_gen.maze)
         for index, cell in enumerate(paths):
             print(cell, end=" => " if index < len(paths) else "\n")
         self.load_asset()
