@@ -74,10 +74,11 @@ class Ghost(BasePlayer):
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
         if self._is_in_range(player_pos):
-            print(self._find_path(self.pos, player_pos, maze))
-        #     paths = self._find_path(self.pos, player_pos, maze)
-        #     new_state = self._get_state(paths[0], self.pos)
-        #     return TARGET_DIRECTION[new_state], True, paths[0]
+            paths = self._find_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = self._get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
         target = random.choice(list(TARGET_DIRECTION))
         dx, dy = target
         if not cell_is_valid(

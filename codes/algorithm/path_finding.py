@@ -51,6 +51,7 @@ class Algorithm:
                 break
             paths.append(current)
             current = came_from[current]
+        paths.reverse()
         return paths
 
     def _find_neighboors(
