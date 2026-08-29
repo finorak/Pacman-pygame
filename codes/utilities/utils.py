@@ -1,3 +1,4 @@
+import math
 import os
 from os import listdir
 from typing import Any
@@ -78,3 +79,22 @@ def find_cell_neighboors(
     if y + 1 < len(maze[0]) and maze[x][y + 1] != 15 and maze[x][y + 1] & SOUTH == 0:
         neighboors.append((x, y + 1))
     return neighboors
+
+def target_reached(
+    current_pos: tuple[int, int],
+    target: tuple[int, int]
+) -> bool:
+        return current_pos == target
+
+def player_in_range(
+        current_pos: tuple[int, int],
+        player_pos: tuple[int, int],
+        radius: int
+) -> bool:
+    cx, cy = current_pos
+    px, py = player_pos
+    x = math.pow(px - cx, 2)
+    y = math.pow(py - cy, 2)
+    r = math.pow(radius, 2)
+    return (x + y) <= r
+

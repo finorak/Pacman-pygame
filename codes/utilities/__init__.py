@@ -4,6 +4,8 @@ from .utils import (
     get_path,
     get_state,
     load_img_from_dir,
+    player_in_range,
+    target_reached,
 )
 
 __all__ = [
@@ -12,4 +14,6 @@ __all__ = [
     "get_path",
     "get_state",
     "load_img_from_dir",
+    "player_in_range",
+    "target_reached",
 ]
