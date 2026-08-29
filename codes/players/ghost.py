@@ -1,4 +1,3 @@
-import math
 import random
 from typing import Any
 
@@ -6,7 +5,13 @@ from pygame import Surface
 
 from codes.algorithm import Algorithm
 from codes.setting import TARGET_DIRECTION
-from codes.utilities import cell_is_valid, get_state
+from codes.utilities import (
+    cell_is_valid,
+    find_cell_neighboors,
+    get_state,
+    player_in_range,
+    target_reached,
+)
 
 from .base import BasePlayer
 
@@ -30,16 +35,6 @@ class Ghost(BasePlayer):
     def draw(self, screen: Surface) -> None:
         screen.blit(self.image, self.rect)
 
-    def player_in_range(self, player_pos: tuple[int, int]) -> bool:
-        px, py = player_pos
-        x = math.pow(px - self._x, 2)
-        y = math.pow(py - self._y, 2)
-        r = math.pow(self._radius, 2)
-        return (x + y) <= r
-
-    def _target_reached(self) -> bool:
-        return (self._x, self._y) == self._target
-
     def _find_path(
             self, current_pos: tuple[int, int],
             player_pos: tuple[int, int], 
@@ -47,11 +42,29 @@ class Ghost(BasePlayer):
     ) -> list[tuple[int, int]]:
         return self.algorithm.bfs(current_pos, player_pos, maze)
 
+    def _escape_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        paths = self.algorithm.bfs(current_pos, player_pos, maze)
+        if not paths:
+            return []
+        forbiden_path = paths[0]
+        current_cell_neighboors = find_cell_neighboors(maze, current_pos)
+        return [cell for cell in current_cell_neighboors if cell != forbiden_path]
+
     def _update_target(
             self, player_pos: tuple[int, int],
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
-        if self.player_in_range(player_pos):
+        if self.CAN_BE_EATEN:
+            paths = self._escape_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
+        if player_in_range(self.pos, player_pos, self._radius):
             paths = self._find_path(self.pos, player_pos, maze)
             if not paths:
                 return self._state, False, self.pos
@@ -81,7 +94,7 @@ class Ghost(BasePlayer):
         player -> Player instance
         """
         self.frame_update(dt)
-        if self._target_reached():
+        if target_reached(self.pos, self._target):
             next_state, move_ghost, next_target = self._update_target(
                     player.pos, maze)
             if not move_ghost:
