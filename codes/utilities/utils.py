@@ -4,6 +4,8 @@ from typing import Any
 
 import pygame
 
+from codes.setting import EAST, NORTH, SOUTH, WEST
+
 
 def get_path(*arg: str) -> str:
     return os.path.join(*arg)
@@ -43,8 +45,8 @@ def get_state(
 ) -> tuple[int, int]:
     """
     ```
-    curr_pos -> target_pos
-    (5, 6) -> (5, 6)
+    cur_pos -> target_pos
+    (5, 6)  -> (5, 6)
             -> (5, 7)
             -> (4, 6)
             -> (3, 6)
@@ -56,8 +58,23 @@ def get_state(
         if ty > cy:
             return (0, 1)
         return (0, -1)
-    if ty == cy:
-        if tx > cx:
-            return (1, 0)
+    if tx > cx:
+        return (1, 0)
     return (-1, 0)
 
+
+def find_cell_neighboors(
+    maze: list[list[int]],
+    current_cell: tuple[int, int],
+) -> list[tuple[int, int]]:
+    neighboors: list[tuple[int, int]] = []
+    x, y = current_cell
+    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & EAST == 0:
+        neighboors.append((x - 1, y))
+    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & WEST == 0:
+        neighboors.append((x + 1, y))
+    if y - 1 >= 0 and maze[x][y - 1] != 15 and maze[x][y - 1] & NORTH == 0:
+        neighboors.append((x, y - 1))
+    if y + 1 < len(maze[0]) and maze[x][y + 1] != 15 and maze[x][y + 1] & SOUTH == 0:
+        neighboors.append((x, y + 1))
+    return neighboors

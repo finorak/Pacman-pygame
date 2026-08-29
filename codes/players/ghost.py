@@ -7,6 +7,7 @@ from pygame import Surface
 from codes.algorithm import Algorithm
 from codes.setting import TARGET_DIRECTION
 from codes.utilities import cell_is_valid, get_state
+from codes.utilities.utils import find_cell_neighboors
 
 from .base import BasePlayer
 
@@ -47,10 +48,28 @@ class Ghost(BasePlayer):
     ) -> list[tuple[int, int]]:
         return self.algorithm.bfs(current_pos, player_pos, maze)
 
+    def _escape_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        paths = self.algorithm.bfs(current_pos, player_pos, maze)
+        if not paths:
+            return []
+        forbiden_path = paths[0]
+        current_cell_neighboors = find_cell_neighboors(maze, current_pos)
+        return [cell for cell in current_cell_neighboors if cell != forbiden_path]
+
     def _update_target(
             self, player_pos: tuple[int, int],
             maze: list[list[int]]
     ) -> tuple[str, bool, tuple[int, int]]:
+        if self.CAN_BE_EATEN:
+            paths = self._escape_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
         if self.player_in_range(player_pos):
             paths = self._find_path(self.pos, player_pos, maze)
             if not paths:
