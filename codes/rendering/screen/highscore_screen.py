@@ -1,6 +1,7 @@
 from .base_screen import Screen
 
 
+
 class HighScoreScreen(Screen):
     def __init__(self) -> None:
         super().__init__()
