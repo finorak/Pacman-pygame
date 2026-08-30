@@ -6,7 +6,8 @@ class Maze:
         self.maze = maze
         self.cell_size: int = 32
         self.maze_size = self.get_maze_size(maze)
-        self.maze_surface = self.get_maze_surface()
+        self.image = self.get_maze_surface()
+        self.rect: pygame.FRect = self.image.get_frect()
 
     def get_maze_surface(self) -> pygame.Surface:
         surface = pygame.Surface(self.maze_size)
@@ -22,7 +23,7 @@ class Maze:
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
         real_pos = pos[0] * self.cell_size + 5, pos[1] * self.cell_size + 5
-        color = (100, 100, 100)
+        color = (255, 255, 255)
         i = 0
         while (value >> i) != 0:
             if ((value >> i) & 1) != 1:
