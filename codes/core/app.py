@@ -88,10 +88,11 @@ class App(Data):
 
     def draw(self, screen: pygame.Surface) -> None:
         self.screen.fill("black")
+        self.player.draw(self.maze_rendering.image)
         self.screen.blit(self.maze_rendering.image, self.maze_rendering.rect)
-        self.player.draw(screen)
         for ghost in self.ghosts:
             ghost.draw(screen)
+        self.maze_rendering.reset()
 
     def update(self, dt: float, maze: list[list[int]]) -> None:
         pygame.display.update()

@@ -18,7 +18,6 @@ class Ghost(BasePlayer):
         self.state = "right"
         # the target of the ghost
         self._target: list[int] = [0, 0]
-        print(*self.target)
 
     def draw(self, screen: Surface) -> None:
         screen.blit(self.image, self._rect)
@@ -36,7 +35,6 @@ class Ghost(BasePlayer):
                 random.choice(directions),
                 random.choice(directions)
                 ]
-            print(self.target)
         if not self.cell_is_valid(
                 (self.x, self.y),
                 (

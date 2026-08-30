@@ -5,21 +5,26 @@ class Maze:
     def __init__(self, maze: list[list[int]]) -> None:
         self.maze = maze
         self.cell_size: int = 32
-        self.maze_size = self.get_maze_size(maze)
-        self.image = self.get_maze_surface()
+        self.maze_size = self._get_maze_size(maze)
+        self.background = self._get_maze_surface()
+        self.image = self.background.copy()
         self.rect: pygame.FRect = self.image.get_frect()
 
-    def get_maze_surface(self) -> pygame.Surface:
+    def reset(self) -> None:
+        self.image.fill((0,0,0,0))
+        self.image.blit(self.background)
+
+    def _get_maze_surface(self) -> pygame.Surface:
         surface = pygame.Surface(self.maze_size)
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
-                self.draw_cell(surface, (x, y), col)
+                self._draw_cell(surface, (x, y), col)
         return surface
 
-    def get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
+    def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
         return (len(maze[0]) * self.cell_size + 20+ 5, len(maze) * self.cell_size + 20)
 
-    def draw_cell(
+    def _draw_cell(
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
         real_pos = pos[0] * self.cell_size + 5, pos[1] * self.cell_size + 5
@@ -30,14 +35,14 @@ class Maze:
                 i += 1
                 continue
             if i == 0:
-                self.draw_line(
+                self._draw_line(
                     surface,
                     real_pos,
                     (real_pos[0] + self.cell_size, real_pos[1]),
                     color,
                 )
             elif i == 1:
-                self.draw_line(
+                self._draw_line(
                     surface,
                     (real_pos[0] + self.cell_size, real_pos[1]),
                     (
@@ -47,7 +52,7 @@ class Maze:
                     color,
                 )
             elif i == 2:
-                self.draw_line(
+                self._draw_line(
                     surface,
                     (real_pos[0], real_pos[1] + self.cell_size),
                     (
@@ -57,7 +62,7 @@ class Maze:
                     color,
                 )
             else:
-                self.draw_line(
+                self._draw_line(
                     surface,
                     (real_pos[0], real_pos[1]),
                     (real_pos[0], real_pos[1] + self.cell_size),
@@ -65,7 +70,7 @@ class Maze:
                 )
             i += 1
 
-    def draw_line(
+    def _draw_line(
         self,
         surface: pygame.Surface,
         start: tuple[int, int],
