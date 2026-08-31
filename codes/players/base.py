@@ -18,14 +18,17 @@ class BasePlayer(ABC):
         self._state: str = "right"
         self._frames = frames
         self._life = life
-        self._x, self._y = pos
-        self._pos: tuple[int, int] = pos
+        self._x, self._y = self.start_pos = pos
         self._frame_index: float = 0
         self.image = pygame.transform.scale(
                 frames[self._state][0].convert_alpha(), (16, 16)
                 ).convert_alpha()
-        self.rect = frames[self._state][0].get_frect(topleft=(0, 0))
+        self.rect = self.start_rect = frames[self._state][0].get_frect(topleft=(0, 0))
         self.speed: int = 140
+
+    def _init(self) -> None:
+        self._x, self._y = self.start_pos
+        self.rect = self.start_rect
 
     @abstractmethod
     def draw(self, screen: Surface) -> None: ...
@@ -39,10 +42,6 @@ class BasePlayer(ABC):
     @property
     def pos(self) -> tuple[int, int]:
         return self._x, self._y
-
-    @pos.setter
-    def pos(self, value: tuple[int, int]) -> None:
-        self._pos = value
 
     def _update_position(self, dt: float) -> None:
         self.rect.x += self.speed * DIRECTION_SETTING[

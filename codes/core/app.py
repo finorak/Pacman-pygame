@@ -6,7 +6,7 @@ from mazegenerator import MazeGenerator
 from codes.parsing.parse import GameModel
 from codes.players.ghost import Ghost
 from codes.players.player import Player
-from codes.utilities import get_path, load_img_from_dir
+from codes.utilities.utils import get_path, load_img_from_dir
 
 
 class Data:
@@ -17,10 +17,6 @@ class Data:
                 size=(16, 16),
                 seed=self.data.seed
                 )
-        for row in self.maze_gen.maze:
-            for col in row:
-                print(f"{hex(col)[2:]}", end="")
-            print()
         self.load_asset()
 
     def load_asset(self, ) -> None:
@@ -84,7 +80,7 @@ class App(Data):
                 if event.type == pygame.QUIT:
                     running = False
                     break
-            self.update(dt, self.player.pos, self.maze_gen.maze)
+            self.update(dt, self.player, self.maze_gen.maze)
 
     def draw(self, screen: pygame.Surface) -> None:
         self.screen.fill("black")
@@ -93,10 +89,10 @@ class App(Data):
             ghost.draw(screen)
 
     def update(
-            self, dt: float, player_pos: tuple[int, int],
+            self, dt: float, player: Player,
             maze: list[list[int]]
     ) -> None:
         pygame.display.update()
         self.player.update(dt, maze)
         for ghost in self.ghosts:
-            ghost.update(dt, player_pos, maze)
+            ghost.update(dt, player, maze)
