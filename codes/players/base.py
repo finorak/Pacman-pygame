@@ -18,17 +18,13 @@ class BasePlayer(ABC):
         self._state: str = "right"
         self._frames = frames
         self._life = life
-        self._x, self._y = self.start_pos = pos
+        self._x, self._y = pos
         self._frame_index: float = 0
         self.image = pygame.transform.scale(
                 frames[self._state][0].convert_alpha(), (16, 16)
                 ).convert_alpha()
         self.rect = self.start_rect = frames[self._state][0].get_frect(topleft=(0, 0))
         self.speed: int = 140
-
-    def _init(self) -> None:
-        self._x, self._y = self.start_pos
-        self.rect = self.start_rect
 
     @abstractmethod
     def draw(self, screen: Surface) -> None: ...
