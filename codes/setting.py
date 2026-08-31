@@ -24,3 +24,10 @@ DIRECTION_SETTING: dict[str, dict[str, int]] = {
 
 # SUPPOSED CELL SIZE
 CELL_SIZE: int = 59
+
+TARGET_DIRECTION: dict[tuple[int, int], str] = {
+        (-1, 0): "left",
+        (1, 0): "right",
+        (0, 1): "down",
+        (0, -1): "up"
+        }

@@ -3,19 +3,31 @@ from typing import Any
 
 from pygame import Surface
 
+from codes.algorithm import Algorithm
+from codes.setting import TARGET_DIRECTION
+from codes.utilities import (
+    cell_is_valid,
+    find_cell_neighboors,
+    get_state,
+    player_in_range,
+    target_reached,
+)
+
 from .base import BasePlayer
 
 
 class Ghost(BasePlayer):
+    # When this is on, every
+    # ghost can be eaten.
+    CAN_BE_EATEN: bool = False
+
     def __init__(
-            self,
-            frames: dict[str, list[Surface]],
-            pos: tuple[int, int],
-            life: int
-            ) -> None:
+            self, frames: dict[str, list[Surface]],
+            pos: tuple[int, int], life: int
+    ) -> None:
         super().__init__(frames, pos, life)
-        self.speed = 130
-        self.state = "right"
+        self.speed = 120
+        self._radius: int = 3
         # the target of the ghost
         self._target: list[int] = [0, 0]
 
@@ -43,16 +55,35 @@ class Ghost(BasePlayer):
                 ),
                 maze
         ):
-            return
+            return self._state, False, self.pos
+        return (
+                TARGET_DIRECTION[target],
+                True,
+                (self._x + dx, self._y + dy)
+            )
+
+    def update(
+            self, dt: float, player: Any,
+            maze: list[list[int]]
+    ) -> None:
+        """
+        player -> Player instance
+        """
+        self.frame_update(dt)
+        if target_reached(self.pos, self._target):
+            next_state, move_ghost, next_target = self._update_target(
+                    player.pos, maze)
+            if not move_ghost:
+                return
+            self._state = next_state
+            self._target = next_target
         self._update_position(dt)
 
     def reset(self, *arg: Any, **kwarg: Any) -> None:
         ...
 
-    @property
-    def target(self) -> list[int]:
-        return self._target
-
-    @target.setter
-    def target(self, value: list[int]) -> None:
-        self._target = value
+    # UPdate state of all ghost, to can('t) be eaten.
+    @classmethod
+    def update_ghost_state(cls: Any) -> 'Ghost':
+        cls.CAN_BE_EATEN = not cls.CAN_BE_EATEN
+        return cls
