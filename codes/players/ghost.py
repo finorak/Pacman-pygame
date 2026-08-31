@@ -29,31 +29,55 @@ class Ghost(BasePlayer):
         self.speed = 120
         self._radius: int = 3
         # the target of the ghost
-        self._target: list[int] = [0, 0]
+        self._target: tuple[int, int] = pos
+        self.algorithm = Algorithm()
 
     def draw(self, screen: Surface) -> None:
-        screen.blit(self.image, self._rect)
+        screen.blit(self.image, self.rect)
 
-    def _cell_reached(self) -> bool:
-        return [self.x, self.y] == self.target
+    def _find_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int], 
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        return self.algorithm.bfs(current_pos, player_pos, maze)
 
-    def update(self, dt: float, maze: list[list[int]]) -> None:
-        # TODO: update this function because it start to
-        # be full of random things
-        self.base_update(dt)
-        if self._cell_reached():
-            directions = [-1, 0, 1]
-            self.target = [
-                random.choice(directions),
-                random.choice(directions)
-                ]
-        if not self.cell_is_valid(
-                (self.x, self.y),
-                (
-                    self.x + self.target[0],
-                    self.y + self.target[1]
-                ),
-                maze
+    def _escape_path(
+            self, current_pos: tuple[int, int],
+            player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> list[tuple[int, int]]:
+        paths = self.algorithm.bfs(current_pos, player_pos, maze)
+        if not paths:
+            return []
+        forbiden_path = paths[0]
+        current_cell_neighboors = find_cell_neighboors(maze, current_pos)
+        return [cell for cell in current_cell_neighboors if cell != forbiden_path]
+
+    def _update_target(
+            self, player_pos: tuple[int, int],
+            maze: list[list[int]]
+    ) -> tuple[str, bool, tuple[int, int]]:
+        if self.CAN_BE_EATEN:
+            paths = self._escape_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
+        if player_in_range(self.pos, player_pos, self._radius):
+            paths = self._find_path(self.pos, player_pos, maze)
+            if not paths:
+                return self._state, False, self.pos
+            new_state = get_state(paths[0], self.pos)
+            return TARGET_DIRECTION[new_state], True, paths[0]
+        target = random.choice([*TARGET_DIRECTION])
+        dx, dy = target
+        if (
+                not cell_is_valid(
+                    (self._x, self._y),
+                    (self._x + dx, self._y + dy),
+                    maze
+                    )
         ):
             return self._state, False, self.pos
         return (
