@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Self
 
 from pydantic import (
     BaseModel,
@@ -18,13 +18,11 @@ class GameModel(BaseModel):
     model_config = ConfigDict(extra="allow")
     config_path: str = Field(...)
 
-    @model_validator(mode='after')
-    def validate_model(self) -> 'GameModel':
+    @model_validator(mode="after")
+    def validate_model(self) -> Self:
         custom_data: list[str] = []
         try:
-            with open(
-                self.config_path, mode="r", encoding="utf-8"
-            ) as file:
+            with open(self.config_path, mode="r", encoding="utf-8") as file:
                 lines = file.readlines()
         except Exception as e:
             raise ConfigError(e)
@@ -42,11 +40,11 @@ class GameModel(BaseModel):
         if self.width <= 0 or self.height <= 0:
             raise ConfigError("Screen is too small.")
         if (
-                self.pacgum_number <= 0
-                or self.points_per_pacgum <= 0
-                or self.points_per_ghost <= 0
-                or self.player_life <= 0
-                or self.seed <= 0
+            self.pacgum_number <= 0
+            or self.points_per_pacgum <= 0
+            or self.points_per_ghost <= 0
+            or self.player_life <= 0
+            or self.seed <= 0
         ):
             raise ConfigError("No value can be less than or equal to 0.")
         return self
@@ -65,8 +63,8 @@ class GameModel(BaseModel):
         pacgum_and_score = game_setting.get("pacgum_and_score")
         if pacgum_and_score is None:
             raise ConfigError(
-                    "Pacgum and setting key missing or is equal to 0."
-                    )
+                "Pacgum and setting key missing or is equal to 0."
+            )
         self.pacgum_number: int = pacgum_and_score.get("number")
         self._instance_checker(self.pacgum_number, int)
         self.points_per_pacgum: int = pacgum_and_score.get("points_per_pacgum")
