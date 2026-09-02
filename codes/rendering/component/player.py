@@ -11,6 +11,10 @@ expected time.
 """
 
 
+
+import pygame
+from pygame.key import ScancodeWrapper
+
 from ..utils import SpriteLoader
 from .sprite import AnimatedSprite
 
@@ -39,3 +43,13 @@ class Player:
 
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
+
+    def get_input(self, key: ScancodeWrapper) -> None:
+        if key[pygame.K_w]:
+            self.current_sprite = self.sprites["up"]
+        if key[pygame.K_s]:
+            self.current_sprite = self.sprites["down"]
+        if key[pygame.K_d]:
+            self.current_sprite = self.sprites["right"]
+        if key[pygame.K_a]:
+            self.current_sprite = self.sprites["left"]

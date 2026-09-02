@@ -14,7 +14,9 @@ class GameScreen(Screen):
         )
         self.player = Player((0,0))
 
-    def get_input(self) -> None: ...
+    def get_input(self) -> None:
+        keys = pygame.key.get_pressed()
+        self.player.get_input(keys)
 
     def update(self, dt: float) -> None:
         self.player.update(dt)
