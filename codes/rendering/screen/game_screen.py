@@ -12,7 +12,7 @@ class GameScreen(Screen):
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
-        self.player = Player((0,0))
+        self.player = Player((0,0), self.maze.maze)
 
     def get_input(self) -> None:
         keys = pygame.key.get_pressed()
@@ -22,5 +22,5 @@ class GameScreen(Screen):
         self.player.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
-        self.maze.image.blit(self.player.current_sprite.image)
+        self.player.render(self.maze.image)
         self.maze.render(screen)
