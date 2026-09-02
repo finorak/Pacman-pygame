@@ -1,3 +1,5 @@
+SCREEN_SIZE = 1280, 720
+
 NORTH: int = 0b0001
 SOUTH: int = 0b0100
 WEST: int = 0b1000

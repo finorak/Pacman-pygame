@@ -10,21 +10,24 @@ class Maze:
         self.maze_size = self._get_maze_size(self.maze)
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
-        self.rect: pygame.FRect = self.image.get_frect(topleft=(100, 100))
+        self.rect: pygame.FRect = self.image.get_frect()
 
-    def reset(self) -> None:
+    def _reset(self) -> None:
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
         surface = pygame.Surface(self.maze_size).convert_alpha()
-        surface.fill((0,0,0,0))
+        surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
                 self._draw_cell(surface, (x, y), col)
         return surface
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
-        return (len(maze[0]) * self.cell_size + 3, len(maze) * self.cell_size + 3)
+        return (
+            len(maze[0]) * self.cell_size + 3,
+            len(maze) * self.cell_size + 3,
+        )
 
     def _draw_cell(
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
@@ -105,3 +108,7 @@ class Maze:
             if e2 < dx:
                 err += dx
                 y0 += sy
+
+    def render(self, surface: pygame.Surface) -> None:
+        surface.blit(self.image, self.rect)
+        self._reset()
