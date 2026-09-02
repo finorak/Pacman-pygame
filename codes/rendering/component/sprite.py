@@ -33,4 +33,4 @@ class AnimatedSprite(Sprite):
 
     def animate(self, dt: float) -> None:
         self.sprite_index += dt * self.animation_speed
-        self.image = self.sprites[int(self.sprite_index % self.sprite_count)]
+        self.image = self.sprites[int(self.sprite_index) % self.sprite_count]

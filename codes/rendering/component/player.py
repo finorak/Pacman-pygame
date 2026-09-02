@@ -9,22 +9,33 @@ in 0 to 31 in both x and y
 This is to make sure the player only go to the expected direction in the
 expected time.
 """
-import pygame
 
+
+from ..utils import SpriteLoader
 from .sprite import AnimatedSprite
 
 
 class Player:
-    def __init__(self, pos: tuple[int, int], sprites: dict[str, AnimatedSprite]) -> None:
+    def __init__(self, pos: tuple[int, int]) -> None:
         self.x = float(pos[0])
         self.y = float(pos[1])
 
-        self.image = pygame.Surface((32, 32)).convert_alpha()
-        self.rect = self.image.get_frect(center=(16, 16))
+        self.sprites = self.load_image()
+        self.current_sprite =  self.sprites["down"]
 
     def move(self, dt: float) -> None:
         # should be 3 cell per second
         self.x += 3 * dt
 
-    def display(self, surface: pygame.Surface) -> None:
-        surface.blit(self.image, self.rect)
+    def load_image(self) -> dict[str, AnimatedSprite]:
+        directions = {"down", "left", "right", "up"}
+        result = {}
+        for direction in directions:
+            result[direction] = AnimatedSprite(
+                (0, 0),
+                SpriteLoader.import_folder("assets", "pacman", direction),
+            )
+        return result
+
+    def update(self, dt: float) -> None:
+        self.current_sprite.animate(dt)

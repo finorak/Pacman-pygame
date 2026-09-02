@@ -5,8 +5,8 @@ import pygame
 
 
 class SpriteLoader:
+    @staticmethod
     def import_image(
-        self,
         *path: str,
         format: str = "png",
         alpha: bool = True,
@@ -18,7 +18,8 @@ class SpriteLoader:
             else pygame.image.load(full_path).convert()
         )
 
-    def import_folder(self, *path: str) -> list[pygame.Surface]:
+    @staticmethod
+    def import_folder(*path: str) -> list[pygame.Surface]:
         frames: list[pygame.Surface] = []
         for folder_path, _, file_names in walk(join(*path)):
             for file_name in sorted(
