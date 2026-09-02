@@ -13,6 +13,8 @@ expected time.
 import pygame
 from pygame.key import ScancodeWrapper
 
+from codes.setting import CELL_SIZE
+
 from ..utils import SpriteLoader
 from .sprite import AnimatedSprite
 
@@ -28,8 +30,10 @@ class Player:
 
         self.maze = maze
 
+        self.speed = 3
+
         self.sprites = self.load_image()
-        self.current_sprite = self.sprites["down"]
+        self.current_sprite = self.sprites["up"]
 
         self.available_dir = {
             "left": (-1, 0),
@@ -40,9 +44,15 @@ class Player:
 
     def move(self, dt: float) -> None:
         # should be 3 cell per second
-        self.pos = (
-            self.pos[0] + self.available_dir[self.current_dir][0],
-            self.pos[1] + self.available_dir[self.current_dir][1],
+        dx, dy = self.available_dir[self.current_direction]
+        if self.cell_is_valid(
+            (int(self.x), int(self.y)), (int(self.x) + dx, int(self.y) + dy)
+        ):
+            self.pos = (
+            self.pos[0]
+            + self.available_dir[self.current_dir][0] * dt * self.speed,
+            self.pos[1]
+            + self.available_dir[self.current_dir][1] * dt * self.speed,
         )
         self.current_sprite.position = self.x, self.y
 
@@ -89,4 +99,28 @@ class Player:
             self.current_direction = "left"
 
     def render(self, screen: pygame.Surface) -> None:
-        screen.blit(self.current_sprite.image, self.current_sprite.rect)
+        screen.blit(
+            self.current_sprite.image,
+            (
+                self.current_sprite.rect.topleft[0] * CELL_SIZE,
+                self.current_sprite.rect.topleft[1] * CELL_SIZE,
+            ),
+        )
+
+    def cell_is_valid(
+        self,
+        current_pos: tuple[int, int],
+        new_pos: tuple[int, int],
+    ) -> bool:
+        old_x, old_y = current_pos
+        new_x, new_y = new_pos
+        if (0 > old_x >= len(self.maze)) or (0 > old_y >= len(self.maze[0])):
+            return False
+        if (0 > new_x >= len(self.maze)) or (0 > new_y >= len(self.maze[0])):
+            return False
+        try:
+            if self.maze[new_x][new_y] == 15:
+                return False
+            return self.maze[old_x][old_y] & self.maze[new_x][new_y] != 0
+        except IndexError:
+            return False

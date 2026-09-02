@@ -1,6 +1,7 @@
 import sys
 
 from codes.rendering.rendering import Rendering
+from codes.setting import SCREEN_SIZE
 
 
 # def main() -> None:
@@ -16,7 +17,7 @@ def main2() -> None:
         print("[ERROR] Invalid arguments.", file=sys.stderr)
         print(f"[USAGE] python3 {sys.argv[0]} <config>", file=sys.stderr)
         sys.exit(1)
-    app = Rendering((1280, 720))
+    app = Rendering(SCREEN_SIZE)
     app.run()
 
 

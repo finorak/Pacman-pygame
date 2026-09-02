@@ -1,4 +1,4 @@
-SCREEN_SIZE = 1280, 720
+SCREEN_SIZE = 1600, 800
 
 NORTH: int = 0b0001
 SOUTH: int = 0b0100
@@ -25,7 +25,7 @@ DIRECTION_SETTING: dict[str, dict[str, int]] = {
         }
 
 # SUPPOSED CELL SIZE
-CELL_SIZE: int = 59
+CELL_SIZE: int = 38
 
 TARGET_DIRECTION: dict[tuple[int, int], str] = {
         (-1, 0): "left",
