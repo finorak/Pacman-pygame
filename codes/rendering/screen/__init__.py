@@ -1,13 +1,13 @@
 from .base_screen import Screen
 from .game_screen import GameScreen
 from .highscore_screen import HighScoreScreen
-from .instructions_screen import InstructionsScreen
 from .home_screen import HomeScreen
+from .instructions_screen import InstructionsScreen
 
 __all__ = [
-    "Screen",
     "GameScreen",
     "HighScoreScreen",
-    "InstructionsScreen",
     "HomeScreen",
+    "InstructionsScreen",
+    "Screen",
 ]

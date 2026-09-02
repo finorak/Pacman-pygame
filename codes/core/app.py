@@ -90,7 +90,7 @@ class App(Data):
             self.update(dt, self.player, self.maze_gen.maze)
 
     def draw(self, screen: pygame.Surface) -> None:
-        self.screen.fill("black")
+        self.screen.fill((20, 20, 20))
         self.player.draw(self.maze_rendering.image)
         for ghost in self.ghosts:
             ghost.draw(self.maze_rendering.image)

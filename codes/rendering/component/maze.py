@@ -4,14 +4,13 @@ import pygame
 class Maze:
     def __init__(self, maze: list[list[int]]) -> None:
         self.maze = maze
-        self.cell_size: int = 32
+        self.cell_size: int = 35
         self.maze_size = self._get_maze_size(maze)
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
-        self.rect: pygame.FRect = self.image.get_frect()
+        self.rect: pygame.FRect = self.image.get_frect(topleft=(100, 100))
 
     def reset(self) -> None:
-        self.image.fill((0,0,0,0))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:

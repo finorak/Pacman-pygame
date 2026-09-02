@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+import pygame
+
 
 class Screen(ABC):
     def __init__(self) -> None:

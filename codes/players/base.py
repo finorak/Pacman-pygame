@@ -23,7 +23,7 @@ class BasePlayer(ABC):
         self.image = pygame.transform.scale(
                 frames[self._state][0].convert_alpha(), (16, 16)
                 ).convert_alpha()
-        self.rect = self.start_rect = frames[self._state][0].get_frect(topleft=(0, 0))
+        self.rect = self.start_rect = frames[self._state][0].get_frect(center=(16, 16))
         self.speed: int = 140
 
     @abstractmethod
