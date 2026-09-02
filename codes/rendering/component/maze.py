@@ -1,11 +1,13 @@
 import pygame
+from mazegenerator import MazeGenerator
 
 
 class Maze:
-    def __init__(self, maze: list[list[int]]) -> None:
-        self.maze = maze
+    def __init__(self, size: tuple[int, int]) -> None:
+        self.maze_gen = MazeGenerator(size)
+        self.maze = self.maze_gen.maze
         self.cell_size: int = 35
-        self.maze_size = self._get_maze_size(maze)
+        self.maze_size = self._get_maze_size(self.maze)
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
         self.rect: pygame.FRect = self.image.get_frect(topleft=(100, 100))
@@ -14,20 +16,21 @@ class Maze:
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
-        surface = pygame.Surface(self.maze_size)
+        surface = pygame.Surface(self.maze_size).convert_alpha()
+        surface.fill((0,0,0,0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
                 self._draw_cell(surface, (x, y), col)
         return surface
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
-        return (len(maze[0]) * self.cell_size + 20+ 5, len(maze) * self.cell_size + 20)
+        return (len(maze[0]) * self.cell_size + 3, len(maze) * self.cell_size + 3)
 
     def _draw_cell(
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
-        real_pos = pos[0] * self.cell_size + 5, pos[1] * self.cell_size + 5
-        color = (255, 255, 255)
+        real_pos = pos[0] * self.cell_size + 1, pos[1] * self.cell_size + 1
+        color = (100, 100, 100)
         i = 0
         while (value >> i) != 0:
             if ((value >> i) & 1) != 1:

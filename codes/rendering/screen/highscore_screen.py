@@ -1,3 +1,5 @@
+import pygame
+
 from .base_screen import Screen
 
 
@@ -9,4 +11,4 @@ class HighScoreScreen(Screen):
 
     def update(self, dt: float) -> None: ...
 
-    def render(self) -> None: ...
+    def render(self, screen: pygame.Surface) -> None: ...

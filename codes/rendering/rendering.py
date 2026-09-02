@@ -19,7 +19,7 @@ class Rendering:
             "Game": GameScreen(),
         }
 
-        self.current_screen = self.screens["Home"]
+        self.current_screen = self.screens["Game"]
         self.running = True
 
     def run(self) -> None:
@@ -40,5 +40,5 @@ class Rendering:
 
     def render(self) -> None:
         self.screen.fill((20, 20, 20))
-        self.current_screen.render()
+        self.current_screen.render(self.screen)
         pygame.display.update()
