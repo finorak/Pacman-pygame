@@ -46,7 +46,6 @@ class Player:
         # should be 3 cell per second
         dx, dy = self.available_dir[self.current_direction]
         if -0.1 <= round(self.x) % 1 <= 0.1 and -0.1 <= round(self.y) % 1 <= 0.1:
-            print(self.x, self.y)
             if self.cell_is_valid(
                 (int(self.x), int(self.y)),
                 (int(self.x) + dx, int(self.y) + dy),
@@ -116,6 +115,7 @@ class Player:
             self.current_direction = "right"
         elif key[pygame.K_a]:
             self.current_direction = "left"
+
 
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(

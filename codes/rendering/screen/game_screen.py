@@ -14,7 +14,10 @@ class GameScreen(Screen):
         )
         self.player = Player((0,0), self.maze.maze)
 
-    def get_input(self) -> None:
+    def get_input(self) -> str | None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "exit"
         keys = pygame.key.get_pressed()
         self.player.get_input(keys)
 

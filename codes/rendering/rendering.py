@@ -30,10 +30,12 @@ class Rendering:
             self.render()
 
     def get_event(self) -> None:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        flags = self.current_screen.get_input()
+        if flags:
+            if flags == "exit":
                 self.running = False
-        self.current_screen.get_input()
+                return
+            self.current_screen = self.screens[flags]
 
     def update(self, dt: float) -> None:
         self.current_screen.update(dt)

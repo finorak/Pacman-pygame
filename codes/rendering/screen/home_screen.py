@@ -15,13 +15,21 @@ class HomeScreen(Screen):
         self.load_buttons()
         self.load_others()
 
-    def get_input(self) -> None: ...
+    def get_input(self) -> str | None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "exit"
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                pos = pygame.mouse.get_pos()
+                for b in self.buttons.values():
+                    if b.current_sprite.rect.collidepoint(pos):
+                        return b.result
+        return None
 
     def update(self, dt: float) -> None:
         self.background.rect.x -= 20 * dt
         for button in self.buttons.values():
             button.update(dt)
-
 
     def render(self, screen: pygame.Surface) -> None:
         self._render_background(screen)
@@ -40,8 +48,8 @@ class HomeScreen(Screen):
         return self.assets
 
     def load_buttons(self) -> None:
-        buttons = {"start": (220, 250), "exit": (220, 310)}
-        for button, pos in buttons.items():
+        buttons = {"start": ((220, 250), "Game"), "exit": ((220, 310), "exit")}
+        for button, (pos, result) in buttons.items():
             tmp = {}
             tmp["normal"] = AnimatedSprite(
                 pos,
@@ -55,7 +63,7 @@ class HomeScreen(Screen):
                 pos,
                 self.loader.import_folder("assets", "button", button),
             )
-            a = Button(pos, tmp, button)
+            a = Button(pos, tmp, result)
             self.buttons[button] = a
 
     def load_background(self) -> None:
