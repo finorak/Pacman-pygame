@@ -19,7 +19,7 @@ class Rendering:
             "Game": GameScreen(),
         }
 
-        self.current_screen = self.screens["Game"]
+        self.current_screen = self.screens["Home"]
         self.running = True
 
     def run(self) -> None:
