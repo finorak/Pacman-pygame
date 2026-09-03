@@ -48,7 +48,12 @@ class HomeScreen(Screen):
         return self.assets
 
     def load_buttons(self) -> None:
-        buttons = {"start": ((220, 250), "Game"), "exit": ((220, 310), "exit")}
+        buttons = {
+            "start": ((220, 250), "Game"),
+            "instructions": ((220, 310), "Instructions"),
+            "highscore": ((220, 370), "HighScore"),
+            "exit": ((220, 430), "exit"),
+        }
         for button, (pos, result) in buttons.items():
             tmp = {}
             tmp["normal"] = AnimatedSprite(
