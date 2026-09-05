@@ -1,4 +1,5 @@
 
+
 import pygame
 from pygame.key import ScancodeWrapper
 
@@ -37,8 +38,11 @@ class Player:
     }
 
     def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
-        self.x = int(pos[0])  # grid index only
-        self.y = int(pos[1])  # grid index only
+        self.grid_x = int(pos[0])  # grid index
+        self.grid_y = int(pos[1])  # grid index
+        self.render_x = float(pos[0])  # render position
+        self.render_y = float(pos[1])  # render position
+        
         self.maze = maze
 
         self.current_dir = "up"
@@ -46,10 +50,14 @@ class Player:
 
         self.speed = 3.0  # cells per second
         self._move_buffer = 0.0
+        self._is_moving = False
+        self._move_progress = 0.0  # 0.0 to 1.0
+        self._move_start = (self.grid_x, self.grid_y)
+        self._move_target = (self.grid_x, self.grid_y)
 
         self.sprites = self.load_image()
         self.current_sprite = self.sprites[self.current_dir]
-        self.current_sprite.position = (self.x, self.y)
+        self.current_sprite.position = (self.render_x, self.render_y)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
         result: dict[str, AnimatedSprite] = {}
@@ -62,29 +70,27 @@ class Player:
 
     @property
     def pos(self) -> tuple[int, int]:
-        return self.x, self.y
+        return self.grid_x, self.grid_y
 
     def in_bounds(self, x: int, y: int) -> bool:
         return 0 <= y < len(self.maze) and 0 <= x < len(self.maze[0])
 
     def can_move(self, direction: str) -> bool:
         dx, dy = self.DIR_VEC[direction]
-        nx, ny = self.x + dx, self.y + dy
+        nx, ny = self.grid_x + dx, self.grid_y + dy
 
-        if not self.in_bounds(self.x, self.y) or not self.in_bounds(nx, ny):
+        if not self.in_bounds(self.grid_x, self.grid_y) or not self.in_bounds(nx, ny):
             return False
 
-        cur_mask = self.maze[self.y][self.x]
+        cur_mask = self.maze[self.grid_y][self.grid_x]
         nxt_mask = self.maze[ny][nx]
 
-        # Optional hard wall encoding
         if cur_mask == 15 or nxt_mask == 15:
             return False
 
         out_bit = self.DIR_BIT[direction]
         in_bit = self.DIR_BIT[self.OPPOSITE[direction]]
 
-        # Both cells must NOT have walls in the passage direction
         return (cur_mask & out_bit) == 0 and (nxt_mask & in_bit) == 0
 
     def get_input(self, key: ScancodeWrapper) -> None:
@@ -97,30 +103,43 @@ class Player:
         elif key[pygame.K_a]:
             self.next_dir = "left"
 
-    def move_one_cell(self) -> None:
-        # try buffered direction first
-        if self.can_move(self.next_dir):
-            self.current_dir = self.next_dir
-
-        if not self.can_move(self.current_dir):
-            return
-
-        dx, dy = self.DIR_VEC[self.current_dir]
-        self.x += dx
-        self.y += dy
-        self.current_sprite = self.sprites[self.current_dir]
-        self.current_sprite.position = (self.x, self.y)
+    def start_move(self, direction: str) -> None:
+        dx, dy = self.DIR_VEC[direction]
+        self.grid_x += dx
+        self.grid_y += dy
+        self.current_dir = direction
+        self.current_sprite = self.sprites[direction]
+        
+        self._is_moving = True
+        self._move_progress = 0.0
+        self._move_start = (self.grid_x - dx, self.grid_y - dy)
+        self._move_target = (self.grid_x, self.grid_y)
 
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
 
-        self._move_buffer += dt * self.speed
-        while self._move_buffer >= 1.0:
-            self.move_one_cell()
-            self._move_buffer -= 1.0
+        # Handle smooth movement
+        if self._is_moving:
+            self._move_progress += dt * self.speed
+            if self._move_progress >= 1.0:
+                self._move_progress = 1.0
+                self._is_moving = False
+            # Interpolate render position
+            start_x, start_y = self._move_start
+            target_x, target_y = self._move_target
+            self.render_x = start_x + (target_x - start_x) * self._move_progress
+            self.render_y = start_y + (target_y - start_y) * self._move_progress
+            self.current_sprite.position = (self.render_x, self.render_y)
+        else:
+            # Queue next move
+            if self.can_move(self.next_dir):
+                self.start_move(self.next_dir)
+            elif self.can_move(self.current_dir):
+                self.start_move(self.current_dir)
 
     def render(self, screen: pygame.Surface) -> None:
-        px = self.x * CELL_SIZE
-        py = self.y * CELL_SIZE
+        px = int(self.render_x * CELL_SIZE) + 2
+        py = int(self.render_y * CELL_SIZE) + 2
         screen.blit(self.current_sprite.image, (px, py))
+
 
