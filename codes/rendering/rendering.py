@@ -1,5 +1,8 @@
 import pygame
 
+from codes.rendering.utils.sprite_loader import SpriteLoader
+
+from .component import Sprite
 from .screen import *
 
 
@@ -8,6 +11,7 @@ class Rendering:
         pygame.init()
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Pac-Man")
+        self.screen_size = screen_size
 
         self.clock = pygame.time.Clock()
         self.fps = 60
@@ -21,6 +25,8 @@ class Rendering:
 
         self.current_screen = self.screens["Home"]
         self.running = True
+
+        self.load_background()
 
     def run(self) -> None:
         while self.running:
@@ -38,9 +44,27 @@ class Rendering:
             self.current_screen = self.screens[flags]
 
     def update(self, dt: float) -> None:
+        self.background.rect.left -= 30 * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:
-        self.screen.fill((20, 20, 20))
+        self._render_background(self.screen)
         self.current_screen.render(self.screen)
         pygame.display.update()
+
+    def load_background(self) -> None:
+        self.background = Sprite(
+            (0, 0), SpriteLoader.import_image("assets", "background")
+        )
+        print(self.background.rect.height)
+        self.background.image = pygame.transform.scale2x(self.background.image)
+        self.background.rect = self.background.image.get_frect()
+
+    def _render_background(self, screen: pygame.Surface) -> None:
+        image_width = self.background.rect.width
+
+        x = self.background.rect.x
+
+        while x < self.screen_size[0]:
+            screen.blit(self.background.image, (x, 0))
+            x += image_width

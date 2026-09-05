@@ -11,7 +11,6 @@ class HomeScreen(Screen):
         super().__init__()
         self.assets: dict[str, AnimatedSprite] = {}
         self.buttons: dict[str, Button] = {}
-        self.load_background()
         self.load_buttons()
         self.load_others()
 
@@ -27,12 +26,10 @@ class HomeScreen(Screen):
         return None
 
     def update(self, dt: float) -> None:
-        self.background.rect.x -= 20 * dt
         for button in self.buttons.values():
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
-        self._render_background(screen)
         screen.blit(self.logo.image, self.logo.rect)
         for a in self.assets.values():
             screen.blit(a.image, a.rect)
@@ -71,14 +68,6 @@ class HomeScreen(Screen):
             a = Button(pos, tmp, result)
             self.buttons[button] = a
 
-    def load_background(self) -> None:
-        self.background = Sprite(
-            (0, 0), self.loader.import_image("assets", "background")
-        )
-        print(self.background.rect.height)
-        self.background.image = pygame.transform.scale2x(self.background.image)
-        self.background.rect = self.background.image.get_frect()
-
     def load_others(self) -> None:
         self.logo = Sprite(
             (0, 0),
@@ -89,12 +78,3 @@ class HomeScreen(Screen):
             75,
             30,
         )
-
-    def _render_background(self, screen: pygame.Surface) -> None:
-        image_width = self.background.rect.width
-
-        x = self.background.rect.x
-
-        while x < self.screen_size[0]:
-            screen.blit(self.background.image, (x, 0))
-            x += image_width
