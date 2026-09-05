@@ -1,6 +1,7 @@
 import pygame
 
-from ..component import Maze, Player
+from ..component import Maze
+from ..entity import Player
 from .base_screen import Screen
 
 

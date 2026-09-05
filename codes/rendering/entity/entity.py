@@ -26,6 +26,7 @@ class Entity(ABC):
         "down": DOWN,
         "left": LEFT,
     }
+
     def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
         self.grid_x = int(pos[0])
         self.grid_y = int(pos[1])
@@ -50,7 +51,15 @@ class Entity(ABC):
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
-        ...
+        """
+        Loads the image for the sprite.
+
+        The key for the sprite should always be "up", "down", "left", "right"
+        to make the movement easier. We can also add another state as long as
+        these keys is present.
+        Returns:
+            dict: The dictionnary containing the sprites.
+        """
 
     @property
     def pos(self) -> tuple[int, int]:
@@ -63,7 +72,9 @@ class Entity(ABC):
         dx, dy = self.DIR_VEC[direction]
         nx, ny = self.grid_x + dx, self.grid_y + dy
 
-        if not self.in_bounds(self.grid_x, self.grid_y) or not self.in_bounds(nx, ny):
+        if not self.in_bounds(self.grid_x, self.grid_y) or not self.in_bounds(
+            nx, ny
+        ):
             return False
 
         cur_mask = self.maze[self.grid_y][self.grid_x]
@@ -76,8 +87,7 @@ class Entity(ABC):
         return (cur_mask & out_bit) == 0
 
     @abstractmethod
-    def get_input(self, key: ScancodeWrapper) -> None:
-        ...
+    def get_input(self, key: ScancodeWrapper) -> None: ...
 
     def start_move(self, direction: str) -> None:
         dx, dy = self.DIR_VEC[direction]
@@ -93,26 +103,27 @@ class Entity(ABC):
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
 
-        # Handle smooth movement
         if self._is_moving:
-            self._move_progress += dt * self.speed
-            if self._move_progress >= 1.0:
-                self._move_progress = 1.0
-                self._is_moving = False
-            # Interpolate render position
-            start_x, start_y = self._move_start
-            target_x, target_y = self._move_target
-            self.render_x = start_x + (target_x - start_x) * self._move_progress
-            self.render_y = start_y + (target_y - start_y) * self._move_progress
-            self.current_sprite.position = (self.render_x, self.render_y)
+            self.move(dt)
         else:
-            # Queue next move
             if self.can_move(self.next_dir):
                 self.start_move(self.next_dir)
             elif self.can_move(self.current_dir):
                 self.start_move(self.current_dir)
 
+    def move(self, dt: float) -> None:
+        self._move_progress += dt * self.speed
+        if self._move_progress >= 1.0:
+            self._move_progress = 1.0
+            self._is_moving = False
+        start_x, start_y = self._move_start
+        target_x, target_y = self._move_target
+        self.render_x = start_x + (target_x - start_x) * self._move_progress
+        self.render_y = start_y + (target_y - start_y) * self._move_progress
+        self.current_sprite.position = (self.render_x, self.render_y)
+
     def render(self, screen: pygame.Surface) -> None:
-        px = int(self.render_x * CELL_SIZE) + 2
-        py = int(self.render_y * CELL_SIZE) + 2
-        screen.blit(self.current_sprite.image, (px, py))
+        screen.blit(
+            self.current_sprite.image,
+            (self.render_x * CELL_SIZE + 2, self.render_y * CELL_SIZE + 2),
+        )

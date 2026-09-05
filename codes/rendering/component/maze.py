@@ -19,7 +19,7 @@ class Maze:
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
-        surface = pygame.Surface(self.maze_size, flags=pygame.SRCALPHA).convert_alpha()
+        surface = pygame.Surface(self.maze_size).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
