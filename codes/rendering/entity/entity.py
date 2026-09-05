@@ -1,6 +1,4 @@
-from abc import ABC
-from enum import IntEnum
-
+from abc import ABC, abstractmethod
 import pygame
 from pygame.key import ScancodeWrapper
 
@@ -9,74 +7,112 @@ from codes.setting import CELL_SIZE
 from ..component import AnimatedSprite
 
 
-class Direction(IntEnum):
-    NORTH = 0b0001
-    EAST = 0b0010
-    SOUTH = 0b0100
-    WEST = 0b1000
-
-
 class Entity(ABC):
-    """
-    Base Entity class for the player and ghost in the Maze.
+    UP = 0b0001
+    RIGHT = 0b0010
+    DOWN = 0b0100
+    LEFT = 0b1000
 
-    ...
-    """
+    DIR_VEC = {
+        "up": (0, -1),
+        "right": (1, 0),
+        "down": (0, 1),
+        "left": (-1, 0),
+    }
 
-    def __init__(
-        self,
-        pos: tuple[int, int],
-        sprites: dict[str, AnimatedSprite],
-        maze: list[list[int]],
-    ) -> None:
-        # Store the direction and wanted direction
-        self.direction: Direction = Direction.SOUTH
-        self.next_direction: Direction = Direction.SOUTH
+    DIR_BIT = {
+        "up": UP,
+        "right": RIGHT,
+        "down": DOWN,
+        "left": LEFT,
+    }
+    def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
+        self.grid_x = int(pos[0])
+        self.grid_y = int(pos[1])
+        self.render_x = float(pos[0])
+        self.render_y = float(pos[1])
 
-        # The position of the maze based on the tile and on the pixel
-        self.tile_x, self.tile_y = pos
-        self.pixel_x, self.pixel_y = (float(x) for x in pos)
-
-        # The speed of the entity, Here is 3 cell per second.
-        self.speed = 3
-
-        # The actual maze
         self.maze = maze
 
-        # the sprite in a dict format
-        # The key must be always "up", "down", "left", "right"
-        self.sprites = sprites
+        self.current_dir = "up"
+        self.next_dir = "up"
 
-        # The current sprite for the animation.
-        self.current_sprite = self.sprites["down"]
+        self.speed = 3.0
+        self._move_buffer = 0.0
+        self._is_moving = False
+        self._move_progress = 0.0  # 0.0 to 1.0
+        self._move_start = (self.grid_x, self.grid_y)
+        self._move_target = (self.grid_x, self.grid_y)
 
-    def request_direction(self, direction: Direction) -> None:
-        self.next_direction = direction
+        self.sprites = self.load_image()
+        self.current_sprite = self.sprites[self.current_dir]
+        self.current_sprite.position = (self.render_x, self.render_y)
 
+    @abstractmethod
+    def load_image(self) -> dict[str, AnimatedSprite]:
+        ...
+
+    @property
+    def pos(self) -> tuple[int, int]:
+        return self.grid_x, self.grid_y
+
+    def in_bounds(self, x: int, y: int) -> bool:
+        return 0 <= y < len(self.maze) and 0 <= x < len(self.maze[0])
+
+    def can_move(self, direction: str) -> bool:
+        dx, dy = self.DIR_VEC[direction]
+        nx, ny = self.grid_x + dx, self.grid_y + dy
+
+        if not self.in_bounds(self.grid_x, self.grid_y) or not self.in_bounds(nx, ny):
+            return False
+
+        cur_mask = self.maze[self.grid_y][self.grid_x]
+
+        if cur_mask == 15:
+            return False
+
+        out_bit = self.DIR_BIT[direction]
+
+        return (cur_mask & out_bit) == 0
+
+    @abstractmethod
     def get_input(self, key: ScancodeWrapper) -> None:
-        # Take the input of the user to the maze
-        if key[pygame.K_w]:
-            self.request_direction(Direction.NORTH)
-        elif key[pygame.K_s]:
-            self.request_direction(Direction.SOUTH)
-        elif key[pygame.K_d]:
-            self.request_direction(Direction.EAST)
-        elif key[pygame.K_a]:
-            self.request_direction(Direction.WEST)
+        ...
+
+    def start_move(self, direction: str) -> None:
+        dx, dy = self.DIR_VEC[direction]
+        self.grid_x += dx
+        self.grid_y += dy
+        self.current_dir = direction
+        self.current_sprite = self.sprites[direction]
+        self._is_moving = True
+        self._move_progress = 0.0
+        self._move_start = (self.grid_x - dx, self.grid_y - dy)
+        self._move_target = (self.grid_x, self.grid_y)
+
+    def update(self, dt: float) -> None:
+        self.current_sprite.animate(dt)
+
+        # Handle smooth movement
+        if self._is_moving:
+            self._move_progress += dt * self.speed
+            if self._move_progress >= 1.0:
+                self._move_progress = 1.0
+                self._is_moving = False
+            # Interpolate render position
+            start_x, start_y = self._move_start
+            target_x, target_y = self._move_target
+            self.render_x = start_x + (target_x - start_x) * self._move_progress
+            self.render_y = start_y + (target_y - start_y) * self._move_progress
+            self.current_sprite.position = (self.render_x, self.render_y)
+        else:
+            # Queue next move
+            if self.can_move(self.next_dir):
+                self.start_move(self.next_dir)
+            elif self.can_move(self.current_dir):
+                self.start_move(self.current_dir)
 
     def render(self, screen: pygame.Surface) -> None:
-        screen.blit(
-            self.current_sprite.image,
-            (
-                self.pixel_x * CELL_SIZE + 3,
-                self.pixel_y * CELL_SIZE + 3,
-            ),
-        )
-
-    def can_move(self, x: int, y: int, direction: Direction) -> bool:
-        if not (0 <= x < len(self.maze[0]) and 0 <= y < len(self.maze)):
-            return False
-        return not self.has_wall(x, y, direction)
-
-    def has_wall(self, x: int, y: int, direction: Direction) -> bool:
-        return bool(self.maze[y][x] & direction)
+        px = int(self.render_x * CELL_SIZE) + 2
+        py = int(self.render_y * CELL_SIZE) + 2
+        screen.blit(self.current_sprite.image, (px, py))
