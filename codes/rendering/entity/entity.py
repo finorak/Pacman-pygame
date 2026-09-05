@@ -27,11 +27,18 @@ class Entity(ABC):
         "left": LEFT,
     }
 
+    OPPOSITE = {
+        "up": "down",
+        "down": "up",
+        "left": "right",
+        "right": "left",
+    }
+
     def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
-        self.grid_x = int(pos[0])
-        self.grid_y = int(pos[1])
-        self.render_x = float(pos[0])
-        self.render_y = float(pos[1])
+        self.grid_x: int = pos[0]
+        self.grid_y: int = pos[1]
+        self.render_x: float = float(pos[0])
+        self.render_y: float = float(pos[1])
 
         self.maze = maze
 
@@ -104,12 +111,30 @@ class Entity(ABC):
         self.current_sprite.animate(dt)
 
         if self._is_moving:
+            if (
+                self.next_dir == self.OPPOSITE[self.current_dir]
+                and self.next_dir != self.current_dir
+            ):
+                self.reverse_move(self.next_dir)
             self.move(dt)
         else:
             if self.can_move(self.next_dir):
                 self.start_move(self.next_dir)
             elif self.can_move(self.current_dir):
                 self.start_move(self.current_dir)
+
+    def reverse_move(self, direction: str) -> None:
+        old_start = self._move_start
+        old_target = self._move_target
+
+        self.grid_x, self.grid_y = old_start
+        self.current_dir = direction
+        self.current_sprite = self.sprites[direction]
+
+        self._move_progress = 1.0 - self._move_progress
+        self._move_start = old_target
+        self._move_target = old_start
+        self._is_moving = True
 
     def move(self, dt: float) -> None:
         self._move_progress += dt * self.speed
