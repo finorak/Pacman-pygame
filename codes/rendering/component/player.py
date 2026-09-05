@@ -1,14 +1,3 @@
-"""
-Here is my ideas on the pacman player.
-
-First, the player should wander in the maze using index
-Example:
-the size of the maze is 32 * 32. The player position should go only
-in 0 to 31 in both x and y
-
-This is to make sure the player only go to the expected direction in the
-expected time.
-"""
 
 import pygame
 from pygame.key import ScancodeWrapper
@@ -20,126 +9,118 @@ from .sprite import AnimatedSprite
 
 
 class Player:
+    # wall/opening bits
+    UP = 1
+    RIGHT = 2
+    DOWN = 4
+    LEFT = 8
+
+    DIR_VEC = {
+        "up": (0, -1),
+        "right": (1, 0),
+        "down": (0, 1),
+        "left": (-1, 0),
+    }
+
+    DIR_BIT = {
+        "up": UP,
+        "right": RIGHT,
+        "down": DOWN,
+        "left": LEFT,
+    }
+
+    OPPOSITE = {
+        "up": "down",
+        "right": "left",
+        "down": "up",
+        "left": "right",
+    }
 
     def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
+        self.x = int(pos[0])  # grid index only
+        self.y = int(pos[1])  # grid index only
+        self.maze = maze
+
         self.current_dir = "up"
         self.next_dir = "up"
 
-        self.x = float(pos[0])
-        self.y = float(pos[1])
-
-        self.maze = maze
-
-        self.speed = 3
+        self.speed = 3.0  # cells per second
+        self._move_buffer = 0.0
 
         self.sprites = self.load_image()
-        self.current_sprite = self.sprites["up"]
-
-        self.available_dir = {
-            "left": (-1, 0),
-            "right": (1, 0),
-            "up": (0, -1),
-            "down": (0, 1),
-        }
-
-    def move(self, dt: float) -> None:
-        # should be 3 cell per second
-        dx, dy = self.available_dir[self.current_direction]
-        if -0.1 <= round(self.x) % 1 <= 0.1 and -0.1 <= round(self.y) % 1 <= 0.1:
-            if self.cell_is_valid(
-                (int(self.x), int(self.y)),
-                (int(self.x) + dx, int(self.y) + dy),
-            ):
-                self.pos = (
-                    self.pos[0]
-                    + self.available_dir[self.current_dir][0]
-                    * dt
-                    * self.speed,
-                    self.pos[1]
-                    + self.available_dir[self.current_dir][1]
-                    * dt
-                    * self.speed,
-                )
-            self.current_sprite.position = self.x, self.y
-        else:
-            self.pos = (
-                self.pos[0]
-                + self.available_dir[self.current_dir][0]
-                * dt
-                * self.speed,
-                self.pos[1]
-                + self.available_dir[self.current_dir][1]
-                * dt
-                * self.speed,
-            )
-        self.current_sprite.position = self.x, self.y
+        self.current_sprite = self.sprites[self.current_dir]
+        self.current_sprite.position = (self.x, self.y)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
-        directions = {"down", "left", "right", "up"}
-        result = {}
-        for direction in directions:
+        result: dict[str, AnimatedSprite] = {}
+        for direction in ("down", "left", "right", "up"):
             result[direction] = AnimatedSprite(
                 (0, 0),
                 SpriteLoader.import_folder("assets", "pacman", direction),
             )
         return result
 
-    def update(self, dt: float) -> None:
-        self.current_sprite.animate(dt)
-        self.move(dt)
-
     @property
-    def pos(self) -> tuple[float, float]:
+    def pos(self) -> tuple[int, int]:
         return self.x, self.y
 
-    @pos.setter
-    def pos(self, pos: tuple[float, float]) -> None:
-        self.x, self.y = pos
+    def in_bounds(self, x: int, y: int) -> bool:
+        return 0 <= y < len(self.maze) and 0 <= x < len(self.maze[0])
 
-    @property
-    def current_direction(self) -> str:
-        return self.current_dir
+    def can_move(self, direction: str) -> bool:
+        dx, dy = self.DIR_VEC[direction]
+        nx, ny = self.x + dx, self.y + dy
 
-    @current_direction.setter
-    def current_direction(self, dir: str) -> None:
-        self.current_sprite = self.sprites[dir]
-        self.current_sprite.position = self.x, self.y
-        self.current_dir = dir
+        if not self.in_bounds(self.x, self.y) or not self.in_bounds(nx, ny):
+            return False
+
+        cur_mask = self.maze[self.y][self.x]
+        nxt_mask = self.maze[ny][nx]
+
+        # Optional hard wall encoding
+        if cur_mask == 15 or nxt_mask == 15:
+            return False
+
+        out_bit = self.DIR_BIT[direction]
+        in_bit = self.DIR_BIT[self.OPPOSITE[direction]]
+
+        # Both cells must NOT have walls in the passage direction
+        return (cur_mask & out_bit) == 0 and (nxt_mask & in_bit) == 0
 
     def get_input(self, key: ScancodeWrapper) -> None:
         if key[pygame.K_w]:
-            self.current_direction = "up"
+            self.next_dir = "up"
         elif key[pygame.K_s]:
-            self.current_direction = "down"
+            self.next_dir = "down"
         elif key[pygame.K_d]:
-            self.current_direction = "right"
+            self.next_dir = "right"
         elif key[pygame.K_a]:
-            self.current_direction = "left"
+            self.next_dir = "left"
 
+    def move_one_cell(self) -> None:
+        # try buffered direction first
+        if self.can_move(self.next_dir):
+            self.current_dir = self.next_dir
+
+        if not self.can_move(self.current_dir):
+            return
+
+        dx, dy = self.DIR_VEC[self.current_dir]
+        self.x += dx
+        self.y += dy
+        self.current_sprite = self.sprites[self.current_dir]
+        self.current_sprite.position = (self.x, self.y)
+
+    def update(self, dt: float) -> None:
+        self.current_sprite.animate(dt)
+
+        self._move_buffer += dt * self.speed
+        while self._move_buffer >= 1.0:
+            self.move_one_cell()
+            self._move_buffer -= 1.0
 
     def render(self, screen: pygame.Surface) -> None:
-        screen.blit(
-            self.current_sprite.image,
-            (
-                self.current_sprite.rect.topleft[0] * CELL_SIZE,
-                self.current_sprite.rect.topleft[1] * CELL_SIZE,
-            ),
-        )
+        px = self.x * CELL_SIZE
+        py = self.y * CELL_SIZE
+        screen.blit(self.current_sprite.image, (px, py))
 
-    def cell_is_valid(
-        self,
-        current_pos: tuple[int, int],
-        new_pos: tuple[int, int],
-    ) -> bool:
-        old_x, old_y = current_pos
-        new_x, new_y = new_pos
-        if (0 > old_y >= len(self.maze)) or (0 > old_x >= len(self.maze[0])):
-            return False
-        if (0 > new_y >= len(self.maze)) or (0 > new_x >= len(self.maze[0])):
-            return False
-        try:
-            if self.maze[new_y][new_x] == 15:
-                return False
-            return self.maze[old_y][old_x] & self.maze[new_y][new_x] != 0
-        except IndexError:
-            return False

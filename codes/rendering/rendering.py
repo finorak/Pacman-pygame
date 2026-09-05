@@ -44,7 +44,7 @@ class Rendering:
             self.current_screen = self.screens[flags]
 
     def update(self, dt: float) -> None:
-        self.background.rect.left -= 30 * dt
+        self.background.rect.left -= 20 * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:
