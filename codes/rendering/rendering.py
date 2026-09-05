@@ -56,7 +56,6 @@ class Rendering:
         self.background = Sprite(
             (0, 0), SpriteLoader.import_image("assets", "background")
         )
-        print(self.background.rect.height)
         self.background.image = pygame.transform.scale2x(self.background.image)
         self.background.rect = self.background.image.get_frect()
 
