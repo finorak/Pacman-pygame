@@ -50,6 +50,8 @@ class Ghost(Entity):
           .
         # player -> Player class
         """
+        if player.pos == self.pos:
+            player._reset()
         if self._is_moving:
             return
         self.next_dir = self._find_path(player)
