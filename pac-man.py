@@ -1,6 +1,6 @@
 import sys
 
-from codes.rendering.rendering import Rendering
+from codes.core.app import Rendering
 from codes.setting import SCREEN_SIZE
 
 

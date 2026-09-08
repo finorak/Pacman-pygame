@@ -1,107 +1,74 @@
-import os
-
 import pygame
-from mazegenerator import MazeGenerator
 
-from codes.parsing.parse import GameModel
-from codes.players.ghost import Ghost
-from codes.players.player import Player
-from codes.utilities.utils import get_path, load_img_from_dir
+from codes.rendering.component import Sprite
+from codes.rendering.screen import (
+    GameScreen,
+    HighScoreScreen,
+    HomeScreen,
+    InstructionsScreen,
+    Screen,
+)
+from codes.rendering.utils.sprite_loader import SpriteLoader
 
-from ..rendering import Maze
 
-
-class Data:
-    def __init__(self, config_path: str) -> None:
+class Rendering:
+    def __init__(self, screen_size: tuple[int, int]) -> None:
         pygame.init()
-        self.data = GameModel(config_path=config_path)
-        self.maze_gen = MazeGenerator(
-                size=(16, 16),
-                seed=self.data.seed
-                )
-        self.maze_rendering = Maze(self.maze_gen.maze)
-        for row in self.maze_gen.maze:
-            for col in row:
-                print(f"{hex(col)[2:]}", end="")
-            print()
-        self.load_asset()
-
-    def load_asset(self, ) -> None:
-        # TODO: MIGHT PUT THESE INSIDE `setting` later on.
-        self.player_frames: dict[str, list[pygame.Surface]] = {
-            player_direction.split("-")[-1]: load_img_from_dir(
-                get_path("assets", "pacman", player_direction))
-            for player_direction in os.listdir(
-                get_path("assets", "pacman")
-                )
-        }
-        self.ghost_frames: dict[str, dict[str, list[pygame.Surface]]] = {
-                ghost_color: {
-                    ghost_direction.split("-")[-1]: load_img_from_dir(
-                        get_path(
-                            "assets", "ghosts", ghost_color, ghost_direction
-                            )
-                        )
-                    for ghost_direction in os.listdir(
-                        get_path(
-                            "assets", "ghosts", ghost_color
-                            )
-                        )
-                    }
-                for ghost_color in os.listdir(
-                    get_path("assets", "ghosts")
-                    )
-                }
-
-
-class App(Data):
-    def __init__(
-            self,
-            config_path: str,
-            screen_size: tuple[int, int] = (1280, 950)
-    ) -> None:
-        super().__init__(config_path)
         self.screen = pygame.display.set_mode(screen_size)
-        self.player = Player(
-                self.player_frames,
-                (0, 0),
-                self.data.player_life
-                )
-        self.ghosts = [
-                Ghost(
-                    self.ghost_frames[ghost_color],
-                    pos=(0, 0),
-                    life=1
-                    )
-                for ghost_color in self.ghost_frames
-                ]
-        pygame.display.set_caption("Pacman")
+        pygame.display.set_caption("Pac-Man")
+        self.screen_size = screen_size
+
+        self.clock = pygame.time.Clock()
+        self.fps = 60
+
+        self.screens: dict[str, Screen] = {
+            "Home": HomeScreen(),
+            "HighScore": HighScoreScreen(),
+            "Instructions": InstructionsScreen(),
+            "Game": GameScreen(),
+        }
+
+        self.current_screen = self.screens["Home"]
+        self.running = True
+
+        self.load_background()
 
     def run(self) -> None:
-        running: bool = True
-        clock = pygame.time.Clock()
-        while running:
-            dt = clock.tick() / 1000
-            self.draw(self.screen)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                    break
-            self.update(dt, self.player, self.maze_gen.maze)
+        while self.running:
+            dt = self.clock.tick(self.fps) / 1000
+            self.get_event()
+            self.update(dt)
+            self.render()
 
-    def draw(self, screen: pygame.Surface) -> None:
-        self.screen.fill((20, 20, 20))
-        self.player.draw(self.maze_rendering.image)
-        for ghost in self.ghosts:
-            ghost.draw(self.maze_rendering.image)
-        screen.blit(self.maze_rendering.image, self.maze_rendering.rect)
-        self.maze_rendering.reset()
+    def get_event(self) -> None:
+        flags = self.current_screen.get_input()
+        if flags:
+            if flags == "exit":
+                self.running = False
+                return
+            self.current_screen = self.screens[flags]
 
-    def update(
-            self, dt: float, player: Player,
-            maze: list[list[int]]
-    ) -> None:
+    def update(self, dt: float) -> None:
+        self.background.rect.left -= 20 * dt
+        self.current_screen.update(dt)
+
+    def render(self) -> None:
+        self._render_background(self.screen)
+        self.current_screen.render(self.screen)
         pygame.display.update()
-        self.player.update(dt, maze)
-        for ghost in self.ghosts:
-            ghost.update(dt, player, maze)
+
+    def load_background(self) -> None:
+        self.background = Sprite(
+            (0, 0), SpriteLoader.import_image("assets", "background")
+        )
+        self.background.image = pygame.transform.scale2x(self.background.image)
+        self.background.rect = self.background.image.get_frect()
+
+    def _render_background(self, screen: pygame.Surface) -> None:
+        image_width = self.background.rect.width
+
+        x = self.background.rect.x
+
+        while x < self.screen_size[0]:
+            screen.blit(self.background.image, (x, 0))
+            x += image_width

@@ -3,9 +3,8 @@ from typing import Any
 
 import pygame
 
+from codes.rendering.component import AnimatedSprite
 from codes.setting import CELL_SIZE
-
-from ..component import AnimatedSprite
 
 
 class Entity(ABC):
