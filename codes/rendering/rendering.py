@@ -3,7 +3,13 @@ import pygame
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
 from .component import Sprite
-from .screen import Screen, HomeScreen, HighScoreScreen, InstructionsScreen, GameScreen
+from .screen import (
+    GameScreen,
+    HighScoreScreen,
+    HomeScreen,
+    InstructionsScreen,
+    Screen,
+)
 
 
 class Rendering:

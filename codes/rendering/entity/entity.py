@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import Any
+
 import pygame
-from pygame.key import ScancodeWrapper
 
 from codes.setting import CELL_SIZE
 
@@ -35,26 +36,28 @@ class Entity(ABC):
     }
 
     def __init__(self, pos: tuple[int, int], maze: list[list[int]]) -> None:
-        self.grid_x: int = pos[0]
-        self.grid_y: int = pos[1]
-        self.render_x: float = float(pos[0])
-        self.render_y: float = float(pos[1])
+        self.grid_x = self.init_grid_x = pos[0]
+        self.grid_y = self.init_grid_y = pos[1]
+        self.render_x = self.init_render_x = float(pos[0])
+        self.render_y = self.init_render_y = float(pos[1])
 
         self.maze = maze
 
-        self.current_dir = "up"
-        self.next_dir = "up"
+        self.current_dir = self.init_current_dir = "up"
+        self.next_dir = self.init_current_dir = "up"
 
         self.speed = 3.0
         self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
-        self._move_start = (self.grid_x, self.grid_y)
-        self._move_target = (self.grid_x, self.grid_y)
+        self._move_start = self.init_move_start = (self.grid_x, self.grid_y)
+        self._move_target = self.init_move_target = (self.grid_x, self.grid_y)
 
         self.sprites = self.load_image()
-        self.current_sprite = self.sprites[self.current_dir]
-        self.current_sprite.position = (self.render_x, self.render_y)
+        self.current_sprite = self.init_current_sprite = self.sprites[
+                self.current_dir]
+        self.current_sprite.position = self.init_current_sprite_pos = (
+                self.render_x, self.render_y)
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -94,7 +97,7 @@ class Entity(ABC):
         return (cur_mask & out_bit) == 0
 
     @abstractmethod
-    def get_input(self, key: ScancodeWrapper) -> None: ...
+    def get_input(self, *arg: Any, **kwarg: Any) -> None: ...
 
     def start_move(self, direction: str) -> None:
         dx, dy = self.DIR_VEC[direction]
@@ -117,11 +120,11 @@ class Entity(ABC):
             ):
                 self.reverse_move(self.next_dir)
             self.move(dt)
-        else:
-            if self.can_move(self.next_dir):
-                self.start_move(self.next_dir)
-            elif self.can_move(self.current_dir):
-                self.start_move(self.current_dir)
+            return
+        if self.can_move(self.next_dir):
+            self.start_move(self.next_dir)
+        elif self.can_move(self.current_dir):
+            self.start_move(self.current_dir)
 
     def reverse_move(self, direction: str) -> None:
         old_start = self._move_start
@@ -152,3 +155,6 @@ class Entity(ABC):
             self.current_sprite.image,
             (self.render_x * CELL_SIZE + 2, self.render_y * CELL_SIZE + 2),
         )
+
+    def _reset(self):
+        ...

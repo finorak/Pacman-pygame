@@ -70,9 +70,9 @@ def find_cell_neighboors(
 ) -> list[tuple[int, int]]:
     neighboors: list[tuple[int, int]] = []
     x, y = current_cell
-    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & EAST == 0:
+    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & WEST == 0:
         neighboors.append((x - 1, y))
-    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & WEST == 0:
+    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & EAST == 0:
         neighboors.append((x + 1, y))
     if y - 1 >= 0 and maze[x][y - 1] != 15 and maze[x][y - 1] & NORTH == 0:
         neighboors.append((x, y - 1))

@@ -1,8 +1,9 @@
 import pygame
 from pygame.key import ScancodeWrapper
-from .entity import Entity
+
 from ..component import AnimatedSprite
 from ..utils import SpriteLoader
+from .entity import Entity
 
 
 class Player(Entity):
@@ -19,11 +20,11 @@ class Player(Entity):
         return result
 
     def get_input(self, key: ScancodeWrapper) -> None:
-        if key[pygame.K_w]:
+        if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
-        elif key[pygame.K_s]:
+        elif key[pygame.K_s] or key[pygame.K_DOWN]:
             self.next_dir = "down"
-        elif key[pygame.K_d]:
+        elif key[pygame.K_d] or key[pygame.K_RIGHT]:
             self.next_dir = "right"
-        elif key[pygame.K_a]:
+        elif key[pygame.K_a] or key[pygame.K_LEFT]:
             self.next_dir = "left"
