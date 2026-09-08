@@ -34,6 +34,9 @@ class Ghost(Entity):
         return result
 
     def _find_path(self, player: Any) -> str:
+        # TODO: find why the ghost isn't moving
+        # in the direction of the player even though
+        # the algorithm seems right
         next_dir = random.choice(['down', 'left', 'right', 'up'])
         if player_in_range(self.pos, player.pos, self._radius):
             paths = self.algorithm.bfs(self.pos, player.pos, self.maze)
