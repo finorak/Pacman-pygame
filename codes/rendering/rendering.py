@@ -3,7 +3,14 @@ import pygame
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
 from .component import Sprite
-from .screen import Screen, HomeScreen, HighScoreScreen, InstructionsScreen, GameScreen
+from .screen import (
+    GameScreen,
+    HighScoreScreen,
+    HomeScreen,
+    InstructionsScreen,
+    PauseScreen,
+    Screen,
+)
 
 
 class Rendering:
@@ -21,6 +28,7 @@ class Rendering:
             "HighScore": HighScoreScreen(),
             "Instructions": InstructionsScreen(),
             "Game": GameScreen(),
+            "pause": PauseScreen()
         }
 
         self.current_screen = self.screens["Home"]
