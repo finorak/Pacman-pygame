@@ -1,4 +1,5 @@
+from .entity import Entity
 from .ghost import Ghost
 from .player import Player
 
-__all__ = ["Ghost", "Player"]
+__all__ = ["Entity", "Player", "Ghost"]

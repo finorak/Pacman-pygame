@@ -1,25 +1,6 @@
 import math
-import os
-from os import listdir
-from typing import Any
-
-import pygame
 
 from codes.setting import EAST, NORTH, SOUTH, WEST
-
-
-def get_path(*arg: str) -> str:
-    return os.path.join(*arg)
-
-
-def load_img_from_dir(dir_path: str) -> list[Any]:
-    res: list[pygame.Surface] = []
-    for file in listdir(dir_path):
-        img = pygame.image.load(
-                os.path.join(dir_path, file)
-            )
-        res.append(img)
-    return res
 
 
 def cell_is_valid(
@@ -70,9 +51,9 @@ def find_cell_neighboors(
 ) -> list[tuple[int, int]]:
     neighboors: list[tuple[int, int]] = []
     x, y = current_cell
-    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & EAST == 0:
+    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & WEST == 0:
         neighboors.append((x - 1, y))
-    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & WEST == 0:
+    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & EAST == 0:
         neighboors.append((x + 1, y))
     if y - 1 >= 0 and maze[x][y - 1] != 15 and maze[x][y - 1] & NORTH == 0:
         neighboors.append((x, y - 1))
