@@ -1,33 +1,41 @@
 import pygame
+from mazegenerator import MazeGenerator
+
+from codes.setting import CELL_SIZE
 
 
 class Maze:
-    def __init__(self, maze: list[list[int]]) -> None:
-        self.maze = maze
-        self.cell_size: int = 32
-        self.maze_size = self._get_maze_size(maze)
+    def __init__(self, size: tuple[int, int]) -> None:
+        self.maze_gen = MazeGenerator(size)
+        self.maze = self.maze_gen.maze
+        self.cell_size: int = CELL_SIZE
+        self.maze_size = self._get_maze_size(self.maze)
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
         self.rect: pygame.FRect = self.image.get_frect()
 
-    def reset(self) -> None:
-        self.image.fill((0,0,0,0))
+    def _reset(self) -> None:
+        self.image.fill((0, 0, 0))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
-        surface = pygame.Surface(self.maze_size)
+        surface = pygame.Surface(self.maze_size).convert_alpha()
+        surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
                 self._draw_cell(surface, (x, y), col)
         return surface
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
-        return (len(maze[0]) * self.cell_size + 20+ 5, len(maze) * self.cell_size + 20)
+        return (
+            len(maze[0]) * self.cell_size + 3,
+            len(maze) * self.cell_size + 3,
+        )
 
     def _draw_cell(
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
-        real_pos = pos[0] * self.cell_size + 5, pos[1] * self.cell_size + 5
+        real_pos = pos[0] * self.cell_size + 1, pos[1] * self.cell_size + 1
         color = (255, 255, 255)
         i = 0
         while (value >> i) != 0:
@@ -103,3 +111,7 @@ class Maze:
             if e2 < dx:
                 err += dx
                 y0 += sy
+
+    def render(self, surface: pygame.Surface) -> None:
+        surface.blit(self.image, self.rect)
+        self._reset()
