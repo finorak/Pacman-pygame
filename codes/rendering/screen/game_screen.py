@@ -33,6 +33,8 @@ class GameScreen(Screen):
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            return "pause"
         self.player.get_input(keys)
         for ghost in self.ghosts:
             ghost.get_input(keys)
