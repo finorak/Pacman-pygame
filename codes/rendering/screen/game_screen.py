@@ -1,7 +1,8 @@
 import pygame
 
-from ..component import Maze
-from ..entity import Ghost, Player
+from codes.players import Ghost, Player
+from codes.rendering.component import Maze
+
 from .base_screen import Screen
 
 
@@ -13,7 +14,7 @@ class GameScreen(Screen):
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
-        self.player = Player((0, 0), self.maze.maze)
+        self.player = Player((len(self.maze.maze) // 2, len(self.maze.maze[0]) // 2), self.maze.maze)
         self.ghosts = [
             Ghost((18, 18), self.maze.maze, "red"),
             Ghost((0, 0), self.maze.maze, "blue"),
@@ -28,7 +29,7 @@ class GameScreen(Screen):
         keys = pygame.key.get_pressed()
         self.player.get_input(keys)
         for ghost in self.ghosts:
-            ghost.get_input(keys)
+            ghost.get_input(self.player)
 
     def update(self, dt: float) -> None:
         self.player.update(dt)
