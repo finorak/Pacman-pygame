@@ -1,14 +1,17 @@
 import pygame
 
-from codes.players import Ghost, Player
-from codes.rendering.component import Maze
+from codes.rendering.component.hud import HUD
 
+from ...players import Ghost, Player
+from ..component import AnimatedSprite, Button, Maze
 from .base_screen import Screen
 
 
 class GameScreen(Screen):
     def __init__(self) -> None:
         super().__init__()
+        self.hud = HUD()
+        self.buttons = {}
         self.maze = Maze((19, 19))
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
@@ -46,6 +49,7 @@ class GameScreen(Screen):
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
+        self.hud.render(screen)
         self.player.render(self.maze.image)
         self.maze.render(screen)
         for ghost in self.ghosts:

@@ -51,7 +51,6 @@ class Entity(ABC):
         self.next_dir = self.init_current_dir = "up"
 
         self.speed = 3.0
-        self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start = (self.grid_x, self.grid_y)
@@ -171,7 +170,6 @@ class Entity(ABC):
         self.current_dir = self.init_current_dir = "up"
         self.next_dir = self.init_current_dir = "up"
 
-        self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start
