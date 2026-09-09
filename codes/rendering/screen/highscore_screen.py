@@ -1,5 +1,6 @@
 import pygame
 
+from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 
 from ..component import AnimatedSprite
@@ -7,8 +8,8 @@ from .base_screen import Screen
 
 
 class HighScoreScreen(Screen):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, game_model: GameModel) -> None:
+        super().__init__(game_model)
 
         self.logo = self.load_logo()
         self.buttons = {}

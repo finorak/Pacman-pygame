@@ -1,13 +1,11 @@
 [
 	{
-		"screen": {
-			"width": 900,
-			"height": 800
-		},
 		"game_settng": {
 			"pacgum_and_score": {
-				"number": 42,
-				"points_per_pacgum": 50,
+				"pacgum_number": 42,
+				"super_pacgum_number": 4,
+				"points_per_pacgum": 10,
+				"points_per_super_pacgum": 50,
 				"points_per_ghost": 200
 			},
 			"level_max_time": 90,

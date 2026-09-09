@@ -1,4 +1,6 @@
 import math
+import random
+import sys
 
 from codes.setting import EAST, NORTH, SOUTH, WEST
 
@@ -61,12 +63,6 @@ def find_cell_neighboors(
         neighboors.append((x, y + 1))
     return neighboors
 
-def target_reached(
-    current_pos: tuple[int, int],
-    target: tuple[int, int]
-) -> bool:
-        return current_pos == target
-
 def player_in_range(
         current_pos: tuple[int, int],
         player_pos: tuple[int, int],
@@ -79,3 +75,32 @@ def player_in_range(
     r = math.pow(radius, 2)
     return (x + y) <= r
 
+
+def test(lst: list[tuple[int, int]]) -> tuple[int, int]:
+    ...
+
+def get_valid_gums_coord(
+        maze: list[list[int]],
+        count: int,
+) -> list[tuple[int, int]]:
+    paths = [
+            (i, j) for i in range(len(maze))
+            for j in range(len(maze[0])) if maze[i][j] != 15
+            ]
+    random.shuffle(paths)
+    def get_valid(
+        seen: set[tuple[int, int]],
+        gum_count: int
+    ) -> list[tuple[int, int]]:
+        nonlocal paths
+        if gum_count == 0:
+            return list(seen)
+        coord = random.choice(paths)
+        if coord in seen or maze[coord[0]][coord[1]] == 15:
+            paths.remove(coord)
+            seen.remove(coord)
+            return get_valid(seen, gum_count)
+        seen.add(coord)
+        paths.remove(coord)
+        return get_valid(seen, gum_count - 1)
+    return get_valid(set(), count)

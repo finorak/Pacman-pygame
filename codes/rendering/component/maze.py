@@ -5,8 +5,8 @@ from codes.setting import CELL_SIZE
 
 
 class Maze:
-    def __init__(self, size: tuple[int, int]) -> None:
-        self.maze_gen = MazeGenerator(size)
+    def __init__(self, size: tuple[int, int], seed: int = 42) -> None:
+        self.maze_gen = MazeGenerator(size, seed=seed)
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
         self.maze_size = self._get_maze_size(self.maze)

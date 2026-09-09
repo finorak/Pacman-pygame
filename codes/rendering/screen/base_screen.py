@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+from codes.parsing.parse import GameModel
 from codes.rendering.component.sprite import Sprite
 
 from ...setting import SCREEN_SIZE
@@ -9,8 +10,9 @@ from ..utils import SpriteLoader
 
 
 class Screen(ABC):
-    def __init__(self) -> None:
+    def __init__(self, game_model: GameModel) -> None:
         super().__init__()
+        self.game_model = game_model
         self.screen_size = SCREEN_SIZE
         self.loader = SpriteLoader()
         self.backgroung: Sprite

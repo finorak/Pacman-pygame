@@ -1,5 +1,5 @@
 import random
-from typing import Any
+from typing import Any, ClassVar
 
 from codes.algorithm import Algorithm
 from codes.rendering.component import AnimatedSprite
@@ -12,6 +12,8 @@ from .entity import Entity
 
 
 class Ghost(Entity):
+    CAN_BE_EATEN: ClassVar = True
+
     def __init__(
         self, pos: tuple[int, int], maze: list[list[int]], name: str
     ) -> None:
@@ -37,9 +39,17 @@ class Ghost(Entity):
         # TODO: find why the ghost isn't moving
         # in the direction of the player even though
         # the algorithm seems right
-        next_dir = random.choice(['down', 'left', 'right', 'up'])
+        choices = ['down', 'left', 'right', 'up']
+        next_dir = random.choice(choices)
+        paths = self.algorithm.bfs(self.pos, player.pos, self.maze)
+        if self.CAN_BE_EATEN:
+            if not paths:
+                return self.next_dir
+            target_vec = get_state(paths[0], self.pos)
+            state = TARGET_DIRECTION[target_vec]
+            choices.remove(state)
+            return random.choice(choices)
         if player_in_range(self.pos, player.pos, self._radius):
-            paths = self.algorithm.bfs(self.pos, player.pos, self.maze)
             if not paths:
                 return self.next_dir
             target_vec = get_state(paths[0], self.pos)
@@ -54,7 +64,12 @@ class Ghost(Entity):
         # player -> Player class
         """
         if player.pos == self.pos:
-            player._reset()
+            player._reset(True)
         if self._is_moving:
             return
-        self.next_dir = self._find_path(player)
+        self.next_dir = self.OPPOSITE[self._find_path(player)]
+
+    @classmethod
+    def change_state(cls: Any) -> 'Ghost':
+        cls.CAN_BE_EATEN = not cls.CAN_BE_EATEN
+        return cls
