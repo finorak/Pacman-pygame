@@ -1,7 +1,9 @@
+from typing import Any
+
 import pygame
 
 from codes.players import Ghost, Player
-from codes.rendering.component import Maze
+from codes.rendering.component import AnimatedSprite, Button, Maze
 
 from .base_screen import Screen
 
@@ -21,6 +23,7 @@ class GameScreen(Screen):
             Ghost((18, 0), self.maze.maze, "yellow"),
             Ghost((0, 18), self.maze.maze, "pink"),
         ]
+        self.buttons: dict[str, Any] = {}
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
