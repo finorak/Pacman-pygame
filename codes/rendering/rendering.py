@@ -3,7 +3,14 @@ import pygame
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
 from .component import Sprite
-from .screen import Screen, HomeScreen, HighScoreScreen, InstructionsScreen, GameScreen
+from .screen import (
+    GameScreen,
+    HighScoreScreen,
+    HomeScreen,
+    InstructionsScreen,
+    PauseScreen,
+    Screen,
+)
 
 
 class Rendering:
@@ -21,6 +28,7 @@ class Rendering:
             "HighScore": HighScoreScreen(),
             "Instructions": InstructionsScreen(),
             "Game": GameScreen(),
+            "pause": PauseScreen()
         }
 
         self.current_screen = self.screens["Home"]
@@ -42,13 +50,17 @@ class Rendering:
                 self.running = False
                 return
             self.current_screen = self.screens[flags]
+            if flags == "pause" and isinstance(self.current_screen, PauseScreen):
+                self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
-        self.background.rect.left -= 20 * dt
+        if not isinstance(self.current_screen, PauseScreen):
+            self.background.rect.left -= 20 * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:
-        self._render_background(self.screen)
+        if not isinstance(self.current_screen, PauseScreen):
+            self._render_background(self.screen)
         self.current_screen.render(self.screen)
         pygame.display.update()
 

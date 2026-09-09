@@ -1,8 +1,9 @@
 import pygame
 from pygame.key import ScancodeWrapper
-from .entity import Entity
+
 from ..component import AnimatedSprite
 from ..utils import SpriteLoader
+from .entity import Entity
 
 
 class Player(Entity):
