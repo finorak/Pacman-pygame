@@ -13,6 +13,11 @@ class Maze:
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
         self.rect: pygame.FRect = self.image.get_frect()
+        self.width, self.height = size
+
+    @property
+    def size(self) -> tuple[int, int]:
+        return self.width, self.height
 
     def _reset(self) -> None:
         self.image.fill((20, 20, 20, 140))

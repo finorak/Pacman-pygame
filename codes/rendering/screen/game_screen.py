@@ -12,17 +12,17 @@ class GameScreen(Screen):
         super().__init__()
         self.hud = HUD()
         self.buttons = {}
-        self.maze = Maze((19, 19))
+        self.maze = Maze((10, 10))
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
         self.player = Player((len(self.maze.maze) // 2, len(self.maze.maze[0]) // 2), self.maze.maze)
         self.ghosts = [
-            Ghost((18, 18), self.maze.maze, "red"),
+            Ghost((self.maze.size[0] - 1, self.maze.size[1] - 1), self.maze.maze, "red"),
             Ghost((0, 0), self.maze.maze, "blue"),
-            Ghost((18, 0), self.maze.maze, "yellow"),
-            Ghost((0, 18), self.maze.maze, "pink"),
+            Ghost((self.maze.size[0] - 1, 0), self.maze.maze, "yellow"),
+            Ghost((0, self.maze.size[1] - 1), self.maze.maze, "pink"),
         ]
         self.buttons = {}
 
