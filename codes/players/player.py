@@ -34,7 +34,6 @@ class Player(Entity):
             gum = self.gums[self.pos]
             gum.eaten = True
             self.score += gum.score
-            print(self.score)
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:

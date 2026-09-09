@@ -12,7 +12,7 @@ from .entity import Entity
 
 
 class Ghost(Entity):
-    CAN_BE_EATEN: ClassVar = True
+    CAN_BE_EATEN: ClassVar = False
 
     def __init__(
         self, pos: tuple[int, int], maze: list[list[int]], name: str
