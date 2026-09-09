@@ -15,11 +15,14 @@ class Maze:
         self.rect: pygame.FRect = self.image.get_frect()
 
     def _reset(self) -> None:
-        self.image.fill((0, 0, 0))
+        self.image.fill((20, 20, 20, 140))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
-        surface = pygame.Surface(self.maze_size).convert_alpha()
+
+        surface = pygame.Surface(
+            self.maze_size, pygame.SRCALPHA, 32
+        ).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
