@@ -2,7 +2,7 @@ import os
 
 import pygame
 
-from codes.setting import CELL_SIZE
+from codes.setting import CELL_SIZE, GUM_PADDING
 
 
 class Pacgum:
@@ -17,7 +17,10 @@ class Pacgum:
         self.image = pygame.transform.scale(
                 pygame.image.load(
                     os.path.join("assets", "other", img)
-                    ), (32, 32)
+                    ), (
+                        CELL_SIZE - GUM_PADDING,
+                        CELL_SIZE - GUM_PADDING,
+                        )
                 )
         self.rect = self.image.get_frect(topleft=pos)
         self.super_gum: bool = False
@@ -27,8 +30,8 @@ class Pacgum:
         screen.blit(
                 self.image,
                 (
-                    self.pos[0] * CELL_SIZE + 2,
-                    self.pos[1] * CELL_SIZE + 2
+                    self.pos[0] * CELL_SIZE + GUM_PADDING,
+                    self.pos[1] * CELL_SIZE + GUM_PADDING
                 )
             )
 

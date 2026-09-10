@@ -1,10 +1,15 @@
 import random
-from typing import Any, ClassVar
+from time import perf_counter
+from typing import Any
 
 from codes.algorithm import Algorithm
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
-from codes.setting import TARGET_DIRECTION
+from codes.setting import (
+    GHOST_ESCAPE_TIME,
+    RADIUS_UPGRAD_PER_LEVEL,
+    TARGET_DIRECTION,
+)
 from codes.utilities import player_in_range
 from codes.utilities.utils import get_state
 
@@ -12,15 +17,18 @@ from .entity import Entity
 
 
 class Ghost(Entity):
-    CAN_BE_EATEN: ClassVar = False
-
     def __init__(
-        self, pos: tuple[int, int], maze: list[list[int]], name: str
+        self, pos: tuple[int, int],
+        maze: list[list[int]], name: str,
+        score: int
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
         self.speed = 2.0
+        self.can_be_eaten: bool = False
         self.algorithm = Algorithm()
+        self.start_timer: float = 0
+        self.score: int = score
         self._radius: int = 2 # cell to count just upgrade as level grow
         self._target_position = pos
 
@@ -35,6 +43,16 @@ class Ghost(Entity):
             )
         return result
 
+    def update(self, dt: float) -> None:
+        super().update(dt)
+        if self.can_be_eaten and self.start_timer == 0:
+            self.start_timer = perf_counter()
+        if self.can_be_eaten:
+            end = perf_counter()
+            if end - self.start_timer >= GHOST_ESCAPE_TIME:
+                self.can_be_eaten = False
+            print(end - self.start_timer)
+
     def _find_path(self, player: Any) -> str:
         # TODO: find why the ghost isn't moving
         # in the direction of the player even though
@@ -42,7 +60,7 @@ class Ghost(Entity):
         choices = ['down', 'left', 'right', 'up']
         next_dir = random.choice(choices)
         paths = self.algorithm.bfs(self.pos, player.pos, self.maze)
-        if self.CAN_BE_EATEN:
+        if self.can_be_eaten:
             if not paths:
                 return self.next_dir
             target_vec = get_state(paths[0], self.pos)
@@ -63,13 +81,20 @@ class Ghost(Entity):
           .
         # player -> Player class
         """
-        if player.pos == self.pos:
-            player._reset(True)
         if self._is_moving:
             return
+        if self.can_be_eaten and self.pos == player.pos:
+            player.score += self.score
+            self.can_be_eaten = False
+            self.start_timer = 0
+            self._reset()
+            return
+        if player.pos == self.pos:
+            player._reset(True)
         self.next_dir = self.OPPOSITE[self._find_path(player)]
 
-    @classmethod
-    def change_state(cls: Any) -> 'Ghost':
-        cls.CAN_BE_EATEN = not cls.CAN_BE_EATEN
-        return cls
+    def change_state(self) -> None:
+        self.can_be_eaten = not self.can_be_eaten
+
+    def level_update(self):
+        self._radius += RADIUS_UPGRAD_PER_LEVEL

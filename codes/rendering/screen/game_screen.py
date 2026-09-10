@@ -28,6 +28,10 @@ class GameScreen(Screen):
                 self.maze.maze,
                 self.game_model.pacgum_number + self.game_model.super_pacgum_number
                 )
+        taken_coord: list[tuple[int, int]] = [
+                (0, 0), (0, 18),
+                (18, 0), (18, 18)
+                ]
         self.gume_dict: dict[tuple[int, int], Pacgum] = {
                 gum.pos: gum for gum in [
                     Pacgum(
@@ -36,10 +40,10 @@ class GameScreen(Screen):
                         self.game_model.points_per_pacgum
                         )
                     for (i, j) in self.valid_gum_places
-                    if (i, j) not in ((0, 0), (0, 18), (18, 0), (18, 18))
+                    if (i, j) not in taken_coord
                     ]
                 }
-        for coord in [(0, 0), (18, 0), (0, 18), (18, 18)]:
+        for coord in taken_coord:
             self.gume_dict.update(
                     {
                         coord: SuperGum(
@@ -55,10 +59,10 @@ class GameScreen(Screen):
                 self.game_model.player_life
             )
         self.ghosts = [
-            Ghost((18, 18), self.maze.maze, "red"),
-            Ghost((0, 0), self.maze.maze, "blue"),
-            Ghost((18, 0), self.maze.maze, "yellow"),
-            Ghost((0, 18), self.maze.maze, "pink"),
+            Ghost((18, 18), self.maze.maze, "red", self.game_model.points_per_ghost),
+            Ghost((0, 0), self.maze.maze, "blue", self.game_model.points_per_ghost),
+            Ghost((18, 0),  self.maze.maze, "yellow", self.game_model.points_per_ghost),
+            Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
         ]
         self.buttons: dict[str, Any] = {}
 
@@ -74,7 +78,7 @@ class GameScreen(Screen):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys)
+        self.player.get_input(keys, self.ghosts)
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 

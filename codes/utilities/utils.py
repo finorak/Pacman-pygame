@@ -1,6 +1,5 @@
 import math
 import random
-import sys
 
 from codes.setting import EAST, NORTH, SOUTH, WEST
 
@@ -76,31 +75,21 @@ def player_in_range(
     return (x + y) <= r
 
 
-def test(lst: list[tuple[int, int]]) -> tuple[int, int]:
-    ...
-
 def get_valid_gums_coord(
         maze: list[list[int]],
         count: int,
 ) -> list[tuple[int, int]]:
     paths = [
             (i, j) for i in range(len(maze))
-            for j in range(len(maze[0])) if maze[i][j] != 15
+            for j in range(len(maze[0]))
             ]
     random.shuffle(paths)
-    def get_valid(
-        seen: set[tuple[int, int]],
-        gum_count: int
-    ) -> list[tuple[int, int]]:
-        nonlocal paths
-        if gum_count == 0:
-            return list(seen)
-        coord = random.choice(paths)
-        if coord in seen or maze[coord[0]][coord[1]] == 15:
-            paths.remove(coord)
-            seen.remove(coord)
-            return get_valid(seen, gum_count)
-        seen.add(coord)
-        paths.remove(coord)
-        return get_valid(seen, gum_count - 1)
-    return get_valid(set(), count)
+    valid_coord: list[tuple[int, int]] = []
+    while paths and count > 0:
+        coord = paths.pop()
+        if maze[coord[0]][coord[1]] == 15:
+            continue
+        random.shuffle(paths)
+        valid_coord.append(coord)
+        count -= 1
+    return valid_coord
