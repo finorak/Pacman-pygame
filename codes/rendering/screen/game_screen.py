@@ -28,34 +28,23 @@ class GameScreen(Screen):
                 self.maze.maze,
                 self.game_model.pacgum_number + self.game_model.super_pacgum_number
                 )
-        taken_coord: list[tuple[int, int]] = [
-                (0, 0), (0, 18),
-                (18, 0), (18, 18)
-                ]
         self.gume_dict: dict[tuple[int, int], Pacgum] = {
                 gum.pos: gum for gum in [
                     Pacgum(
-                        (i, j),
-                        "strawberry.png",
+                        (i, j), "strawberry.png",
                         self.game_model.points_per_pacgum
                         )
                     for (i, j) in self.valid_gum_places
-                    if (i, j) not in taken_coord
+                    if (i, j) not in [(0, 0), (0, 18), (18, 0), (18, 18)]
                     ]
                 }
-        for coord in taken_coord:
-            self.gume_dict.update(
-                    {
-                        coord: SuperGum(
+        for coord in [(0, 0), (0, 18), (18, 0), (18, 18)]:
+            self.gume_dict[coord] =  SuperGum(
                             coord, "apple.png",
                             self.game_model.points_per_super_pacgum
                             )
-                    }
-                )
         self.player = Player(
-                (9, 9),
-                self.maze.maze,
-                self.gume_dict,
+                (9, 9), self.maze.maze, self.gume_dict,
                 self.game_model.player_life
             )
         self.ghosts = [
@@ -78,7 +67,7 @@ class GameScreen(Screen):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys, self.ghosts)
+        self.player.get_input(keys, Ghost)
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 

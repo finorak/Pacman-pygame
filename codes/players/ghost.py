@@ -1,12 +1,13 @@
 import random
 from time import perf_counter
-from typing import Any
+from typing import Any, ClassVar
 
 from codes.algorithm import Algorithm
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 from codes.setting import (
     GHOST_ESCAPE_TIME,
+    GHOST_START_SETTING,
     RADIUS_UPGRAD_PER_LEVEL,
     TARGET_DIRECTION,
 )
@@ -17,6 +18,7 @@ from .entity import Entity
 
 
 class Ghost(Entity):
+    GHOSTS: ClassVar = []
     def __init__(
         self, pos: tuple[int, int],
         maze: list[list[int]], name: str,
@@ -24,6 +26,7 @@ class Ghost(Entity):
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
+        Ghost.GHOSTS.append(self)
         self.speed = 2.0
         self.can_be_eaten: bool = False
         self.algorithm = Algorithm()
@@ -59,7 +62,12 @@ class Ghost(Entity):
         # the algorithm seems right
         choices = ['down', 'left', 'right', 'up']
         next_dir = random.choice(choices)
-        paths = self.algorithm.bfs(self.pos, player.pos, self.maze)
+        paths = self.algorithm.bfs(
+                (
+                    self.pos[0] - self.DIR_VEC[self.current_dir][0],
+                    self.pos[1] - self.DIR_VEC[self.current_dir][1],
+                 ),
+                player.pos, self.maze)
         if self.can_be_eaten:
             if not paths:
                 return self.next_dir
@@ -67,7 +75,14 @@ class Ghost(Entity):
             state = TARGET_DIRECTION[target_vec]
             choices.remove(state)
             return random.choice(choices)
-        if player_in_range(self.pos, player.pos, self._radius):
+        if (
+                player_in_range(
+                    (
+                        self.pos[0] - self.DIR_VEC[self.current_dir][0],
+                        self.pos[1] - self.DIR_VEC[self.current_dir][1]
+                    ),
+                    player.pos, self._radius)
+        ):
             if not paths:
                 return self.next_dir
             target_vec = get_state(paths[0], self.pos)
@@ -98,3 +113,8 @@ class Ghost(Entity):
 
     def level_update(self):
         self._radius += RADIUS_UPGRAD_PER_LEVEL
+
+    @classmethod
+    def update_ghost_state(cls: Any, value: bool = False) -> None:
+        for ghost in Ghost.GHOSTS:
+            ghost.can_be_eaten = value
