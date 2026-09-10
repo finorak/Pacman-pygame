@@ -30,7 +30,7 @@ class GameScreen(Screen):
                 )
         self.gume_dict: dict[tuple[int, int], Pacgum] = {
                 gum.pos: gum for gum in [
-                    Pacgum(
+                    SuperGum(
                         (i, j), "strawberry.png",
                         self.game_model.points_per_pacgum
                         )

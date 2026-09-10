@@ -43,7 +43,6 @@ class Player(Entity):
             self.score += gum.score
             if gum.super_gum:
                 g.update_ghost_state(True)
-                g.update_state(True)
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
