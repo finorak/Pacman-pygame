@@ -31,15 +31,14 @@ class Player(Entity):
             )
         return result
 
-    def get_input(self, key: ScancodeWrapper, ghosts: list[Any]) -> None:
+    def get_input(self, key: ScancodeWrapper, g: Any) -> None:
         # g: is the Ghost class itself
         if self.pos in self.gums and not self.gums[self.pos].eaten: 
             gum = self.gums[self.pos]
             gum.eaten = True
             self.score += gum.score
             if gum.super_gum:
-                for ghost in ghosts:
-                    ghost.change_state()
+                g.update_state(True)
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:

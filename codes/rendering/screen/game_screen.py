@@ -78,7 +78,7 @@ class GameScreen(Screen):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys, self.ghosts)
+        self.player.get_input(keys, Ghost)
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 
