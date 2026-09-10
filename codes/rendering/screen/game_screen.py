@@ -2,6 +2,10 @@ import pygame
 
 from codes.parsing.parse import GameModel
 from codes.players import Ghost
+from codes.rendering.component import (
+    AnimatedSprite,
+    Button,
+)
 
 from .data import Data
 
@@ -45,3 +49,24 @@ class GameScreen(Data):
             ghost.render(self.maze.image)
         for a in self.buttons.values():
             a.draw(screen)
+
+    def load_buttons(self) -> None:
+        buttons = {
+            "exit": ((self.screen_size[0] - 60, 5), "pause"),
+        }
+        for button, (pos, result) in buttons.items():
+            tmp = {}
+            tmp["normal"] = AnimatedSprite(
+                pos,
+                [self.loader.import_image("assets", "l_buttons", button, "1")],
+            )
+            tmp["hover"] = AnimatedSprite(
+                pos,
+                [self.loader.import_image("assets", "l_buttons", button, "2")],
+            )
+            tmp["pressed"] = AnimatedSprite(
+                pos,
+                self.loader.import_folder("assets", "l_buttons", button),
+            )
+            a = Button(pos, tmp, result)
+            self.buttons[button] = a

@@ -3,10 +3,6 @@ from typing import Any
 from codes.pacgums import Pacgum, SuperGum
 from codes.parsing.parse import GameModel
 from codes.players import Ghost, Player
-from codes.rendering.component import (
-    AnimatedSprite,
-    Button,
-)
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen
 from codes.utilities import get_valid_gums_coord
@@ -50,24 +46,3 @@ class Data(Screen):
             Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
         ]
         self.buttons: dict[str, Any] = {}
-
-    def load_buttons(self) -> None:
-        buttons = {
-            "exit": ((self.screen_size[0] - 60, 5), "pause"),
-        }
-        for button, (pos, result) in buttons.items():
-            tmp = {}
-            tmp["normal"] = AnimatedSprite(
-                pos,
-                [self.loader.import_image("assets", "l_buttons", button, "1")],
-            )
-            tmp["hover"] = AnimatedSprite(
-                pos,
-                [self.loader.import_image("assets", "l_buttons", button, "2")],
-            )
-            tmp["pressed"] = AnimatedSprite(
-                pos,
-                self.loader.import_folder("assets", "l_buttons", button),
-            )
-            a = Button(pos, tmp, result)
-            self.buttons[button] = a
