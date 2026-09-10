@@ -9,7 +9,7 @@ EAST: int = 0b0010
 CELL_SIZE: int = 34
 GUM_PADDING: int = 2
 
-GHOST_ESCAPE_TIME: int = 5 # second
+GHOST_ESCAPE_TIME: int = 30 # second
 RADIUS_UPGRAD_PER_LEVEL: int = 5
 
 TARGET_DIRECTION: dict[tuple[int, int], str] = {

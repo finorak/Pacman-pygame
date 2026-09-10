@@ -89,7 +89,6 @@ def get_valid_gums_coord(
         coord = paths.pop()
         if maze[coord[0]][coord[1]] == 15:
             continue
-        random.shuffle(paths)
         valid_coord.append(coord)
         count -= 1
     return valid_coord

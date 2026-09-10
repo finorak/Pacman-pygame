@@ -7,7 +7,6 @@ from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 from codes.setting import (
     GHOST_ESCAPE_TIME,
-    GHOST_START_SETTING,
     RADIUS_UPGRAD_PER_LEVEL,
     TARGET_DIRECTION,
 )
@@ -47,14 +46,15 @@ class Ghost(Entity):
         return result
 
     def update(self, dt: float) -> None:
-        super().update(dt)
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
         if self.can_be_eaten:
             end = perf_counter()
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
-            print(end - self.start_timer)
+                self.start_timer = 0
+                print(end - self.start_timer)
+        super().update(dt)
 
     def _find_path(self, player: Any) -> str:
         # TODO: find why the ghost isn't moving
@@ -98,18 +98,16 @@ class Ghost(Entity):
         """
         if self._is_moving:
             return
-        if self.can_be_eaten and self.pos == player.pos:
-            player.score += self.score
-            self.can_be_eaten = False
-            self.start_timer = 0
-            self._reset()
-            return
-        if player.pos == self.pos:
-            player._reset(True)
+        if self.pos == player.pos:
+            if self.can_be_eaten:
+                player.score += self.score
+                self.can_be_eaten = False
+                self.start_timer = 0
+                self._reset()
+            else:
+                Ghost.update_ghost_state(False)
+                player._reset(True)
         self.next_dir = self.OPPOSITE[self._find_path(player)]
-
-    def change_state(self) -> None:
-        self.can_be_eaten = not self.can_be_eaten
 
     def level_update(self):
         self._radius += RADIUS_UPGRAD_PER_LEVEL

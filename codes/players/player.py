@@ -42,7 +42,11 @@ class Player(Entity):
             gum.eaten = True
             self.score += gum.score
             if gum.super_gum:
+<<<<<<< HEAD
                 g.update_ghost_state(True)
+=======
+                g.update_state(True)
+>>>>>>> 30ef77458c5a9f06412231861b68709e8e2db75a
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
