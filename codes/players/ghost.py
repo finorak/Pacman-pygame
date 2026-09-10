@@ -108,8 +108,10 @@ class Ghost(Entity):
                 player._reset(True)
         self.next_dir = self.OPPOSITE[self._find_path(player)]
 
-    def level_update(self):
-        self._radius += RADIUS_UPGRAD_PER_LEVEL
+    @classmethod
+    def level_update(cls: Any) -> None:
+        for ghost in Ghost.GHOSTS_STORE:
+            ghost._radius += RADIUS_UPGRAD_PER_LEVEL
 
     @classmethod
     def update_ghost_state(cls: Any, value: bool = False) -> None:

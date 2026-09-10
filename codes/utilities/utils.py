@@ -7,8 +7,10 @@ from codes.setting import EAST, NORTH, SOUTH, WEST
 def in_bound(x: int, y: int, maze: list[list[int]]) -> bool:
     return 0 <= x < len(maze) and 0 <= y < len(maze[0])
 
+
 def valid_neighboor(value: int, wall: int) -> bool:
     return value != 15 and value & wall == 0
+
 
 def cell_is_valid(
         current_pos: tuple[int, int],
@@ -17,13 +19,14 @@ def cell_is_valid(
 ) -> bool:
     old_x, old_y = current_pos
     new_x, new_y = new_pos
-    if not in_bound(old_x, old_y, maze):
-        return False
-    if not in_bound(new_x, new_y, maze):
-        return False
-    if maze[new_x][new_y] == 15:
+    if (
+            not in_bound(old_x, old_y, maze)
+            or not in_bound(new_x, new_y, maze)
+            or maze[new_x][new_y] == 15
+    ):
         return False
     return maze[old_x][old_y] & maze[new_x][new_y] != 0
+
 
 def get_state(
         target_pos: tuple[int, int],
@@ -48,6 +51,7 @@ def get_state(
         return (1, 0)
     return (-1, 0)
 
+
 def find_cell_neighboors(
     maze: list[list[int]],
     current_cell: tuple[int, int],
@@ -63,6 +67,7 @@ def find_cell_neighboors(
     if in_bound(x, y + 1, maze) and valid_neighboor(maze[x][y + 1], SOUTH):
         neighboors.append((x, y + 1))
     return neighboors
+
 
 def player_in_range(
         current_pos: tuple[int, int],
@@ -83,6 +88,7 @@ def wall_closed(value: int, maze: list[list[int]]) -> bool:
             and valid_neighboor(value, NORTH) and valid_neighboor(value, SOUTH)
             )
 
+
 def get_valid_gums_coord(
         maze: list[list[int]],
         count: int,
@@ -95,7 +101,7 @@ def get_valid_gums_coord(
     random.shuffle(paths)
     valid_coord: list[tuple[int, int]] = []
     for path in paths[:]:
-        if count <= 0:
+        if count <= 0 or not paths:
             break
         paths.remove(path)
         valid_coord.append(path)

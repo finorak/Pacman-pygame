@@ -1,7 +1,7 @@
 import pygame
 from mazegenerator import MazeGenerator
 
-from codes.setting import CELL_SIZE
+from codes.setting import CELL_PADDING, CELL_SIZE
 
 
 class Maze:
@@ -28,8 +28,8 @@ class Maze:
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
         return (
-            len(maze[0]) * self.cell_size + 3,
-            len(maze) * self.cell_size + 3,
+            len(maze[0]) * self.cell_size + CELL_PADDING,
+            len(maze) * self.cell_size + CELL_PADDING,
         )
 
     def _draw_cell(
