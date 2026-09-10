@@ -168,8 +168,8 @@ class Entity(ABC):
         self.render_x = self.init_render_x
         self.render_y = self.init_render_y
 
-        self.current_dir = self.init_current_dir = "up"
-        self.next_dir = self.init_current_dir = "up"
+        self.current_dir = self.init_current_dir
+        self.next_dir = self.init_current_dir
 
         self._move_buffer = 0.0
         self._is_moving = False

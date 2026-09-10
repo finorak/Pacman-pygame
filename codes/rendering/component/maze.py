@@ -1,12 +1,12 @@
 import pygame
 from mazegenerator import MazeGenerator
 
-from codes.setting import CELL_SIZE
+from codes.setting import CELL_PADDING, CELL_SIZE
 
 
 class Maze:
-    def __init__(self, size: tuple[int, int]) -> None:
-        self.maze_gen = MazeGenerator(size)
+    def __init__(self, size: tuple[int, int], seed: int = 42) -> None:
+        self.maze_gen = MazeGenerator(size, seed=seed)
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
         self.maze_size = self._get_maze_size(self.maze)
@@ -28,8 +28,8 @@ class Maze:
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
         return (
-            len(maze[0]) * self.cell_size + 3,
-            len(maze) * self.cell_size + 3,
+            len(maze[0]) * self.cell_size + CELL_PADDING,
+            len(maze) * self.cell_size + CELL_PADDING,
         )
 
     def _draw_cell(

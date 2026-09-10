@@ -37,11 +37,10 @@ class GameModel(BaseModel):
         except Exception as e:
             raise ConfigError(e)
         self._create_attribute(data)
-        if self.width <= 0 or self.height <= 0:
-            raise ConfigError("Screen is too small.")
         if (
             self.pacgum_number <= 0
             or self.points_per_pacgum <= 0
+            or self.points_per_super_pacgum <= 0
             or self.points_per_ghost <= 0
             or self.player_life <= 0
             or self.seed <= 0
@@ -50,24 +49,23 @@ class GameModel(BaseModel):
         return self
 
     def _create_attribute(self, data: Any) -> None:
-        screen_setting = data.get("screen")
         game_setting = data.get("game_settng")
         self.levels = data.get("levels")
-        if not screen_setting or not game_setting or self.levels is None:
-            raise ConfigError("Mandatory key missing.")
         self._instance_checker(self.levels, list)
-        self.width = screen_setting.get("width")
-        self.height = screen_setting.get("height")
-        self._instance_checker(self.width, int)
-        self._instance_checker(self.height, int)
         pacgum_and_score = game_setting.get("pacgum_and_score")
         if pacgum_and_score is None:
             raise ConfigError(
                 "Pacgum and setting key missing or is equal to 0."
             )
-        self.pacgum_number: int = pacgum_and_score.get("number")
+        self.pacgum_number: int = pacgum_and_score.get("pacgum_number")
+        self._instance_checker(self.pacgum_number, int)
+        self.super_pacgum_number: int = pacgum_and_score.get(
+                "super_pacgum_number")
         self._instance_checker(self.pacgum_number, int)
         self.points_per_pacgum: int = pacgum_and_score.get("points_per_pacgum")
+        self._instance_checker(self.points_per_pacgum, int)
+        self.points_per_super_pacgum: int = pacgum_and_score.get(
+                "points_per_super_pacgum")
         self._instance_checker(self.points_per_pacgum, int)
         self.points_per_ghost: int = pacgum_and_score.get("points_per_ghost")
         self._instance_checker(self.points_per_ghost, int)

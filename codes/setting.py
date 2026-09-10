@@ -5,27 +5,14 @@ SOUTH: int = 0b0100
 WEST: int = 0b1000
 EAST: int = 0b0010
 
-DIRECTION_SETTING: dict[str, dict[str, int]] = {
-    "left": {
-        "x": -1,
-        "y": 0,
-    },
-    "right": {
-        "x": 1,
-        "y": 0,
-    },
-    "up": {
-        "x": 0,
-        "y": -1,
-    },
-    "down": {
-        "x": 0,
-        "y": 1,
-    },
-}
-
 # SUPPOSED CELL SIZE
 CELL_SIZE: int = 34
+GUM_PADDING: int = 2
+CELL_PADDING: int = 3
+
+GHOST_ESCAPE_TIME: int = 30  # second
+RADIUS_UPGRAD_PER_LEVEL: int = 5
+SUPER_GUM_COUNT: int = 4
 
 TARGET_DIRECTION: dict[tuple[int, int], str] = {
     (-1, 0): "left",
@@ -33,3 +20,10 @@ TARGET_DIRECTION: dict[tuple[int, int], str] = {
     (0, 1): "down",
     (0, -1): "up",
 }
+
+GHOST_START_SETTING: dict[tuple[int, int], str] = {
+        (18, 18): "red",
+        (0, 0): "blue",
+        (18, 0): "yello",
+        (0, 18): "pink"
+        }
