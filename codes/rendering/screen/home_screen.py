@@ -4,10 +4,10 @@ from codes.parsing.parse import GameModel
 from codes.rendering.component.sprite import Sprite
 
 from ..component import AnimatedSprite, Button
-from .base_screen import Screen
+from .data import Data
 
 
-class HomeScreen(Screen):
+class HomeScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
         self.assets: dict[str, AnimatedSprite] = {}

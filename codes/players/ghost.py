@@ -10,14 +10,13 @@ from codes.setting import (
     RADIUS_UPGRAD_PER_LEVEL,
     TARGET_DIRECTION,
 )
-from codes.utilities import player_in_range
-from codes.utilities.utils import get_state
+from codes.utilities import get_state, player_in_range
 
 from .entity import Entity
 
 
 class Ghost(Entity):
-    GHOSTS: ClassVar = []
+    GHOSTS_STORE: ClassVar = []
     def __init__(
         self, pos: tuple[int, int],
         maze: list[list[int]], name: str,
@@ -25,7 +24,6 @@ class Ghost(Entity):
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
-        Ghost.GHOSTS.append(self)
         self.speed = 2.0
         self.can_be_eaten: bool = False
         self.algorithm = Algorithm()
@@ -33,6 +31,7 @@ class Ghost(Entity):
         self.score: int = score
         self._radius: int = 2 # cell to count just upgrade as level grow
         self._target_position = pos
+        Ghost.GHOSTS_STORE.append(self)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
         result: dict[str, AnimatedSprite] = {}
@@ -46,14 +45,15 @@ class Ghost(Entity):
         return result
 
     def update(self, dt: float) -> None:
+        # initialize timer
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
+        # update timer
         if self.can_be_eaten:
             end = perf_counter()
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
                 self.start_timer = 0
-                print(end - self.start_timer)
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:
@@ -93,7 +93,6 @@ class Ghost(Entity):
     def get_input(self, player: Any) -> None:
         """This one will be used to change the target
         of the ghost.
-          .
         # player -> Player class
         """
         if self._is_moving:
@@ -114,5 +113,7 @@ class Ghost(Entity):
 
     @classmethod
     def update_ghost_state(cls: Any, value: bool = False) -> None:
-        for ghost in Ghost.GHOSTS:
+        for ghost in Ghost.GHOSTS_STORE:
+            if not value:
+                ghost.start_timer = 0
             ghost.can_be_eaten = value

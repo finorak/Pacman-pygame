@@ -4,10 +4,10 @@ from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 
 from ..component import AnimatedSprite
-from .base_screen import Screen
+from .data import Data
 
 
-class HighScoreScreen(Screen):
+class HighScoreScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
 

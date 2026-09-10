@@ -2,10 +2,10 @@ import pygame
 
 from codes.parsing.parse import GameModel
 
-from . import Screen
+from .data import Data
 
 
-class PauseScreen(Screen):
+class PauseScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
 
