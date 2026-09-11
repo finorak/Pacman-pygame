@@ -119,7 +119,6 @@ def load_data(config_file: str) -> GameModel:
     try:
         with open(config_file, mode="r", encoding="utf-8") as f:
             raw_data = f.readlines()
-        print(raw_data)
     except Exception as e:
         print(e, file=sys.stderr)
         sys.exit(1)
