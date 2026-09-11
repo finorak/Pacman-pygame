@@ -95,9 +95,7 @@ class Ghost(Entity):
         of the ghost.
         # player -> Player class
         """
-        if self._is_moving:
-            return
-        if self.pos == player.pos:
+        if self.collides_with(player):
             if self.can_be_eaten:
                 player.score += self.score
                 self.can_be_eaten = False
@@ -106,6 +104,8 @@ class Ghost(Entity):
             else:
                 Ghost.update_ghost_state(False)
                 player._reset(True)
+        if self._is_moving:
+            return
         self.next_dir = self.OPPOSITE[self._find_path(player)]
 
     @classmethod
