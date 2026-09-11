@@ -56,7 +56,7 @@ class HighScoreScreen(Data):
         return AnimatedSprite((100, 40), [self.loader.import_image(*path)])
 
     def draw_leaderboard(self) -> pygame.Surface:
-        surface = pygame.Surface(self.screen_size).convert_alpha()
+        surface = pygame.Surface(self.screen_size, pygame.SRCALPHA, 32).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for i, score in enumerate(self.highscore, 1):
             text = self.fonts.render(
