@@ -1,20 +1,25 @@
-[
-	{
-		"game_settng": {
-			"pacgum_and_score": {
-				"pacgum_number": 44,
-				"points_per_pacgum": 10,
-				"points_per_super_pacgum": 50,
-				"points_per_ghost": 200
-			},
-			"level_max_time": 90,
-			"player": {
-				"life": 3
-			},
-			"seed": 42
-		},
-		"levels": [
+{
+	"pacgum_number": 1,
+	"points_per_pacgum": 10,
+	"points_per_super_pacgum": 50,
+	"points_per_ghost": 200,
+	"level_max_time": 90,
+	"life": 3,
+	"seed": 42,
+	"levels": [
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[],
 			[]
 		]
-	}
-]
+}

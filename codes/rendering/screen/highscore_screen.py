@@ -1,16 +1,14 @@
 import random
 from pathlib import Path
 
+import pygame
+
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 
+from ...highscore import HighScoreLoader, HighScoreModel
 from ..component import AnimatedSprite
 from .data import Data
-import pygame
-
-from ...highscore import HighScoreLoader, HighScoreModel
-from ..component import AnimatedSprite, Button
-from .base_screen import Screen
 
 
 class HighScoreScreen(Data):
