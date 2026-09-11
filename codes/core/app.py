@@ -1,3 +1,5 @@
+import json
+
 import pygame
 
 from codes.parsing import GameModel
@@ -19,7 +21,9 @@ class Rendering:
             config_file: str
     ) -> None:
         pygame.init()
-        self.game_model = GameModel(config_path=config_file)
+        with open(config_file, mode="r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.game_model = GameModel(**data)
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Pac-Man")
         self.screen_size = screen_size
