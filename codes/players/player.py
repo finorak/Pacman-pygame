@@ -1,5 +1,3 @@
-from typing import Any
-
 import pygame
 from pygame.key import ScancodeWrapper
 
@@ -33,8 +31,7 @@ class Player(Entity):
             )
         return result
 
-    def get_input(self, key: ScancodeWrapper, g: Any) -> None:
-        # g: is the Ghost class itself
+    def get_input(self, key: ScancodeWrapper) -> None:
         curr_pos = (
                 round(self.render_x),
                 round(self.render_y),

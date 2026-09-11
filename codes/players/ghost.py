@@ -66,11 +66,8 @@ class Ghost(Entity):
         choices = ['down', 'left', 'right', 'up']
         next_dir = random.choice(choices)
         paths = self.algorithm.bfs(
-                (
-                    self.pos[0] - self.DIR_VEC[self.current_dir][0],
-                    self.pos[1] - self.DIR_VEC[self.current_dir][1],
-                 ),
-                player.pos, self.maze)
+                self.pos, player.pos, self.maze
+                )
         if self.can_be_eaten:
             if not paths:
                 return self.next_dir
@@ -80,11 +77,8 @@ class Ghost(Entity):
             return random.choice(choices)
         if (
                 player_in_range(
-                    (
-                        self.pos[0] - self.DIR_VEC[self.current_dir][0],
-                        self.pos[1] - self.DIR_VEC[self.current_dir][1]
-                    ),
-                    player.pos, self._radius)
+                    self.pos, player.pos, self._radius
+                    )
         ):
             if not paths:
                 return self.next_dir

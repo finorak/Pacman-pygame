@@ -1,8 +1,5 @@
-import json
-
 import pygame
 
-from codes.parsing import GameModel
 from codes.rendering.component import Sprite
 from codes.rendering.screen import (
     GameScreen,
@@ -12,6 +9,8 @@ from codes.rendering.screen import (
     Screen,
 )
 from codes.rendering.utils.sprite_loader import SpriteLoader
+from codes.setting import BACKGROUND_SPEED, FPS
+from codes.utilities import load_data
 
 
 class Rendering:
@@ -21,15 +20,12 @@ class Rendering:
             config_file: str
     ) -> None:
         pygame.init()
-        with open(config_file, mode="r", encoding="utf-8") as f:
-            data = json.load(f)
-        self.game_model = GameModel(**data)
+        self.game_model = load_data(config_file)
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Pac-Man")
         self.screen_size = screen_size
 
         self.clock = pygame.time.Clock()
-        self.fps = 60
 
         self.screens: dict[str, Screen] = {
             "Home": HomeScreen(self.game_model),
@@ -45,7 +41,7 @@ class Rendering:
 
     def run(self) -> None:
         while self.running:
-            dt = self.clock.tick(self.fps) / 1000
+            dt = self.clock.tick(FPS) / 1000
             self.get_event()
             self.update(dt)
             self.render()
@@ -59,7 +55,7 @@ class Rendering:
             self.current_screen = self.screens[flags]
 
     def update(self, dt: float) -> None:
-        self.background.rect.left -= 20 * dt
+        self.background.rect.left -= BACKGROUND_SPEED * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:
