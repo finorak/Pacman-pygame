@@ -1,11 +1,10 @@
 from typing import Any
 
-from codes.pacgums import Pacgum, SuperGum
+from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.players import Ghost, Player
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen
-from codes.utilities import get_valid_gums_coord
 
 
 class Data(Screen):
@@ -16,27 +15,10 @@ class Data(Screen):
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
-        self.valid_gum_places = get_valid_gums_coord(
-                self.maze.maze,
-                self.game_model.pacgum_number
-                )
-        self.gume_dict: dict[tuple[int, int], Pacgum] = {
-                gum.pos: gum for gum in [
-                    Pacgum(
-                        (i, j), "strawberry.png",
-                        self.game_model.points_per_pacgum
-                        )
-                    for (i, j) in self.valid_gum_places
-                    if (i, j) not in [(0, 0), (0, 18), (18, 0), (18, 18)]
-                    ]
-                }
-        for coord in [(0, 0), (0, 18), (18, 0), (18, 18)]:
-            self.gume_dict[coord] =  SuperGum(
-                            coord, "apple.png",
-                            self.game_model.points_per_super_pacgum
-                            )
+        self.pacgums = Pacgums(self.maze.maze, self.game_model.points_per_pacgum, self.game_model.points_per_super_pacgum)
+        self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
-                (9, 9), self.maze.maze, self.gume_dict,
+                (9, 9), self.maze.maze, self.pacgums,
                 self.game_model.player_life
             )
         self.ghosts = [
