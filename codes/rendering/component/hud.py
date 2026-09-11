@@ -15,25 +15,39 @@ from ...setting import SCREEN_SIZE
 class HUD:
     def __init__(self) -> None:
         self.load_assets()
-        self.font = pygame.Font()
+        self.font = pygame.Font("assets/fonts/BoldsPixels.ttf", size=32)
+
         self.score: int = 0
         self.remaining_time: float = 0.0
         self.current_level = 0
         self.lives = 0
 
-        self.surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA, 32).convert_alpha()
-        self.running = False
+        self.surface = pygame.Surface(
+            SCREEN_SIZE, pygame.SRCALPHA, 32
+        ).convert_alpha()
+        self.running = True
 
     def render(self, screen: pygame.Surface) -> None:
+        self.surface.fill((0, 0, 0, 0))
         self.surface.blit(self.background, (25, 25))
+        hp_text = self.font.render(f"Lives: {self.lives:02}", True, "WHITE")
+        self.surface.blit(hp_text, (80, 75))
+        current_score = self.font.render(f"Score: {self.score:02}", True, "WHITE")
+        self.surface.blit(current_score, (80, 115))
+        current_level = self.font.render(
+            f"Level: {self.current_level:02}", True, "WHITE"
+        )
+        self.surface.blit(current_level, (80, 155))
+        remaining_time = self.font.render(
+            f"Time Remaining:\n{self.remaining_time:02.1f}", True, "WHITE"
+        )
+        self.surface.blit(remaining_time, (80, 195))
         screen.blit(self.surface)
 
     def update(self, dt: float) -> None:
         if not self.running:
             return
         self.remaining_time += dt
-
-    def update_surface(self) -> None: ...
 
     def add_score(self, value: int) -> None:
         self.score += value

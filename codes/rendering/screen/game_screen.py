@@ -12,12 +12,12 @@ class GameScreen(Screen):
         super().__init__()
         self.hud = HUD()
         self.buttons = {}
-        self.maze = Maze((10, 10))
+        self.maze = Maze((30, 10))
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
-        self.player = Player((len(self.maze.maze) // 2, len(self.maze.maze[0]) // 2), self.maze.maze)
+        self.player = Player((len(self.maze.maze[0]) // 2, len(self.maze.maze) // 2), self.maze.maze)
         self.ghosts = [
             Ghost((self.maze.size[0] - 1, self.maze.size[1] - 1), self.maze.maze, "red"),
             Ghost((0, 0), self.maze.maze, "blue"),
@@ -43,6 +43,7 @@ class GameScreen(Screen):
             ghost.get_input(self.player)
 
     def update(self, dt: float) -> None:
+        self.hud.update(dt)
         self.player.update(dt)
         for ghost in self.ghosts:
             ghost.update(dt)
