@@ -79,5 +79,8 @@ class Pacgums:
             return self.super_pacgum_score
         return 0
 
+    def no_gums(self) -> bool:
+        return not self.pacgums 
+
     def is_empty(self) -> bool:
         return not self.pacgums and not self.super_pacgums

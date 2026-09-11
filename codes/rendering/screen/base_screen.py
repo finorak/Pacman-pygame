@@ -30,3 +30,7 @@ class Screen(ABC):
         if horizontal:
             return int((SCREEN_SIZE[0] - lengh) // 2)
         return int((SCREEN_SIZE[1] - lengh) // 2)
+
+    def __str__(self) -> str:
+        name: str = self.__class__.__name__
+        return name.removesuffix("Screen")
