@@ -19,7 +19,7 @@ class Data(Screen):
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
                 (9, 9), self.maze.maze, self.pacgums,
-                self.game_model.player_life
+                self.game_model.life
             )
         self.ghosts = [
             Ghost((18, 18), self.maze.maze, "red", self.game_model.points_per_ghost),
