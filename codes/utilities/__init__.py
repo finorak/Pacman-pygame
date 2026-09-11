@@ -3,6 +3,7 @@ from .utils import (
     find_cell_neighboors,
     get_state,
     get_valid_gums_coord,
+    load_data,
     player_in_range,
 )
 
@@ -11,5 +12,6 @@ __all__ = [
     "find_cell_neighboors",
     "get_state",
     "get_valid_gums_coord",
+    "load_data",
     "player_in_range",
 ]

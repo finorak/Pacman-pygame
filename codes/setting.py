@@ -1,4 +1,5 @@
-SCREEN_SIZE = 1280, 720
+SCREEN_SIZE: tuple[int, int] = 1280, 720
+CURRENT_SCREEN_PADDING: tuple[int, int] = 60, 5
 
 NORTH: int = 0b0001
 SOUTH: int = 0b0100
@@ -9,10 +10,14 @@ EAST: int = 0b0010
 CELL_SIZE: int = 34
 GUM_PADDING: int = 2
 CELL_PADDING: int = 3
+PLAYER_PADDING: int = 2
 
 GHOST_ESCAPE_TIME: int = 30  # second
 RADIUS_UPGRAD_PER_LEVEL: int = 5
 SUPER_GUM_COUNT: int = 4
+
+BACKGROUND_SPEED: int = 20
+FPS: int = 60
 
 TARGET_DIRECTION: dict[tuple[int, int], str] = {
     (-1, 0): "left",

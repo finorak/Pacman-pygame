@@ -1,6 +1,11 @@
+import json
 import math
 import random
+import sys
 
+from pydantic import ValidationError
+
+from codes.parsing.parse import GameModel
 from codes.setting import EAST, NORTH, SOUTH, WEST
 
 
@@ -107,3 +112,25 @@ def get_valid_gums_coord(
         valid_coord.append(path)
         count -= 1
     return valid_coord
+
+
+def load_data(config_file: str) -> GameModel:
+    lines: list[str] = []
+    try:
+        with open(config_file, mode="r", encoding="utf-8") as f:
+            raw_data = f.readlines()
+    except Exception as e:
+        print(e, file=sys.stderr)
+        sys.exit(1)
+    for line in raw_data:
+        curr_line = line.strip()
+        if not curr_line or curr_line.startswith("#"):
+            continue
+        lines.append(curr_line)
+    data = json.loads("".join(lines))
+    try:
+        return GameModel(**data)
+    except ValidationError as e:
+        msg = e.errors()[0]['msg']
+        print(msg, file=sys.stderr)
+        sys.exit(1)

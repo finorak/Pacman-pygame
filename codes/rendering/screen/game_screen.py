@@ -1,11 +1,11 @@
 import pygame
 
 from codes.parsing.parse import GameModel
-from codes.players import Ghost
 from codes.rendering.component import (
     AnimatedSprite,
     Button,
 )
+from codes.setting import CURRENT_SCREEN_PADDING
 
 from .data import Data
 
@@ -26,7 +26,7 @@ class GameScreen(Data):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys, Ghost)
+        self.player.get_input(keys)
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 
@@ -38,9 +38,9 @@ class GameScreen(Data):
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
-        self.player.render(self.maze.image)
-        self.pacgums.render(self.maze.image)
         self.maze.render(screen)
+        self.pacgums.render(self.maze.image)
+        self.player.render(self.maze.image)
         for ghost in self.ghosts:
             ghost.render(self.maze.image)
         for a in self.buttons.values():
@@ -48,7 +48,7 @@ class GameScreen(Data):
 
     def load_buttons(self) -> None:
         buttons = {
-            "exit": ((self.screen_size[0] - 60, 5), "pause"),
+            "exit": ((self.screen_size[0] - CURRENT_SCREEN_PADDING[0], CURRENT_SCREEN_PADDING[1]), "pause"),
         }
         for button, (pos, result) in buttons.items():
             tmp = {}
