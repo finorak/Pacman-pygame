@@ -114,6 +114,16 @@ class Entity(ABC):
         self._move_start = (self.grid_x - dx, self.grid_y - dy)
         self._move_target = (self.grid_x, self.grid_y)
 
+    def collides_with(self, other: "Entity") -> bool:
+        dx = self.render_x - other.render_x
+        dy = self.render_y - other.render_y
+
+        distance_squared = dx * dx + dy * dy
+
+        radius = 0.4
+
+        return distance_squared < radius * radius
+
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
 

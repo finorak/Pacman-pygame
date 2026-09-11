@@ -3,7 +3,8 @@ from typing import Any
 import pygame
 from pygame.key import ScancodeWrapper
 
-from codes.pacgums import Pacgum
+from codes.pacgums.pacgums import Pacgums
+from codes.players.ghost import Ghost
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 
@@ -14,10 +15,11 @@ class Player(Entity):
     def __init__(
             self, pos: tuple[int, int],
             maze: list[list[int]],
-            gums: dict[tuple[int, int], Pacgum],
+            gums: Pacgums,
             life: int = 3
     ) -> None:
         super().__init__(pos, maze, life)
+        self.pacgums = gums
         self.can_eat_ghost: bool = False
         self.score: int = 0
         self.gums = gums
@@ -34,15 +36,12 @@ class Player(Entity):
     def get_input(self, key: ScancodeWrapper, g: Any) -> None:
         # g: is the Ghost class itself
         curr_pos = (
-                self.pos[0] - self.DIR_VEC[self.current_dir][0],
-                self.pos[1] - self.DIR_VEC[self.current_dir][1]
+                round(self.render_x),
+                round(self.render_y),
                 )
-        if curr_pos in self.gums and not self.gums[curr_pos].eaten: 
-            gum = self.gums[curr_pos]
-            gum.eaten = True
-            self.score += gum.score
-            if gum.super_gum:
-                g.update_ghost_state(True)
+        point = self.pacgums.eat(curr_pos)
+        if point == self.pacgums.super_pacgum_score:
+            Ghost.update_ghost_state(True)
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
