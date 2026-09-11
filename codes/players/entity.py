@@ -4,7 +4,7 @@ from typing import Any, ClassVar
 import pygame
 
 from codes.rendering.component import AnimatedSprite
-from codes.setting import CELL_SIZE
+from codes.setting import CELL_SIZE, PLAYER_PADDING
 
 
 class Entity(ABC):
@@ -48,7 +48,7 @@ class Entity(ABC):
 
         self.current_dir = self.init_current_dir = "up"
         self.last_dir: str = self.current_dir
-        self.next_dir = self.init_current_dir = "up"
+        self.next_dir = "up"
 
         self.speed = 3.0
         self._move_buffer = 0.0
@@ -167,7 +167,10 @@ class Entity(ABC):
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(
             self.current_sprite.image,
-            (self.render_x * CELL_SIZE + 2, self.render_y * CELL_SIZE + 2),
+            (
+                self.render_x * CELL_SIZE + PLAYER_PADDING,
+                self.render_y * CELL_SIZE + PLAYER_PADDING
+            ),
         )
 
     def _reset(self, kill: bool = False):
@@ -179,16 +182,10 @@ class Entity(ABC):
         self.render_y = self.init_render_y
 
         self.current_dir = self.init_current_dir
-        self.next_dir = self.init_current_dir
 
         self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start
         self._move_target = self.init_move_target
-
-        self.current_sprite = self.init_current_sprite = self.sprites[
-                self.current_dir]
-        self.current_sprite.position = self.init_current_sprite_pos = (
-                self.render_x, self.render_y)
 
