@@ -1,6 +1,11 @@
 import random
 from pathlib import Path
 
+from codes.parsing.parse import GameModel
+from codes.rendering.component.button import Button
+
+from ..component import AnimatedSprite
+from .data import Data
 import pygame
 
 from ...highscore import HighScoreLoader, HighScoreModel
@@ -8,9 +13,9 @@ from ..component import AnimatedSprite, Button
 from .base_screen import Screen
 
 
-class HighScoreScreen(Screen):
-    def __init__(self) -> None:
-        super().__init__()
+class HighScoreScreen(Data):
+    def __init__(self, game_model: GameModel) -> None:
+        super().__init__(game_model)
 
         self.logo = self.load_logo()
         self.buttons = {}

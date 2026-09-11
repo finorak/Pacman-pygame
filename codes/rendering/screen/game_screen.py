@@ -1,30 +1,20 @@
 import pygame
 
+from codes.parsing.parse import GameModel
+from codes.players import Ghost
+from codes.rendering.component import (
+    AnimatedSprite,
+    Button,
+)
 from codes.rendering.component.hud import HUD
 
-from ...players import Ghost, Player
-from ..component import AnimatedSprite, Button, Maze
-from .base_screen import Screen
+from .data import Data
 
 
-class GameScreen(Screen):
-    def __init__(self) -> None:
-        super().__init__()
-        self.hud = HUD()
-        self.buttons = {}
-        self.maze = Maze((30, 10))
-        self.maze.rect.topleft = (
-            self.get_center(self.maze.rect.width),
-            self.get_center(self.maze.rect.height, horizontal=False),
-        )
-        self.player = Player((len(self.maze.maze[0]) // 2, len(self.maze.maze) // 2), self.maze.maze)
-        self.ghosts = [
-            Ghost((self.maze.size[0] - 1, self.maze.size[1] - 1), self.maze.maze, "red"),
-            Ghost((0, 0), self.maze.maze, "blue"),
-            Ghost((self.maze.size[0] - 1, 0), self.maze.maze, "yellow"),
-            Ghost((0, self.maze.size[1] - 1), self.maze.maze, "pink"),
-        ]
-        self.buttons = {}
+class GameScreen(Data):
+    def __init__(self, game_model: GameModel) -> None:
+        super().__init__(game_model)
+        self.hub = HUD()
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
@@ -38,7 +28,7 @@ class GameScreen(Screen):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys)
+        self.player.get_input(keys, Ghost)
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 
@@ -54,6 +44,11 @@ class GameScreen(Screen):
         self.hud.render(screen)
         self.player.render(self.maze.image)
         self.maze.render(screen)
+        for gum_coord in self.gume_dict:
+            gum = self.gume_dict[gum_coord]
+            if gum.eaten:
+                continue
+            gum.render(self.maze.image)
         for ghost in self.ghosts:
             ghost.render(self.maze.image)
         for a in self.buttons.values():

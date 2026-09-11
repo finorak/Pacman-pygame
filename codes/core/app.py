@@ -1,5 +1,6 @@
 import pygame
 
+from codes.parsing import GameModel
 from codes.rendering.component import Sprite
 from codes.rendering.screen import (
     GameScreen,
@@ -13,8 +14,13 @@ from codes.rendering.utils.sprite_loader import SpriteLoader
 
 
 class Rendering:
-    def __init__(self, screen_size: tuple[int, int]) -> None:
+    def __init__(
+            self,
+            screen_size: tuple[int, int],
+            config_file: str
+    ) -> None:
         pygame.init()
+        self.game_model = GameModel(config_path=config_file)
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Pac-Man")
         self.screen_size = screen_size

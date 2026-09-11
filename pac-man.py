@@ -9,7 +9,7 @@ def main() -> None:
         print("[ERROR] Invalid arguments.", file=sys.stderr)
         print(f"[USAGE] python3 {sys.argv[0]} <config>", file=sys.stderr)
         sys.exit(1)
-    app = Rendering(SCREEN_SIZE)
+    app = Rendering(SCREEN_SIZE, sys.argv[1])
     app.run()
 
 
