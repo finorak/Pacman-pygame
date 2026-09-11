@@ -2,7 +2,7 @@
 	{
 		"game_settng": {
 			"pacgum_and_score": {
-				"pacgum_number": 4,
+				"pacgum_number": 44,
 				"points_per_pacgum": 10,
 				"points_per_super_pacgum": 50,
 				"points_per_ghost": 200

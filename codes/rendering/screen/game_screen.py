@@ -39,12 +39,8 @@ class GameScreen(Data):
 
     def render(self, screen: pygame.Surface) -> None:
         self.player.render(self.maze.image)
+        self.pacgums.render(self.maze.image)
         self.maze.render(screen)
-        for gum_coord in self.gume_dict:
-            gum = self.gume_dict[gum_coord]
-            if gum.eaten:
-                continue
-            gum.render(self.maze.image)
         for ghost in self.ghosts:
             ghost.render(self.maze.image)
         for a in self.buttons.values():
