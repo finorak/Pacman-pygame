@@ -1,6 +1,15 @@
 import math
+import random
 
 from codes.setting import EAST, NORTH, SOUTH, WEST
+
+
+def in_bound(x: int, y: int, maze: list[list[int]]) -> bool:
+    return 0 <= x < len(maze) and 0 <= y < len(maze[0])
+
+
+def valid_neighboor(value: int, wall: int) -> bool:
+    return value != 15 and value & wall == 0
 
 
 def cell_is_valid(
@@ -10,16 +19,14 @@ def cell_is_valid(
 ) -> bool:
     old_x, old_y = current_pos
     new_x, new_y = new_pos
-    if (0 > old_x or old_x >= len(maze)) or (0 > old_y or old_y >= len(maze[0])):
+    if (
+            not in_bound(old_x, old_y, maze)
+            or not in_bound(new_x, new_y, maze)
+            or maze[new_x][new_y] == 15
+    ):
         return False
-    if (0 > new_x or new_x >= len(maze)) or (0 > new_y or new_y >= len(maze[0])):
-        return False
-    try:
-        if maze[new_x][new_y] == 15:
-            return False
-        return maze[old_x][old_y] & maze[new_x][new_y] != 0
-    except IndexError:
-        return False
+    return maze[old_x][old_y] & maze[new_x][new_y] != 0
+
 
 def get_state(
         target_pos: tuple[int, int],
@@ -51,21 +58,16 @@ def find_cell_neighboors(
 ) -> list[tuple[int, int]]:
     neighboors: list[tuple[int, int]] = []
     x, y = current_cell
-    if x - 1 >= 0 and maze[x - 1][y] != 15 and maze[x - 1][y] & WEST == 0:
+    if in_bound(x - 1, y, maze) and valid_neighboor(maze[x - 1][y], WEST):
         neighboors.append((x - 1, y))
-    if x + 1 < len(maze) and maze[x + 1][y] != 15 and maze[x + 1][y] & EAST == 0:
+    if in_bound(x + 1, y, maze) and valid_neighboor(maze[x + 1][y], EAST):
         neighboors.append((x + 1, y))
-    if y - 1 >= 0 and maze[x][y - 1] != 15 and maze[x][y - 1] & NORTH == 0:
+    if in_bound(x, y - 1, maze) and valid_neighboor(maze[x][y - 1], NORTH):
         neighboors.append((x, y - 1))
-    if y + 1 < len(maze[0]) and maze[x][y + 1] != 15 and maze[x][y + 1] & SOUTH == 0:
+    if in_bound(x, y + 1, maze) and valid_neighboor(maze[x][y + 1], SOUTH):
         neighboors.append((x, y + 1))
     return neighboors
 
-def target_reached(
-    current_pos: tuple[int, int],
-    target: tuple[int, int]
-) -> bool:
-        return current_pos == target
 
 def player_in_range(
         current_pos: tuple[int, int],
@@ -79,3 +81,29 @@ def player_in_range(
     r = math.pow(radius, 2)
     return (x + y) <= r
 
+
+def wall_closed(value: int, maze: list[list[int]]) -> bool:
+    return not (
+            valid_neighboor(value, EAST) and valid_neighboor(value, WEST)
+            and valid_neighboor(value, NORTH) and valid_neighboor(value, SOUTH)
+            )
+
+
+def get_valid_gums_coord(
+        maze: list[list[int]],
+        count: int,
+) -> list[tuple[int, int]]:
+    paths = [
+            (i, j) for i in range(len(maze))
+            for j in range(len(maze[0]))
+            if wall_closed(maze[i][j], maze)
+            ]
+    random.shuffle(paths)
+    valid_coord: list[tuple[int, int]] = []
+    for path in paths[:]:
+        if count <= 0 or not paths:
+            break
+        paths.remove(path)
+        valid_coord.append(path)
+        count -= 1
+    return valid_coord

@@ -1,11 +1,13 @@
 import pygame
 
-from . import Screen
+from codes.parsing.parse import GameModel
+
+from .data import Data
 
 
-class PauseScreen(Screen):
-    def __init__(self) -> None:
-        super().__init__()
+class PauseScreen(Data):
+    def __init__(self, game_model: GameModel) -> None:
+        super().__init__(game_model)
 
     def enter(self, back: pygame.Surface) -> None:
         self.back = back.copy()
@@ -15,7 +17,7 @@ class PauseScreen(Screen):
             if event.type == pygame.QUIT:
                 return "exit"
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    return "Game"
+                return "Game"
         return None
 
     def update(self, dt: float) -> None:
