@@ -5,6 +5,7 @@ from codes.rendering.component import (
     AnimatedSprite,
     Button,
 )
+from codes.rendering.ui.ui import UI
 from codes.setting import CURRENT_SCREEN_PADDING
 
 from .data import Data
@@ -13,6 +14,7 @@ from .data import Data
 class GameScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
+        self.ui = UI()
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
@@ -40,6 +42,7 @@ class GameScreen(Data):
 
     def render(self, screen: pygame.Surface) -> None:
         self.maze.render(screen)
+        self.ui.render(screen)
         self.pacgums.render(self.maze.image)
         self.player.render(self.maze.image)
         for ghost in self.ghosts:

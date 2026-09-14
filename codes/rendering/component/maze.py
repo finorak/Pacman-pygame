@@ -15,7 +15,7 @@ class Maze:
         self.rect: pygame.FRect = self.image.get_frect()
 
     def _reset(self) -> None:
-        self.image.fill((20, 20, 20, 255))
+        self.image.fill((20, 20, 20, 220))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
