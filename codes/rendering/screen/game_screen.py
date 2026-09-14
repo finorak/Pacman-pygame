@@ -14,7 +14,7 @@ from .data import Data
 class GameScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
-        self.ui = UI()
+        self.ui = UI(self.player)
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():

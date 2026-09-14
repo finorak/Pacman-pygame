@@ -1,9 +1,9 @@
 import gc
-from typing import Any
 
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.players import Ghost, Player
+from codes.rendering.component.button import Button
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen
 
@@ -32,7 +32,7 @@ class Data(Screen):
             Ghost((18, 0),  self.maze.maze, "yellow", self.game_model.points_per_ghost),
             Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
         ]
-        self.buttons: dict[str, Any] = {}
+        self.buttons: dict[str, Button] = {}
 
     @property
     def switch_level(self) -> bool:
