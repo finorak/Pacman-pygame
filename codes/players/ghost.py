@@ -51,6 +51,7 @@ class Ghost(Entity):
             self.start_timer = perf_counter()
         # update timer
         if self.can_be_eaten:
+            self.update_sprite("fragile")
             end = perf_counter()
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False

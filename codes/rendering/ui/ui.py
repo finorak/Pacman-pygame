@@ -19,19 +19,22 @@ class UI:
         self.surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA, 32)
 
         self.player = player
-        self.background = SpriteLoader.import_image("assets", "hud", "background")
-        self.heart = SpriteLoader.import_image("assets", "hud", "heart")
-        self.current_score = 0
-        self.current_level = 0
-        self.remaining_time = 0
+        self.background = SpriteLoader.import_image(
+            "assets", "hud", "background"
+        )
 
-        self.font = pygame.Font(Path("assets", "fonts", "BoldsPixels.ttf"), size=23)
+        self.heart = SpriteLoader.import_image("assets", "hud", "heart")
+
+        self.font = pygame.Font(
+            Path("assets", "fonts", "BoldsPixels.ttf"), size=23
+        )
 
     def update(self, dt: float) -> None: ...
 
     def render(self, screen: pygame.Surface) -> None:
         self.surface.blit(self.background, (10, 50))
         self.draw_heart(self.surface)
+        self.draw_time(self.surface)
         screen.blit(self.surface)
 
     def draw_heart(self, surface: pygame.Surface) -> None:
@@ -45,3 +48,9 @@ class UI:
                 surface.blit(self.heart, (120 + 30 * i, 100))
             for i in range(min(value - 4, 6)):
                 surface.blit(self.heart, (60 + 30 * i, 132))
+
+    def draw_time(self, surface: pygame.Surface) -> None:
+        surface.blit(
+            self.font.render(f"TIME: {self.player.timer:.1f}", True, "white"),
+            (60, 165),
+        )

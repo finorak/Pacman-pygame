@@ -24,7 +24,7 @@ class Data(Screen):
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
                 (9, 9), self.maze.maze, self.pacgums,
-                self.game_model.life
+                self.game_model.life, self.game_model.level_max_time
             )
         self.ghosts = [
             Ghost((18, 18), self.maze.maze, "red", self.game_model.points_per_ghost),
@@ -36,7 +36,7 @@ class Data(Screen):
 
     @property
     def switch_level(self) -> bool:
-        return self.pacgums.no_gums()
+        return self.pacgums.is_empty()
 
     def reset_data(self) -> None:
         # delete from memory
