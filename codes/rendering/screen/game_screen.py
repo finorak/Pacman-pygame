@@ -13,6 +13,7 @@ from .data import Data
 
 class GameScreen(Data):
     def __init__(self, game_model: GameModel) -> None:
+        self.activate_cheat: bool = False
         super().__init__(game_model)
         self.ui = UI(self.player)
 
@@ -26,6 +27,9 @@ class GameScreen(Data):
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_c]:
+            self.activate_cheat = not self.activate_cheat
+            self.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"
         player_output = self.player.get_input(keys)

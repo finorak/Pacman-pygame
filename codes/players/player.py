@@ -21,7 +21,7 @@ class Player(Entity):
         self.pacgums = gums
         self.can_eat_ghost: bool = False
         self.score: int = 0
-        self.gums = gums
+        self.current_level: int = 0
 
         self.max_time = max_time
         self.timer = max_time
@@ -58,9 +58,10 @@ class Player(Entity):
             self.next_dir = "left"
 
     def update(self, dt: float) -> None:
-        self.timer -= dt
-        if self.timer < 0:
-            self._reset(True)
+        if not self.cheat_mode:
+            self.timer -= dt
+            if self.timer < 0:
+                self._reset(True)
         return super().update(dt)
 
     def _reset(self, kill: bool = False):

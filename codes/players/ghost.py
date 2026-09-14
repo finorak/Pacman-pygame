@@ -56,8 +56,7 @@ class Ghost(Entity):
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
                 self.start_timer = 0
-        else:
-            self.update_sprite(self.current_dir)
+        self.update_sprite(self.current_dir)
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:
@@ -94,6 +93,8 @@ class Ghost(Entity):
         # player -> Player class
         """
         if self.collides_with(player):
+            if player.cheat_mode:
+                return
             if self.can_be_eaten:
                 player.score += self.score
                 self.can_be_eaten = False
@@ -107,18 +108,18 @@ class Ghost(Entity):
         self.next_dir = self.OPPOSITE[self._find_path(player)]
 
     def start_move(self, direction: str) -> None:
-        if self.can_be_eaten:
-            dx, dy = self.DIR_VEC[direction]
-            self.grid_x += dx
-            self.grid_y += dy
-            self.current_dir = direction
-            self._is_moving = True
-            self.update_sprite("fragile")
-            self._move_progress = 0.0
-            self._move_start = (self.grid_x - dx, self.grid_y - dy)
-            self._move_target = (self.grid_x, self.grid_y)
-        else:
-            return super().start_move(direction)
+        dx, dy = self.DIR_VEC[direction]
+        self.grid_x += dx
+        self.grid_y += dy
+        self.current_dir = direction
+        self._is_moving = True
+        self.update_sprite(
+                "fragile" if self.can_be_eaten else direction
+                )
+        self._move_progress = 0.0
+        self._move_start = (self.grid_x - dx, self.grid_y - dy)
+        self._move_target = (self.grid_x, self.grid_y)
+
     @classmethod
     def level_update(cls: Any) -> None:
         for ghost in Ghost.GHOSTS_STORE:
