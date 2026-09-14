@@ -1,10 +1,10 @@
 {
-	"pacgum_number": 1,
+	"pacgum_number": 25,
 	"points_per_pacgum": 10,
 	"points_per_super_pacgum": 50,
 	"points_per_ghost": 200,
 	"level_max_time": 90,
-	"life": 3,
+	"life": 10,
 	"seed": 42,
 	"levels": [
 			[],

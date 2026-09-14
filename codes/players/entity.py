@@ -45,6 +45,7 @@ class Entity(ABC):
         self.render_x = self.init_render_x = float(pos[0])
         self.render_y = self.init_render_y = float(pos[1])
         self.life = life
+        self._cheat_mode: bool = False
 
         self.maze = maze
 
@@ -93,6 +94,8 @@ class Entity(ABC):
             nx, ny
         ):
             return False
+        if self._cheat_mode:
+            return True
 
         cur_mask = self.maze[self.grid_y][self.grid_x]
 
@@ -198,3 +201,11 @@ class Entity(ABC):
         self._move_start = self.init_move_start
         self._move_target = self.init_move_target
 
+    @property
+    def cheat_mode(self) -> bool:
+        """The  property."""
+        return self._cheat_mode
+
+    @cheat_mode.setter
+    def cheat_mode(self, value: bool = False) -> None:
+        self._cheat_mode = value

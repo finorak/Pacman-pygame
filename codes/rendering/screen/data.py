@@ -1,9 +1,9 @@
 import gc
-from typing import Any
 
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.players import Ghost, Player
+from codes.rendering.component.button import Button
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen
 
@@ -11,7 +11,6 @@ from codes.rendering.screen.base_screen import Screen
 class Data(Screen):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
-        self.current_level: int = 0
         self.maze = Maze((19, 19), game_model.seed)
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
@@ -24,7 +23,7 @@ class Data(Screen):
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
                 (9, 9), self.maze.maze, self.pacgums,
-                self.game_model.life
+                self.game_model.life, self.game_model.level_max_time
             )
         self.ghosts = [
             Ghost((18, 18), self.maze.maze, "red", self.game_model.points_per_ghost),
@@ -32,11 +31,11 @@ class Data(Screen):
             Ghost((18, 0),  self.maze.maze, "yellow", self.game_model.points_per_ghost),
             Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
         ]
-        self.buttons: dict[str, Any] = {}
+        self.buttons: dict[str, Button] = {}
 
     @property
     def switch_level(self) -> bool:
-        return self.pacgums.no_gums()
+        return self.pacgums.is_empty()
 
     def reset_data(self) -> None:
         # delete from memory
