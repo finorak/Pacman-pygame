@@ -26,6 +26,8 @@ class Player(Entity):
         self.max_time = max_time
         self.timer = max_time
 
+        self.level = 1
+
     def load_image(self) -> dict[str, AnimatedSprite]:
         result: dict[str, AnimatedSprite] = {}
         for direction in ("down", "left", "right", "up"):
@@ -35,14 +37,17 @@ class Player(Entity):
             )
         return result
 
-    def get_input(self, key: ScancodeWrapper) -> None:
+    def get_input(self, key: ScancodeWrapper) -> None | str:
         curr_pos = (
                 round(self.render_x),
                 round(self.render_y),
                 )
         point = self.pacgums.eat(curr_pos)
+        self.score += point
         if point == self.pacgums.super_pacgum_score:
             Ghost.update_ghost_state(True)
+        if self.timer < 0 or self.life <= 0:
+            return "lose"
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:
@@ -59,5 +64,4 @@ class Player(Entity):
         return super().update(dt)
 
     def _reset(self, kill: bool = False):
-        self.timer = self.max_time
         return super()._reset(kill)

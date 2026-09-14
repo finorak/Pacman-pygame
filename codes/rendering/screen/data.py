@@ -57,4 +57,6 @@ class Data(Screen):
     def _go_to_next_level(self) -> None:
         if not self.switch_level:
             return
+        self.player.timer = self.game_model.level_max_time
+        self.player.level += 1
         self.reset_data()
