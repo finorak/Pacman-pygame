@@ -11,7 +11,6 @@ from codes.rendering.screen.base_screen import Screen
 class Data(Screen):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
-        self.current_level: int = 0
         self.maze = Maze((19, 19), game_model.seed)
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),

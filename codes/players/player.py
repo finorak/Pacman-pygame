@@ -21,7 +21,7 @@ class Player(Entity):
         self.pacgums = gums
         self.can_eat_ghost: bool = False
         self.score: int = 0
-        self.gums = gums
+        self.current_level: int = 0
 
         self.max_time = max_time
         self.timer = max_time
@@ -40,8 +40,10 @@ class Player(Entity):
                 round(self.render_x),
                 round(self.render_y),
                 )
-        point = self.pacgums.eat(curr_pos)
-        if point == self.pacgums.super_pacgum_score:
+        point = 0
+        if not self.cheat_mode:
+            point = self.pacgums.eat(curr_pos)
+        elif point == self.pacgums.super_pacgum_score:
             Ghost.update_ghost_state(True)
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
@@ -53,9 +55,10 @@ class Player(Entity):
             self.next_dir = "left"
 
     def update(self, dt: float) -> None:
-        self.timer -= dt
-        if self.timer < 0:
-            self._reset(True)
+        if not self.cheat_mode:
+            self.timer -= dt
+            if self.timer < 0:
+                self._reset(True)
         return super().update(dt)
 
     def _reset(self, kill: bool = False):

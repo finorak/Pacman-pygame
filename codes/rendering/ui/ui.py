@@ -51,6 +51,6 @@ class UI:
 
     def draw_time(self, surface: pygame.Surface) -> None:
         surface.blit(
-            self.font.render(f"TIME: {self.player.timer:.1f}", True, "white"),
+            self.font.render(f"TIME: {self.player.timer:.0f}", True, "white"),
             (60, 165),
         )
