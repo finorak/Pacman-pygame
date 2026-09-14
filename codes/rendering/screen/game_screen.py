@@ -5,7 +5,6 @@ from codes.rendering.component import (
     AnimatedSprite,
     Button,
 )
-from codes.rendering.component.maze import Maze
 from codes.setting import CURRENT_SCREEN_PADDING
 
 from .data import Data
@@ -31,15 +30,6 @@ class GameScreen(Data):
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 
-    def _go_to_next_level(self) -> None:
-        if not self.switch_level:
-            return
-        self.maze = Maze((19, 19))
-        self.pacgums.generate_gums(self.game_model.pacgum_number)
-        self.player.maze = self.maze.maze
-        for ghost in self.ghosts:
-            ghost.maze = self.maze.maze
-
     def update(self, dt: float) -> None:
         self._go_to_next_level()
         self.player.update(dt)
@@ -59,7 +49,13 @@ class GameScreen(Data):
 
     def load_buttons(self) -> None:
         buttons = {
-            "exit": ((self.screen_size[0] - CURRENT_SCREEN_PADDING[0], CURRENT_SCREEN_PADDING[1]), "pause"),
+            "exit": (
+                (
+                    self.screen_size[0] - CURRENT_SCREEN_PADDING[0],
+                    CURRENT_SCREEN_PADDING[1],
+                ),
+                "pause"
+            ),
         }
         for button, (pos, result) in buttons.items():
             tmp = {}
