@@ -8,6 +8,8 @@ from codes.setting import CELL_SIZE, PLAYER_PADDING
 
 
 class Entity(ABC):
+    ENTITY_STORE: ClassVar = []
+
     UP = 0b0001
     RIGHT = 0b0010
     DOWN = 0b0100
@@ -62,6 +64,7 @@ class Entity(ABC):
                 self.current_dir]
         self.current_sprite.position = self.init_current_sprite_pos = (
                 self.render_x, self.render_y)
+        Entity.ENTITY_STORE.append(self)
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -179,6 +182,9 @@ class Entity(ABC):
     def _reset(self, kill: bool = False):
         if kill:
             self.life -= 1
+        if hasattr(self, "can_be_eaten"):
+            self.can_be_eaten = False
+            self.start_timer = 0
         self.grid_x = self.init_grid_x
         self.grid_y = self.init_grid_y
         self.render_x = self.init_render_x

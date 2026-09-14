@@ -1,3 +1,4 @@
+import gc
 from typing import Any
 
 from codes.pacgums.pacgums import Pacgums
@@ -10,12 +11,16 @@ from codes.rendering.screen.base_screen import Screen
 class Data(Screen):
     def __init__(self, game_model: GameModel) -> None:
         super().__init__(game_model)
-        self.maze = Maze((19, 19), self.game_model.seed)
+        self.current_level: int = 0
+        self.maze = Maze((19, 19), game_model.seed)
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),
         )
-        self.pacgums = Pacgums(self.maze.maze, self.game_model.points_per_pacgum, self.game_model.points_per_super_pacgum)
+        self.pacgums = Pacgums(
+                self.maze.maze, self.game_model.points_per_pacgum,
+                self.game_model.points_per_super_pacgum
+                )
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
                 (9, 9), self.maze.maze, self.pacgums,
@@ -28,3 +33,28 @@ class Data(Screen):
             Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
         ]
         self.buttons: dict[str, Any] = {}
+
+    @property
+    def switch_level(self) -> bool:
+        return self.pacgums.no_gums()
+
+    def reset_data(self) -> None:
+        # delete from memory
+        del self.maze
+        gc.collect()
+        self.maze = Maze((19, 19))
+        self.maze.rect.topleft = (
+                self.get_center(self.maze.rect.width),
+                self.get_center(self.maze.rect.height, horizontal=False),
+            )
+        self.pacgums.generate_gums(self.game_model.pacgum_number)
+        self.player.maze = self.maze.maze
+        self.player._reset()
+        for ghost in self.ghosts:
+            ghost.maze = self.maze.maze
+            ghost._reset()
+
+    def _go_to_next_level(self) -> None:
+        if not self.switch_level:
+            return
+        self.reset_data()

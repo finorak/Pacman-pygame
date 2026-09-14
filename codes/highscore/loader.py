@@ -15,7 +15,7 @@ class HighScoreLoader:
         highscores = [
             HighScoreModel.model_validate(value) for value in highscore
         ]
-        return sorted(highscores, key=lambda x: x.player_score, reverse=True)
+        return sorted(highscores, key=lambda x: -x.player_score)
 
     def save(self, models: list[HighScoreModel]) -> None:
         with open(self.path, "w") as file:

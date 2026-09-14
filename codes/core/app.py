@@ -52,7 +52,10 @@ class Rendering:
             if flags == "exit":
                 self.running = False
                 return
-            self.current_screen = self.screens[flags]
+            self.current_screen = self.screens.get(
+                    flags,
+                    self.screens[str(self.current_screen)]
+                    )
 
     def update(self, dt: float) -> None:
         self.background.rect.left -= BACKGROUND_SPEED * dt

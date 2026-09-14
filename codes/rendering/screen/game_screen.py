@@ -31,6 +31,7 @@ class GameScreen(Data):
             ghost.get_input(self.player)
 
     def update(self, dt: float) -> None:
+        self._go_to_next_level()
         self.player.update(dt)
         for ghost in self.ghosts:
             ghost.update(dt)
@@ -43,12 +44,18 @@ class GameScreen(Data):
         self.player.render(self.maze.image)
         for ghost in self.ghosts:
             ghost.render(self.maze.image)
-        for a in self.buttons.values():
-            a.draw(screen)
+            for a in self.buttons.values():
+                a.draw(screen)
 
     def load_buttons(self) -> None:
         buttons = {
-            "exit": ((self.screen_size[0] - CURRENT_SCREEN_PADDING[0], CURRENT_SCREEN_PADDING[1]), "pause"),
+            "exit": (
+                (
+                    self.screen_size[0] - CURRENT_SCREEN_PADDING[0],
+                    CURRENT_SCREEN_PADDING[1],
+                ),
+                "pause"
+            ),
         }
         for button, (pos, result) in buttons.items():
             tmp = {}

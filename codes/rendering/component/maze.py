@@ -1,5 +1,3 @@
-import random
-
 import pygame
 from mazegenerator import MazeGenerator
 
@@ -7,7 +5,7 @@ from codes.setting import CELL_PADDING, CELL_SIZE
 
 
 class Maze:
-    def __init__(self, size: tuple[int, int], seed: int = 42) -> None:
+    def __init__(self, size: tuple[int, int], seed: int = 0) -> None:
         self.maze_gen = MazeGenerator(size, seed=seed)
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
