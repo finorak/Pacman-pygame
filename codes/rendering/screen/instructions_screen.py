@@ -12,7 +12,7 @@ class InstructionsScreen(Screen):
     def __init__(self, game_model: GameModel, data: Data) -> None:
         super().__init__(game_model, data)
         self.assets = self.load_assets()
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
         self.load_buttons()
 
     def get_input(self) -> str | None:

@@ -38,7 +38,7 @@ class Maze:
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
         real_pos = pos[0] * self.cell_size + 1, pos[1] * self.cell_size + 1
-        color = (50, 50, 255)
+        color = (50, 105, 50)
         i = 0
         while (value >> i) != 0:
             if ((value >> i) & 1) != 1:

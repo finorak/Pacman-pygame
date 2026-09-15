@@ -14,7 +14,6 @@ class Data:
 
         self.screen_size = SCREEN_SIZE
 
-
         self.maze = Maze((19, 19), game_model.seed)
         self.maze = Maze((19, 19), game_model.seed)
         self.maze.rect.topleft = (
@@ -54,11 +53,14 @@ class Data:
     def switch_level(self) -> bool:
         return self.pacgums.is_empty
 
-    def reset_data(self) -> None:
+    def reset_data(self, new_game: bool = False) -> None:
         # delete from memory
         del self.maze
         gc.collect()
-        self.maze = Maze((19, 19))
+        if new_game:
+            self.maze = Maze((19, 19), seed=self.game_model.seed)
+        else:
+            self.maze = Maze((19, 19))
         self.maze.rect.topleft = (
             self.get_center(self.maze.rect.width),
             self.get_center(self.maze.rect.height, horizontal=False),

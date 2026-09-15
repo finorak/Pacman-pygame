@@ -33,7 +33,7 @@ class Rendering:
             "Instructions": InstructionsScreen(self.game_model, self.data),
             "Game": GameScreen(self.game_model, self.data),
             "pause": PauseScreen(self.game_model, self.data),
-            "finised": FinishedScreen(self.game_model, self.data)
+            "finised": FinishedScreen(self.game_model, self.data),
         }
 
         self.current_screen = self.screens["Home"]
@@ -52,7 +52,8 @@ class Rendering:
         flags = self.current_screen.get_input()
         if flags:
             if flags == "new":
-                self.screens["Game"] = GameScreen(self.game_model)
+                self.data.reset_data(new_game=True)
+                self.screens["Game"] = GameScreen(self.game_model, self.data)
                 flags = "Game"
             if flags == "exit":
                 self.running = False

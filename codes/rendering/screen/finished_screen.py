@@ -12,7 +12,9 @@ from codes.rendering.utils.sprite_loader import SpriteLoader
 class FinishedScreen(Screen):
     def __init__(self, game_model: GameModel, data: Data) -> None:
         super().__init__(game_model, data)
-        self.fonts = pygame.font.Font(join("assets", "fonts", "BoldsPixels.ttf"), 48)
+        self.fonts = pygame.font.Font(
+            join("assets", "fonts", "BoldsPixels.ttf"), 48
+        )
         self.background = SpriteLoader.import_image(
             "assets", "hud", "background"
         )
@@ -34,5 +36,6 @@ class FinishedScreen(Screen):
             self.input.handle_event(event)
             if event.type == pygame.QUIT:
                 return "exit"
+        return None
 
     def get_player_highscore(self) -> None: ...

@@ -17,7 +17,7 @@ class HighScoreScreen(Screen):
         super().__init__(game_model, data)
 
         self.logo = self.load_logo()
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
         self.load_buttons()
         self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
         self.highscore: list[HighScoreModel] = self.highscore_loader.highscore

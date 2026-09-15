@@ -16,7 +16,7 @@ class GameScreen(Screen):
         super().__init__(game_model, data)
         self.activate_cheat: bool = False
         self.ui = UI(self.data.player)
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
