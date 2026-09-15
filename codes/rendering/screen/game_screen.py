@@ -37,6 +37,7 @@ class GameScreen(Data):
             return player_output
         for ghost in self.ghosts:
             ghost.get_input(self.player)
+        return None
 
     def update(self, dt: float) -> None:
         self._go_to_next_level()
@@ -64,7 +65,7 @@ class GameScreen(Data):
                     self.screen_size[0] - CURRENT_SCREEN_PADDING[0],
                     CURRENT_SCREEN_PADDING[1],
                 ),
-                "pause"
+                "pause",
             ),
         }
         for button, (pos, result) in buttons.items():

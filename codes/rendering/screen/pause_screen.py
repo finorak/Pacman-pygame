@@ -15,7 +15,7 @@ class PauseScreen(Data):
         self.background_rect = (
             self.get_center(self.background.width),
             self.get_center(self.background.height, horizontal=False) - 50,
-)
+        )
         self.buttons = {}
         self.load_buttons()
 
@@ -46,9 +46,24 @@ class PauseScreen(Data):
     def load_buttons(self) -> None:
         buttons = {
             "exit": ((self.screen_size[0] - 60, 5), "Home"),
-            "home": ((self.get_center(47), self.get_center(52, horizontal=False)), "Home"),
-            "play": ((self.get_center(47) + 120, self.get_center(52, horizontal=False)), "Game"),
-            "new": ((self.get_center(47) - 120, self.get_center(52, horizontal=False)), "new")
+            "home": (
+                (self.get_center(47), self.get_center(52, horizontal=False)),
+                "Home",
+            ),
+            "play": (
+                (
+                    self.get_center(47) + 120,
+                    self.get_center(52, horizontal=False),
+                ),
+                "Game",
+            ),
+            "new": (
+                (
+                    self.get_center(47) - 120,
+                    self.get_center(52, horizontal=False),
+                ),
+                "new",
+            ),
         }
         for button, (pos, result) in buttons.items():
             tmp = {}

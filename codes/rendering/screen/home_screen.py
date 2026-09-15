@@ -34,8 +34,8 @@ class HomeScreen(Data):
         screen.blit(self.logo.image, self.logo.rect)
         for a in self.assets.values():
             screen.blit(a.image, a.rect)
-        for a in self.buttons.values():
-            a.draw(screen)
+        for b in self.buttons.values():
+            b.draw(screen)
 
     def load_assets(self) -> dict[str, AnimatedSprite]:
         image_path = {"logo": ("assets", "Logo")}

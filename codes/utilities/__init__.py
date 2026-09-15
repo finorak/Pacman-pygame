@@ -15,5 +15,5 @@ __all__ = [
     "in_bounds",
     "load_data",
     "player_in_range",
-    "valid_neighboor"
+    "valid_neighboor",
 ]

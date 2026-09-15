@@ -31,7 +31,11 @@ class HighScoreLoader:
     def add_score(self, name: str, score: int, time: int) -> None:
         self.highscore = sorted(
             self.highscore
-            + [HighScoreModel(player_name=name, player_score=score, player_time=time)],
+            + [
+                HighScoreModel(
+                    player_name=name, player_score=score, player_time=time
+                )
+            ],
             key=lambda x: x.player_score,
             reverse=True,
         )[:10]

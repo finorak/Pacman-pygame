@@ -18,19 +18,23 @@ from .entity import Entity
 
 
 class Ghost(Entity):
-    GHOSTS_STORE: ClassVar = []
+    GHOSTS_STORE: ClassVar[list["Ghost"]] = []
 
     def __init__(
-        self, pos: tuple[int, int],
-        maze: list[list[int]], name: str,
-        score: int, maze_gen: MazeGenerator
+        self,
+        pos: tuple[int, int],
+        maze: list[list[int]],
+        name: str,
+        score: int,
+        maze_gen: MazeGenerator,
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
         self.speed = 2.0
+        self.initial_speed = self.speed
         self.can_be_eaten: bool = False
         self.algorithm = Algorithm()
-        self.start_timer: float = 0
+        self.start_timer: float = 0.0
         self.score: int = score
         self._radius: int = 10  # cell to count just upgrade as level grow
         self._target_position = pos
@@ -47,11 +51,8 @@ class Ghost(Entity):
                 ),
             )
         result["fragile"] = AnimatedSprite(
-                (0, 0),
-                SpriteLoader.import_folder(
-                    "assets", "ghosts", "fragile"
-                    )
-                )
+            (0, 0), SpriteLoader.import_folder("assets", "ghosts", "fragile")
+        )
         return result
 
     def update(self, dt: float) -> None:
@@ -68,22 +69,16 @@ class Ghost(Entity):
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:
-        choices = ['down', 'left', 'right', 'up']
+        choices = ["down", "left", "right", "up"]
         next_dir = random.choice(choices)
-        paths = self.algorithm.bfs(
-                self.pos, player.pos, self.maze_gen
-                )
+        paths = self.algorithm.bfs(self.pos, player.pos, self.maze_gen)
         if self.can_be_eaten:
             if not paths:
                 return self.next_dir
             removed_dir = get_direction(paths[0], self.pos)
             choices.remove(removed_dir)
             return random.choice(choices)
-        if (
-                player_in_range(
-                    self.pos, player.pos, self._radius
-                    )
-        ):
+        if player_in_range(self.pos, player.pos, self._radius):
             if not paths:
                 return self.next_dir
             direction: str = get_direction(paths[0], self.pos)
@@ -116,9 +111,7 @@ class Ghost(Entity):
         self.grid_y += dy
         self.current_dir = direction
         self._is_moving = True
-        self.update_sprite(
-                "fragile" if self.can_be_eaten else direction
-                )
+        self.update_sprite("fragile" if self.can_be_eaten else direction)
         self._move_progress = 0.0
         self._move_start = (self.grid_x - dx, self.grid_y - dy)
         self._move_target = (self.grid_x, self.grid_y)
@@ -134,3 +127,7 @@ class Ghost(Entity):
             if not value:
                 ghost.start_timer = 0
             ghost.can_be_eaten = value
+            if ghost.can_be_eaten:
+                ghost.speed = 1.0
+            else:
+                ghost.speed = ghost.initial_speed

@@ -18,8 +18,7 @@ class Entity(ABC):
     ENTITY_STORE: ClassVar[list[Self]] = []
 
     def __init__(
-            self, pos: tuple[int, int],
-            maze: list[list[int]], life: int = 3
+        self, pos: tuple[int, int], maze: list[list[int]], life: int = 3
     ) -> None:
         self.grid_x = self.init_grid_x = pos[0]
         self.grid_y = self.init_grid_y = pos[1]
@@ -34,6 +33,7 @@ class Entity(ABC):
         self.next_dir = "up"
 
         self.speed = 3.0
+        self.initial_speed = self.speed
         self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
@@ -42,9 +42,12 @@ class Entity(ABC):
 
         self.sprites = self.load_image()
         self.current_sprite = self.init_current_sprite = self.sprites[
-                self.current_dir]
+            self.current_dir
+        ]
         self.current_sprite.position = self.init_current_sprite_pos = (
-                self.render_x, self.render_y)
+            self.render_x,
+            self.render_y,
+        )
         Entity.ENTITY_STORE.append(self)
 
     @abstractmethod
@@ -67,17 +70,15 @@ class Entity(ABC):
         dx, dy = DIR_VEC[direction]
         nx, ny = self.grid_x + dx, self.grid_y + dy
 
-        if (
-                not in_bounds(
-                    self.grid_x, self.grid_y, self.maze
-                    ) or not in_bounds(nx, ny, self.maze)
+        if not in_bounds(self.grid_x, self.grid_y, self.maze) or not in_bounds(
+            nx, ny, self.maze
         ):
             return False
         # typechecking prevent mypy error.
         if (
-                not TYPE_CHECKING
-                and hasattr(self, "_cheat_mode")
-                and self.cheat_mode
+            not TYPE_CHECKING
+            and hasattr(self, "_cheat_mode")
+            and self.cheat_mode
         ):
             return True
 
@@ -109,9 +110,10 @@ class Entity(ABC):
 
     def collides_with(self, other: "Entity") -> bool:
         return player_in_range(
-                (self.render_x, self.render_y),
-                (other.render_x, other.render_y),
-                0.6)
+            (self.render_x, self.render_y),
+            (other.render_x, other.render_y),
+            0.6,
+        )
 
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
@@ -162,12 +164,12 @@ class Entity(ABC):
             ),
         )
 
-    def _reset(self, kill: bool = False):
+    def _reset(self, kill: bool = False) -> None:
         if kill:
             self.life -= 1
         if hasattr(self, "can_be_eaten"):
             self.can_be_eaten = False
-            self.start_timer = 0
+            self.start_timer = 0.0
         self.grid_x = self.init_grid_x
         self.grid_y = self.init_grid_y
         self.render_x = self.init_render_x
@@ -180,3 +182,4 @@ class Entity(ABC):
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start
         self._move_target = self._move_start
+        self.speed = self.initial_speed

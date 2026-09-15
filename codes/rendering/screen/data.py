@@ -18,19 +18,26 @@ class Data(Screen):
             self.get_center(self.maze.rect.height, horizontal=False),
         )
         self.pacgums = Pacgums(
-                self.maze.maze, self.game_model.points_per_pacgum,
-                self.game_model.points_per_super_pacgum
-                )
+            self.maze.maze,
+            self.game_model.points_per_pacgum,
+            self.game_model.points_per_super_pacgum,
+        )
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player = Player(
-                (9, 9), self.maze.maze, self.pacgums,
-                self.game_model.life, self.game_model.level_max_time
-            )
+            (9, 9),
+            self.maze.maze,
+            self.pacgums,
+            self.game_model.life,
+            self.game_model.level_max_time,
+        )
         self.ghosts = [
             Ghost(
-                GHOST_START_SETTING[color]['coord'],
-                self.maze.maze, color, self.game_model.points_per_ghost,
-                self.maze.maze_gen)
+                GHOST_START_SETTING[color]["coord"],
+                self.maze.maze,
+                color,
+                self.game_model.points_per_ghost,
+                self.maze.maze_gen,
+            )
             for color in GHOST_START_SETTING
         ]
         self.buttons: dict[str, Button] = {}
@@ -45,9 +52,9 @@ class Data(Screen):
         gc.collect()
         self.maze = Maze((19, 19))
         self.maze.rect.topleft = (
-                self.get_center(self.maze.rect.width),
-                self.get_center(self.maze.rect.height, horizontal=False),
-            )
+            self.get_center(self.maze.rect.width),
+            self.get_center(self.maze.rect.height, horizontal=False),
+        )
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
         self.player._reset()

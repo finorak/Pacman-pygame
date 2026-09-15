@@ -37,9 +37,12 @@ class HighScoreScreen(Data):
                         return b.result
         keys = pygame.key.get_just_pressed()
         if keys[pygame.K_1]:
-            self.highscore_loader.add_score("aaaa", random.randint(100, 100000), 100)
+            self.highscore_loader.add_score(
+                "aaaa", random.randint(100, 100000), 100
+            )
             self.leaderboard = self.draw_leaderboard()
             self.highscore = self.highscore_loader.highscore
+        return None
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():
@@ -56,7 +59,9 @@ class HighScoreScreen(Data):
         return AnimatedSprite((100, 40), [self.loader.import_image(*path)])
 
     def draw_leaderboard(self) -> pygame.Surface:
-        surface = pygame.Surface(self.screen_size, pygame.SRCALPHA, 32).convert_alpha()
+        surface = pygame.Surface(
+            self.screen_size, pygame.SRCALPHA, 32
+        ).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for i, score in enumerate(self.highscore, 1):
             text = self.fonts.render(

@@ -23,6 +23,7 @@ class InstructionsScreen(Data):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
+        return None
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():

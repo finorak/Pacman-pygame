@@ -20,8 +20,8 @@ class Maze:
 
     def _get_maze_surface(self) -> pygame.Surface:
         surface = pygame.Surface(
-                self.maze_size, pygame.SRCALPHA, 32
-                ).convert_alpha()
+            self.maze_size, pygame.SRCALPHA, 32
+        ).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
@@ -117,7 +117,7 @@ class Maze:
     def render(self, surface: pygame.Surface) -> None:
         surface.blit(self.image, self.rect)
         self._reset()
-    
+
     def reset(self) -> None:
         self.maze_gen.generate()
         self.maze = self.maze_gen.maze

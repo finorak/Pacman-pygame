@@ -29,10 +29,14 @@ class UI:
             Path("assets", "fonts", "BoldsPixels.ttf"), size=23
         )
 
-        self.current_level_surface = self.font.render(f"LEVEL: {self.player.level}", True, "white")
+        self.current_level_surface = self.font.render(
+            f"LEVEL: {self.player.level}", True, "white"
+        )
         self.current_level = self.player.level
 
-        self.current_score_surface = self.font.render(f"SCORE: {self.player.level}", True, "white")
+        self.current_score_surface = self.font.render(
+            f"SCORE: {self.player.level}", True, "white"
+        )
         self.current_score = self.player.score
 
     def render(self, screen: pygame.Surface) -> None:
@@ -45,10 +49,14 @@ class UI:
 
     def update(self, dt: float) -> None:
         if self.player.level != self.current_level:
-            self.current_level_surface = self.font.render(f"LEVEL: {self.player.level}", True, "white")
+            self.current_level_surface = self.font.render(
+                f"LEVEL: {self.player.level}", True, "white"
+            )
             self.current_level = self.player.level
         if self.player.score != self.current_score:
-            self.current_score_surface = self.font.render(f"SCORE: {self.player.score}", True, "white")
+            self.current_score_surface = self.font.render(
+                f"SCORE: {self.player.score}", True, "white"
+            )
             self.current_score = self.player.score
 
     def draw_heart(self, surface: pygame.Surface) -> None:

@@ -11,11 +11,12 @@ from .entity import Entity
 
 class Player(Entity):
     def __init__(
-            self, pos: tuple[int, int],
-            maze: list[list[int]],
-            gums: Pacgums,
-            life: int,
-            max_time: int,
+        self,
+        pos: tuple[int, int],
+        maze: list[list[int]],
+        gums: Pacgums,
+        life: int,
+        max_time: int,
     ) -> None:
         super().__init__(pos, maze, life)
         self.pacgums = gums
@@ -25,7 +26,7 @@ class Player(Entity):
         self._cheat_mode: bool = False
 
         self.max_time = max_time
-        self.timer = max_time
+        self.timer: float = max_time
 
         self.level = 1
 
@@ -38,11 +39,11 @@ class Player(Entity):
             )
         return result
 
-    def get_input(self, key: ScancodeWrapper) -> None | str:
+    def get_input(self, key: ScancodeWrapper) -> str | None:
         curr_pos = (
-                round(self.render_x),
-                round(self.render_y),
-                )
+            round(self.render_x),
+            round(self.render_y),
+        )
         point = self.pacgums.eat(curr_pos)
         self.score += point
         if point == self.pacgums.super_pacgum_score:
@@ -57,6 +58,7 @@ class Player(Entity):
             self.next_dir = "right"
         elif key[pygame.K_a] or key[pygame.K_LEFT]:
             self.next_dir = "left"
+        return None
 
     def update(self, dt: float) -> None:
         if not self.cheat_mode:
@@ -65,7 +67,7 @@ class Player(Entity):
                 self._reset(True)
         return super().update(dt)
 
-    def _reset(self, kill: bool = False):
+    def _reset(self, kill: bool = False) -> None:
         return super()._reset(kill)
 
     @property

@@ -15,11 +15,7 @@ from codes.utilities import load_data
 
 
 class Rendering:
-    def __init__(
-            self,
-            screen_size: tuple[int, int],
-            config_file: str
-    ) -> None:
+    def __init__(self, screen_size: tuple[int, int], config_file: str) -> None:
         pygame.init()
         self.game_model = load_data(config_file)
         self.screen = pygame.display.set_mode(screen_size)
@@ -33,7 +29,7 @@ class Rendering:
             "HighScore": HighScoreScreen(self.game_model),
             "Instructions": InstructionsScreen(self.game_model),
             "Game": GameScreen(self.game_model),
-            "pause": PauseScreen(self.game_model)
+            "pause": PauseScreen(self.game_model),
         }
 
         self.current_screen = self.screens["Home"]
@@ -58,7 +54,9 @@ class Rendering:
                 self.running = False
                 return
             self.current_screen = self.screens[flags]
-            if flags == "pause" and isinstance(self.current_screen, PauseScreen):
+            if flags == "pause" and isinstance(
+                self.current_screen, PauseScreen
+            ):
                 self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
