@@ -36,6 +36,8 @@ class GameScreen(Screen):
         player_output = self.data.player.get_input(keys)
         if player_output:
             return player_output
+        if self.data.finished:
+            return "finished"
         for ghost in self.data.ghosts:
             ghost.get_input(self.data.player)
         return None

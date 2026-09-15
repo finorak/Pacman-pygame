@@ -8,7 +8,7 @@ from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.screen.base_screen import Screen
 
-from ...highscore import HighScoreLoader, HighScoreModel
+from ...highscore import HighScoreLoader
 from ..component import AnimatedSprite
 
 
@@ -20,7 +20,6 @@ class HighScoreScreen(Screen):
         self.buttons: dict[str, Button] = {}
         self.load_buttons()
         self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
-        self.highscore: list[HighScoreModel] = self.highscore_loader.highscore
 
         self.fonts = pygame.Font(
             Path("assets", "fonts", "BoldsPixels.ttf"), size=32
@@ -42,7 +41,6 @@ class HighScoreScreen(Screen):
                 "aaaa", random.randint(100, 100000), 100
             )
             self.leaderboard = self.draw_leaderboard()
-            self.highscore = self.highscore_loader.highscore
         return None
 
     def update(self, dt: float) -> None:
@@ -64,7 +62,7 @@ class HighScoreScreen(Screen):
             self.screen_size, pygame.SRCALPHA, 32
         ).convert_alpha()
         surface.fill((0, 0, 0, 0))
-        for i, score in enumerate(self.highscore, 1):
+        for i, score in enumerate(self.highscore_loader.highscore, 1):
             text = self.fonts.render(
                 f"{i:02} - {score.player_name}: {score.player_score}",
                 True,

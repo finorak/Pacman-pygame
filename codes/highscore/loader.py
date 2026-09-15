@@ -19,8 +19,10 @@ class HighScoreLoader:
 
     def save(self, models: list[HighScoreModel]) -> None:
         with open(self.path, "w") as file:
-            file.write(
-                json.dumps([model.model_dump_json() for model in models])[:10]
+            json.dump(
+                [model.model_dump() for model in models[:10]],
+                file,
+                indent=4,
             )
 
     def update(self) -> None:

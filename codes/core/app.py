@@ -33,7 +33,7 @@ class Rendering:
             "Instructions": InstructionsScreen(self.game_model, self.data),
             "Game": GameScreen(self.game_model, self.data),
             "pause": PauseScreen(self.game_model, self.data),
-            "finised": FinishedScreen(self.game_model, self.data),
+            "finished": FinishedScreen(self.game_model, self.data),
         }
 
         self.current_screen = self.screens["Home"]
@@ -61,6 +61,10 @@ class Rendering:
             self.current_screen = self.screens[flags]
             if flags == "pause" and isinstance(
                 self.current_screen, PauseScreen
+            ):
+                self.current_screen.enter(self.screen)
+            if flags == "finished" and isinstance(
+                self.current_screen, FinishedScreen
             ):
                 self.current_screen.enter(self.screen)
 

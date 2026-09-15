@@ -10,6 +10,6 @@ class HighScoreModel(BaseModel):
 
     @model_validator(mode="after")
     def check_player_name(self) -> Self:
-        if not self.player_name.isalnum():
+        if not self.player_name.replace(" ", "").isalnum():
             raise ValueError("Name can only be alphabet and space")
         return self

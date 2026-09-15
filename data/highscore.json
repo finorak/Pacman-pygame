@@ -1,37 +1,27 @@
 [
     {
-        "player_name": "Kenny",
-        "player_score": 3425,
+        "player_name": "nyramanaaa",
+        "player_score": 37,
+        "player_time": 25
+    },
+    {
+        "player_name": "nyramanaaa",
+        "player_score": 33,
+        "player_time": 14
+    },
+    {
+        "player_name": "nyramanaaa",
+        "player_score": 18,
         "player_time": 10
     },
     {
         "player_name": "nyramana",
-        "player_score": 1978,
+        "player_score": 14,
         "player_time": 10
     },
     {
-        "player_name": "Koto",
-        "player_score": 978,
-        "player_time": 10
-    },
-    {
-        "player_name": "Benja",
-        "player_score": 785,
-        "player_time": 10
-    },
-    {
-        "player_name": "Lita",
-        "player_score": 6573,
-        "player_time": 10
-    },
-    {
-        "player_name": "Bota",
-        "player_score": 3436,
-        "player_time": 10
-    },
-    {
-        "player_name": "kelly",
-        "player_score": 2533,
-        "player_time": 10
+        "player_name": "nyramana",
+        "player_score": 10,
+        "player_time": 18
     }
 ]
