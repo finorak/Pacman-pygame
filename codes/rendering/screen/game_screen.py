@@ -32,7 +32,9 @@ class GameScreen(Data):
             self.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys)
+        player_output = self.player.get_input(keys)
+        if player_output:
+            return player_output
         for ghost in self.ghosts:
             ghost.get_input(self.player)
 
@@ -43,6 +45,7 @@ class GameScreen(Data):
             ghost.update(dt)
         for button in self.buttons.values():
             button.update(dt)
+        self.ui.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
         self.maze.render(screen)

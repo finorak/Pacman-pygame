@@ -107,7 +107,7 @@ class Entity(ABC):
         return (cur_mask & out_bit) == 0
 
     @abstractmethod
-    def get_input(self, *arg: Any, **kwarg: Any) -> None: ...
+    def get_input(self, *arg: Any, **kwarg: Any) -> None | str: ...
 
     def start_move(self, direction: str) -> None:
         dx, dy = self.DIR_VEC[direction]
