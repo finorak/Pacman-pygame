@@ -2,25 +2,28 @@ import random
 from time import perf_counter
 from typing import Any, ClassVar
 
+from mazegenerator import MazeGenerator
+
 from codes.algorithm import Algorithm
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 from codes.setting import (
+    DIR_VEC,
     GHOST_ESCAPE_TIME,
     RADIUS_UPGRAD_PER_LEVEL,
-    TARGET_DIRECTION,
 )
-from codes.utilities import get_state, player_in_range
+from codes.utilities import get_direction, player_in_range
 
 from .entity import Entity
 
 
 class Ghost(Entity):
     GHOSTS_STORE: ClassVar = []
+
     def __init__(
         self, pos: tuple[int, int],
         maze: list[list[int]], name: str,
-        score: int
+        score: int, maze_gen: MazeGenerator
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
@@ -29,8 +32,9 @@ class Ghost(Entity):
         self.algorithm = Algorithm()
         self.start_timer: float = 0
         self.score: int = score
-        self._radius: int = 2 # cell to count just upgrade as level grow
+        self._radius: int = 10  # cell to count just upgrade as level grow
         self._target_position = pos
+        self.maze_gen: MazeGenerator = maze_gen
         Ghost.GHOSTS_STORE.append(self)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -42,7 +46,12 @@ class Ghost(Entity):
                     "assets", "ghosts", self.name, direction
                 ),
             )
-        result["fragile"] = AnimatedSprite((0,0), SpriteLoader.import_folder("assets", "ghosts", "fragile"))
+        result["fragile"] = AnimatedSprite(
+                (0, 0),
+                SpriteLoader.import_folder(
+                    "assets", "ghosts", "fragile"
+                    )
+                )
         return result
 
     def update(self, dt: float) -> None:
@@ -60,20 +69,16 @@ class Ghost(Entity):
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:
-        # TODO: find why the ghost isn't moving
-        # in the direction of the player even though
-        # the algorithm seems right
         choices = ['down', 'left', 'right', 'up']
         next_dir = random.choice(choices)
         paths = self.algorithm.bfs(
-                self.pos, player.pos, self.maze
+                self.pos, player.pos, self.maze_gen
                 )
         if self.can_be_eaten:
             if not paths:
                 return self.next_dir
-            target_vec = get_state(paths[0], self.pos)
-            state = TARGET_DIRECTION[target_vec]
-            choices.remove(state)
+            removed_dir = get_direction(paths[0], self.pos)
+            choices.remove(removed_dir)
             return random.choice(choices)
         if (
                 player_in_range(
@@ -82,9 +87,8 @@ class Ghost(Entity):
         ):
             if not paths:
                 return self.next_dir
-            target_vec = get_state(paths[0], self.pos)
-            state = TARGET_DIRECTION[target_vec]
-            return state
+            direction: str = get_direction(paths[0], self.pos)
+            return direction
         return next_dir
 
     def get_input(self, player: Any) -> None:
@@ -102,13 +106,13 @@ class Ghost(Entity):
                 self._reset()
             else:
                 Ghost.update_ghost_state(False)
-                player._reset(True)
+                player._reset(kill=True)
         if self._is_moving:
             return
-        self.next_dir = self.OPPOSITE[self._find_path(player)]
+        self.next_dir = self._find_path(player)
 
     def start_move(self, direction: str) -> None:
-        dx, dy = self.DIR_VEC[direction]
+        dx, dy = DIR_VEC[direction]
         self.grid_x += dx
         self.grid_y += dy
         self.current_dir = direction

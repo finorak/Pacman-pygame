@@ -1,40 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar, Self
 
 import pygame
 
 from codes.rendering.component import AnimatedSprite
-from codes.setting import CELL_SIZE, PLAYER_PADDING
+from codes.setting import (
+    CELL_SIZE,
+    DIR_BIT,
+    DIR_VEC,
+    OPPOSITE,
+    PLAYER_PADDING,
+)
+from codes.utilities.utils import in_bounds, player_in_range
 
 
 class Entity(ABC):
-    ENTITY_STORE: ClassVar = []
-
-    UP = 0b0001
-    RIGHT = 0b0010
-    DOWN = 0b0100
-    LEFT = 0b1000
-
-    DIR_VEC: ClassVar = {
-        "up": (0, -1),
-        "right": (1, 0),
-        "down": (0, 1),
-        "left": (-1, 0),
-    }
-
-    DIR_BIT: ClassVar = {
-        "up": UP,
-        "right": RIGHT,
-        "down": DOWN,
-        "left": LEFT,
-    }
-
-    OPPOSITE: ClassVar = {
-        "up": "down",
-        "down": "up",
-        "left": "right",
-        "right": "left",
-    }
+    ENTITY_STORE: ClassVar[list[Self]] = []
 
     def __init__(
             self, pos: tuple[int, int],
@@ -45,7 +26,6 @@ class Entity(ABC):
         self.render_x = self.init_render_x = float(pos[0])
         self.render_y = self.init_render_y = float(pos[1])
         self.life = life
-        self._cheat_mode: bool = False
 
         self.maze = maze
 
@@ -58,7 +38,7 @@ class Entity(ABC):
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start = (self.grid_x, self.grid_y)
-        self._move_target = self.init_move_target = (self.grid_x, self.grid_y)
+        self._move_target = self._move_start
 
         self.sprites = self.load_image()
         self.current_sprite = self.init_current_sprite = self.sprites[
@@ -83,18 +63,22 @@ class Entity(ABC):
     def pos(self) -> tuple[int, int]:
         return self.grid_x, self.grid_y
 
-    def in_bounds(self, x: int, y: int) -> bool:
-        return 0 <= y < len(self.maze) and 0 <= x < len(self.maze[0])
-
     def can_move(self, direction: str) -> bool:
-        dx, dy = self.DIR_VEC[direction]
+        dx, dy = DIR_VEC[direction]
         nx, ny = self.grid_x + dx, self.grid_y + dy
 
-        if not self.in_bounds(self.grid_x, self.grid_y) or not self.in_bounds(
-            nx, ny
+        if (
+                not in_bounds(
+                    self.grid_x, self.grid_y, self.maze
+                    ) or not in_bounds(nx, ny, self.maze)
         ):
             return False
-        if self._cheat_mode:
+        # typechecking prevent mypy error.
+        if (
+                not TYPE_CHECKING
+                and hasattr(self, "_cheat_mode")
+                and self.cheat_mode
+        ):
             return True
 
         cur_mask = self.maze[self.grid_y][self.grid_x]
@@ -102,7 +86,7 @@ class Entity(ABC):
         if cur_mask == 15:
             return False
 
-        out_bit = self.DIR_BIT[direction]
+        out_bit = DIR_BIT[direction]
 
         return (cur_mask & out_bit) == 0
 
@@ -110,7 +94,7 @@ class Entity(ABC):
     def get_input(self, *arg: Any, **kwarg: Any) -> None: ...
 
     def start_move(self, direction: str) -> None:
-        dx, dy = self.DIR_VEC[direction]
+        dx, dy = DIR_VEC[direction]
         self.grid_x += dx
         self.grid_y += dy
         self.current_dir = direction
@@ -124,21 +108,17 @@ class Entity(ABC):
         self.current_sprite = self.sprites[sprite_name]
 
     def collides_with(self, other: "Entity") -> bool:
-        dx = self.render_x - other.render_x
-        dy = self.render_y - other.render_y
-
-        distance_squared = dx * dx + dy * dy
-
-        radius = 0.6
-
-        return distance_squared < radius * radius
+        return player_in_range(
+                (self.render_x, self.render_y),
+                (other.render_x, other.render_y),
+                0.6)
 
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
 
         if self._is_moving:
             if (
-                self.next_dir == self.OPPOSITE[self.current_dir]
+                self.next_dir == OPPOSITE[self.current_dir]
                 and self.next_dir != self.current_dir
             ):
                 self.reverse_move(self.next_dir)
@@ -178,7 +158,7 @@ class Entity(ABC):
             self.current_sprite.image,
             (
                 self.render_x * CELL_SIZE + PLAYER_PADDING,
-                self.render_y * CELL_SIZE + PLAYER_PADDING
+                self.render_y * CELL_SIZE + PLAYER_PADDING,
             ),
         )
 
@@ -199,13 +179,5 @@ class Entity(ABC):
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start
-        self._move_target = self.init_move_target
-
-    @property
-    def cheat_mode(self) -> bool:
-        """The  property."""
-        return self._cheat_mode
-
-    @cheat_mode.setter
-    def cheat_mode(self, value: bool = False) -> None:
-        self._cheat_mode = value
+        self._move_target = self._move_start
+        self.speed = 3.0

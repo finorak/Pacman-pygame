@@ -6,6 +6,7 @@ from codes.players import Ghost, Player
 from codes.rendering.component.button import Button
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen
+from codes.setting import GHOST_START_SETTING
 
 
 class Data(Screen):
@@ -26,16 +27,17 @@ class Data(Screen):
                 self.game_model.life, self.game_model.level_max_time
             )
         self.ghosts = [
-            Ghost((18, 18), self.maze.maze, "red", self.game_model.points_per_ghost),
-            Ghost((0, 0), self.maze.maze, "blue", self.game_model.points_per_ghost),
-            Ghost((18, 0),  self.maze.maze, "yellow", self.game_model.points_per_ghost),
-            Ghost((0, 18),  self.maze.maze, "pink", self.game_model.points_per_ghost),
+            Ghost(
+                GHOST_START_SETTING[color]['coord'],
+                self.maze.maze, color, self.game_model.points_per_ghost,
+                self.maze.maze_gen)
+            for color in GHOST_START_SETTING
         ]
         self.buttons: dict[str, Button] = {}
 
     @property
     def switch_level(self) -> bool:
-        return self.pacgums.is_empty()
+        return self.pacgums.is_empty
 
     def reset_data(self) -> None:
         # delete from memory
@@ -51,6 +53,7 @@ class Data(Screen):
         self.player._reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze
+            ghost.maze_gen = self.maze.maze_gen
             ghost._reset()
 
     def _go_to_next_level(self) -> None:
