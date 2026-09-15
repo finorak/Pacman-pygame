@@ -1,5 +1,6 @@
 import pygame
 
+from codes.data.data import Data
 from codes.rendering.component import Sprite
 from codes.rendering.screen import (
     GameScreen,
@@ -24,14 +25,15 @@ class Rendering:
         self.screen_size = screen_size
 
         self.clock = pygame.time.Clock()
+        self.data = Data(self.game_model)
 
         self.screens: dict[str, Screen] = {
-            "Home": HomeScreen(self.game_model),
-            "HighScore": HighScoreScreen(self.game_model),
-            "Instructions": InstructionsScreen(self.game_model),
-            "Game": GameScreen(self.game_model),
-            "pause": PauseScreen(self.game_model),
-            "finised": FinishedScreen(self.game_model)
+            "Home": HomeScreen(self.game_model, self.data),
+            "HighScore": HighScoreScreen(self.game_model, self.data),
+            "Instructions": InstructionsScreen(self.game_model, self.data),
+            "Game": GameScreen(self.game_model, self.data),
+            "pause": PauseScreen(self.game_model, self.data),
+            "finised": FinishedScreen(self.game_model, self.data)
         }
 
         self.current_screen = self.screens["Home"]

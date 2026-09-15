@@ -1,21 +1,22 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component import (
     AnimatedSprite,
     Button,
 )
+from codes.rendering.screen.base_screen import Screen
 from codes.rendering.ui.ui import UI
 from codes.setting import CURRENT_SCREEN_PADDING
 
-from .data import Data
 
-
-class GameScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
+class GameScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.activate_cheat: bool = False
-        super().__init__(game_model)
-        self.ui = UI(self.player)
+        self.ui = UI(self.data.player)
+        self.buttons = {}
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
@@ -29,32 +30,32 @@ class GameScreen(Data):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_c]:
             self.activate_cheat = not self.activate_cheat
-            self.player.cheat_mode = self.activate_cheat
+            self.data.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        player_output = self.player.get_input(keys)
+        player_output = self.data.player.get_input(keys)
         if player_output:
             return player_output
-        for ghost in self.ghosts:
-            ghost.get_input(self.player)
+        for ghost in self.data.ghosts:
+            ghost.get_input(self.data.player)
         return None
 
     def update(self, dt: float) -> None:
-        self._go_to_next_level()
-        self.player.update(dt)
-        for ghost in self.ghosts:
+        self.data._go_to_next_level()
+        self.data.player.update(dt)
+        for ghost in self.data.ghosts:
             ghost.update(dt)
         for button in self.buttons.values():
             button.update(dt)
         self.ui.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
-        self.maze.render(screen)
+        self.data.maze.render(screen)
         self.ui.render(screen)
-        self.pacgums.render(self.maze.image)
-        self.player.render(self.maze.image)
-        for ghost in self.ghosts:
-            ghost.render(self.maze.image)
+        self.data.pacgums.render(self.data.maze.image)
+        self.data.player.render(self.data.maze.image)
+        for ghost in self.data.ghosts:
+            ghost.render(self.data.maze.image)
             for a in self.buttons.values():
                 a.draw(screen)
 
@@ -86,7 +87,7 @@ class GameScreen(Data):
             self.buttons[button] = a
 
     def new(self) -> None:
-        self.maze.reset()
-        self.player._reset()
-        for ghost in self.ghosts:
+        self.data.maze.reset()
+        self.data.player._reset()
+        for ghost in self.data.ghosts:
             ghost._reset()

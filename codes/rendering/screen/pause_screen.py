@@ -1,16 +1,16 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.component.sprite import AnimatedSprite
+from codes.rendering.screen.base_screen import Screen
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
-from .data import Data
 
-
-class PauseScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class PauseScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.background = SpriteLoader.import_image("assets", "hud", "table")
         self.background_rect = (
             self.get_center(self.background.width),

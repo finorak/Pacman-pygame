@@ -1,15 +1,17 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.sprite import Sprite
+from codes.rendering.screen.base_screen import Screen
 
 from ..component import AnimatedSprite, Button
-from .data import Data
 
 
-class HomeScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class HomeScreen(Screen):
+
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.assets: dict[str, AnimatedSprite] = {}
         self.buttons: dict[str, Button] = {}
         self.load_buttons()

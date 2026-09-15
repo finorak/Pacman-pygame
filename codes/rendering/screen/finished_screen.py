@@ -2,15 +2,16 @@ from os.path import join
 
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
-from codes.rendering.screen.data import Data
+from codes.rendering.screen.base_screen import Screen
 from codes.rendering.utils.input import Input
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
 
-class FinishedScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class FinishedScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.fonts = pygame.font.Font(join("assets", "fonts", "BoldsPixels.ttf"), 48)
         self.background = SpriteLoader.import_image(
             "assets", "hud", "background"

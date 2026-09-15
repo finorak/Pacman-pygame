@@ -3,17 +3,18 @@ from pathlib import Path
 
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
+from codes.rendering.screen.base_screen import Screen
 
 from ...highscore import HighScoreLoader, HighScoreModel
 from ..component import AnimatedSprite
-from .data import Data
 
 
-class HighScoreScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class HighScoreScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
 
         self.logo = self.load_logo()
         self.buttons = {}
