@@ -1,5 +1,6 @@
 import pygame
 
+from codes.data.data import Data
 from codes.rendering.component import Sprite
 from codes.rendering.screen import (
     GameScreen,
@@ -8,17 +9,15 @@ from codes.rendering.screen import (
     InstructionsScreen,
     Screen,
 )
+from codes.rendering.screen.finished_screen import FinishedScreen
+from codes.rendering.screen.pause_screen import PauseScreen
 from codes.rendering.utils.sprite_loader import SpriteLoader
 from codes.setting import BACKGROUND_SPEED, FPS
 from codes.utilities import load_data
 
 
 class Rendering:
-    def __init__(
-            self,
-            screen_size: tuple[int, int],
-            config_file: str
-    ) -> None:
+    def __init__(self, screen_size: tuple[int, int], config_file: str) -> None:
         pygame.init()
         self.game_model = load_data(config_file)
         self.screen = pygame.display.set_mode(screen_size)
@@ -26,12 +25,15 @@ class Rendering:
         self.screen_size = screen_size
 
         self.clock = pygame.time.Clock()
+        self.data = Data(self.game_model)
 
         self.screens: dict[str, Screen] = {
-            "Home": HomeScreen(self.game_model),
-            "HighScore": HighScoreScreen(self.game_model),
-            "Instructions": InstructionsScreen(self.game_model),
-            "Game": GameScreen(self.game_model),
+            "Home": HomeScreen(self.game_model, self.data),
+            "HighScore": HighScoreScreen(self.game_model, self.data),
+            "Instructions": InstructionsScreen(self.game_model, self.data),
+            "Game": GameScreen(self.game_model, self.data),
+            "pause": PauseScreen(self.game_model, self.data),
+            "finised": FinishedScreen(self.game_model, self.data),
         }
 
         self.current_screen = self.screens["Home"]
@@ -49,16 +51,22 @@ class Rendering:
     def get_event(self) -> None:
         flags = self.current_screen.get_input()
         if flags:
+            if flags == "new":
+                self.data.reset_data(new_game=True)
+                self.screens["Game"] = GameScreen(self.game_model, self.data)
+                flags = "Game"
             if flags == "exit":
                 self.running = False
                 return
-            self.current_screen = self.screens.get(
-                    flags,
-                    self.screens[str(self.current_screen)]
-                    )
+            self.current_screen = self.screens[flags]
+            if flags == "pause" and isinstance(
+                self.current_screen, PauseScreen
+            ):
+                self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
-        self.background.rect.left -= BACKGROUND_SPEED * dt
+        if not isinstance(self.current_screen, PauseScreen):
+            self.background.rect.left -= BACKGROUND_SPEED * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:

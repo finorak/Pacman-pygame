@@ -14,9 +14,8 @@ def valid_neighboor(value: int, wall: int) -> bool:
 
 
 def get_direction(
-        target_pos: tuple[int, int],
-        current_pos: tuple[int, int],
-
+    target_pos: tuple[int, int],
+    current_pos: tuple[int, int],
 ) -> str:
     """
     ```
@@ -33,16 +32,13 @@ def get_direction(
 
 
 def cell_is_valid(
-        current_pos: tuple[int, int],
-        new_pos: tuple[int, int],
-        maze: list[list[int]]
+    current_pos: tuple[int, int],
+    new_pos: tuple[int, int],
+    maze: list[list[int]],
 ) -> bool:
     old_x, old_y = current_pos
     new_x, new_y = new_pos
-    if (
-            not in_bounds(old_x, old_y, maze)
-            or not in_bounds(new_x, new_y, maze)
-    ):
+    if not in_bounds(old_x, old_y, maze) or not in_bounds(new_x, new_y, maze):
         return False
     if maze[new_x][new_y] == 15:
         return False
@@ -52,9 +48,9 @@ def cell_is_valid(
 
 
 def player_in_range(
-        current_pos: tuple[float, float],
-        player_pos: tuple[float, float],
-        radius: float
+    current_pos: tuple[float, float],
+    player_pos: tuple[float, float],
+    radius: float,
 ) -> bool:
     cx, cy = current_pos
     px, py = player_pos

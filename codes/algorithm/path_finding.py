@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from mazegenerator import MazeGenerator
 
@@ -10,10 +10,10 @@ class Algorithm:
         pass
 
     def bfs(
-            self,
-            start_pos: tuple[int, int],
-            end_pos: tuple[int, int],
-            maze_gen: MazeGenerator
+        self,
+        start_pos: tuple[int, int],
+        end_pos: tuple[int, int],
+        maze_gen: MazeGenerator,
     ) -> list[tuple[int, int]]:
         maze_gen._entryx = start_pos[0]
         maze_gen._entryy = start_pos[1]
@@ -26,7 +26,7 @@ class Algorithm:
         return self._reconstruct_path(found_path, start_pos)
 
     def _reconstruct_path(
-            self, found_path: str | Any, start_pos: tuple[int, int]
+        self, found_path: str | Any, start_pos: tuple[int, int]
     ) -> list[tuple[int, int]]:
         paths: list[tuple[int, int]] = []
         current: tuple[int, int] = start_pos

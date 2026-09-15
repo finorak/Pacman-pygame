@@ -2,7 +2,7 @@ SCREEN_SIZE: tuple[int, int] = 1280, 720
 CURRENT_SCREEN_PADDING: tuple[int, int] = 60, 5
 
 # SUPPOSED CELL SIZE
-CELL_SIZE: int = 34
+CELL_SIZE: int = 32
 GUM_PADDING: int = 2
 CELL_PADDING: int = 3
 PLAYER_PADDING: int = 2
@@ -22,26 +22,18 @@ TARGET_DIRECTION: dict[tuple[int, int], str] = {
 }
 
 DIRECTION: dict[str, tuple[int, int]] = {
-        "E": (1, 0),
-        "W": (-1, 0),
-        "N": (0, -1),
-        "S": (0, 1)
-        }
+    "E": (1, 0),
+    "W": (-1, 0),
+    "N": (0, -1),
+    "S": (0, 1),
+}
 
 GHOST_START_SETTING: dict[str, dict[str, tuple[int, int]]] = {
-        "blue": {
-            "coord": (0, 0)
-            },
-        "yellow": {
-            "coord": (18, 0)
-            },
-        "pink": {
-            "coord": (0, 18)
-            },
-        "red": {
-            "coord": (18, 18)
-            }
-        }
+    "blue": {"coord": (0, 0)},
+    "yellow": {"coord": (18, 0)},
+    "pink": {"coord": (0, 18)},
+    "red": {"coord": (18, 18)},
+}
 
 UP: int = 0b0001
 RIGHT: int = 0b0010

@@ -3,20 +3,21 @@ from pathlib import Path
 
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
+from codes.rendering.screen.base_screen import Screen
 
 from ...highscore import HighScoreLoader, HighScoreModel
 from ..component import AnimatedSprite
-from .data import Data
 
 
-class HighScoreScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class HighScoreScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
 
         self.logo = self.load_logo()
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
         self.load_buttons()
         self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
         self.highscore: list[HighScoreModel] = self.highscore_loader.highscore
@@ -37,9 +38,12 @@ class HighScoreScreen(Data):
                         return b.result
         keys = pygame.key.get_just_pressed()
         if keys[pygame.K_1]:
-            self.highscore_loader.add_score("aaaa", random.randint(100, 100000))
+            self.highscore_loader.add_score(
+                "aaaa", random.randint(100, 100000), 100
+            )
             self.leaderboard = self.draw_leaderboard()
             self.highscore = self.highscore_loader.highscore
+        return None
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():
@@ -56,7 +60,9 @@ class HighScoreScreen(Data):
         return AnimatedSprite((100, 40), [self.loader.import_image(*path)])
 
     def draw_leaderboard(self) -> pygame.Surface:
-        surface = pygame.Surface(self.screen_size, pygame.SRCALPHA, 32).convert_alpha()
+        surface = pygame.Surface(
+            self.screen_size, pygame.SRCALPHA, 32
+        ).convert_alpha()
         surface.fill((0, 0, 0, 0))
         for i, score in enumerate(self.highscore, 1):
             text = self.fonts.render(

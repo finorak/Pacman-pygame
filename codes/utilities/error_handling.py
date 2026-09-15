@@ -24,4 +24,5 @@ def error_handler(func: Callable) -> Callable:
             log(e)
         except Exception as e:
             log(e)
+
     return wrapper

@@ -11,5 +11,5 @@ __all__ = [
     "HomeScreen",
     "InstructionsScreen",
     "PauseScreen",
-    "Screen"
+    "Screen",
 ]

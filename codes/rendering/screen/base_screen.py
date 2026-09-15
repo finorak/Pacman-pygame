@@ -2,20 +2,20 @@ from abc import ABC, abstractmethod
 
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
-from codes.rendering.component.sprite import Sprite
 
 from ...setting import SCREEN_SIZE
 from ..utils import SpriteLoader
 
 
 class Screen(ABC):
-    def __init__(self, game_model: GameModel) -> None:
+    def __init__(self, game_model: GameModel, data: Data) -> None:
         super().__init__()
+        self.data = data
         self.game_model = game_model
         self.screen_size = SCREEN_SIZE
         self.loader = SpriteLoader()
-        self.backgroung: Sprite
 
     @abstractmethod
     def get_input(self) -> str | None: ...
@@ -32,5 +32,4 @@ class Screen(ABC):
         return int((self.screen_size[1] - lengh) // 2)
 
     def __str__(self) -> str:
-        name: str = self.__class__.__name__
-        return name.removesuffix("Screen")
+        return self.__class__.__name__.removesuffix("Screen")
