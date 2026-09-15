@@ -28,8 +28,8 @@ class Screen(ABC):
 
     def get_center(self, lengh: float, horizontal: bool = True) -> int:
         if horizontal:
-            return int((SCREEN_SIZE[0] - lengh) // 2)
-        return int((SCREEN_SIZE[1] - lengh) // 2)
+            return int((self.screen_size[0] - lengh) // 2)
+        return int((self.screen_size[1] - lengh) // 2)
 
     def __str__(self) -> str:
         name: str = self.__class__.__name__

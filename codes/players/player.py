@@ -22,6 +22,7 @@ class Player(Entity):
         self.can_eat_ghost: bool = False
         self.score: int = 0
         self.current_level: int = 0
+        self._cheat_mode: bool = False
 
         self.max_time = max_time
         self.timer = max_time
@@ -66,3 +67,12 @@ class Player(Entity):
 
     def _reset(self, kill: bool = False):
         return super()._reset(kill)
+
+    @property
+    def cheat_mode(self) -> bool:
+        """The  property."""
+        return self._cheat_mode
+
+    @cheat_mode.setter
+    def cheat_mode(self, value: bool = False) -> None:
+        self._cheat_mode = value
