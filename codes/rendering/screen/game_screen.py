@@ -83,3 +83,9 @@ class GameScreen(Data):
             )
             a = Button(pos, tmp, result)
             self.buttons[button] = a
+
+    def new(self) -> None:
+        self.maze.reset()
+        self.player._reset()
+        for ghost in self.ghosts:
+            ghost._reset()

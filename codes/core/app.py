@@ -8,6 +8,7 @@ from codes.rendering.screen import (
     InstructionsScreen,
     Screen,
 )
+from codes.rendering.screen.pause_screen import PauseScreen
 from codes.rendering.utils.sprite_loader import SpriteLoader
 from codes.setting import BACKGROUND_SPEED, FPS
 from codes.utilities import load_data
@@ -32,6 +33,7 @@ class Rendering:
             "HighScore": HighScoreScreen(self.game_model),
             "Instructions": InstructionsScreen(self.game_model),
             "Game": GameScreen(self.game_model),
+            "pause": PauseScreen(self.game_model)
         }
 
         self.current_screen = self.screens["Home"]
@@ -49,16 +51,19 @@ class Rendering:
     def get_event(self) -> None:
         flags = self.current_screen.get_input()
         if flags:
+            if flags == "new":
+                self.screens["Game"] = GameScreen(self.game_model)
+                flags = "Game"
             if flags == "exit":
                 self.running = False
                 return
-            self.current_screen = self.screens.get(
-                    flags,
-                    self.screens[str(self.current_screen)]
-                    )
+            self.current_screen = self.screens[flags]
+            if flags == "pause" and isinstance(self.current_screen, PauseScreen):
+                self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
-        self.background.rect.left -= BACKGROUND_SPEED * dt
+        if not isinstance(self.current_screen, PauseScreen):
+            self.background.rect.left -= BACKGROUND_SPEED * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:

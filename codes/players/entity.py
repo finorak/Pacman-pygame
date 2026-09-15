@@ -180,4 +180,3 @@ class Entity(ABC):
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start
         self._move_target = self._move_start
-        self.speed = 3.0

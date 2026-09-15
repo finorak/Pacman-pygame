@@ -117,3 +117,8 @@ class Maze:
     def render(self, surface: pygame.Surface) -> None:
         surface.blit(self.image, self.rect)
         self._reset()
+    
+    def reset(self) -> None:
+        self.maze_gen.generate()
+        self.maze = self.maze_gen.maze
+        self._get_maze_surface()

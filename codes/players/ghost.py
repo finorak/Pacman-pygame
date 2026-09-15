@@ -65,7 +65,6 @@ class Ghost(Entity):
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
                 self.start_timer = 0
-        self.update_sprite(self.current_dir)
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:

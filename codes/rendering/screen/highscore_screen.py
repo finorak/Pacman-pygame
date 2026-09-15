@@ -37,7 +37,7 @@ class HighScoreScreen(Data):
                         return b.result
         keys = pygame.key.get_just_pressed()
         if keys[pygame.K_1]:
-            self.highscore_loader.add_score("aaaa", random.randint(100, 100000))
+            self.highscore_loader.add_score("aaaa", random.randint(100, 100000), 100)
             self.leaderboard = self.draw_leaderboard()
             self.highscore = self.highscore_loader.highscore
 
