@@ -4,7 +4,7 @@ import pygame
 
 from codes.setting import SCREEN_SIZE
 
-from ...players import Player
+from ...entity import Player
 from ..utils import SpriteLoader
 
 # In-Game HUD (always visible during gameplay):

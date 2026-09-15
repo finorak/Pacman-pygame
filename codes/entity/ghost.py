@@ -36,9 +36,11 @@ class Ghost(Entity):
         self.algorithm = Algorithm()
         self.start_timer: float = 0.0
         self.score: int = score
-        self._radius: int = 10  # cell to count just upgrade as level grow
+        self._radius: int = 4  # cell to count just upgrade as level grow
         self._target_position = pos
         self.maze_gen: MazeGenerator = maze_gen
+
+        self.spawn_time = 2.0
         Ghost.GHOSTS_STORE.append(self)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -95,8 +97,8 @@ class Ghost(Entity):
                 return
             if self.can_be_eaten:
                 player.score += self.score
-                self.can_be_eaten = False
                 self.start_timer = 0
+                self.can_be_eaten = False
                 self._reset()
             else:
                 Ghost.update_ghost_state(False)
@@ -128,6 +130,6 @@ class Ghost(Entity):
                 ghost.start_timer = 0
             ghost.can_be_eaten = value
             if ghost.can_be_eaten:
-                ghost.speed = 1.0
+                ghost.speed = 1.5
             else:
                 ghost.speed = ghost.initial_speed

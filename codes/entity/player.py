@@ -1,8 +1,8 @@
 import pygame
 from pygame.key import ScancodeWrapper
 
+from codes.entity.ghost import Ghost
 from codes.pacgums.pacgums import Pacgums
-from codes.players.ghost import Ghost
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 
@@ -48,8 +48,8 @@ class Player(Entity):
         self.score += point
         if point == self.pacgums.super_pacgum_score:
             Ghost.update_ghost_state(True)
-        if self.timer < 0 or self.life <= 0:
-            return "lose"
+        if self.timer < 0 or self.life <= 0 or key[pygame.K_c]:
+            return "finised"
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"
         elif key[pygame.K_s] or key[pygame.K_DOWN]:

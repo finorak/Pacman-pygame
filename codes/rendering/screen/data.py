@@ -1,8 +1,8 @@
 import gc
 
+from codes.entity import Ghost, Player
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
-from codes.players import Ghost, Player
 from codes.rendering.component.button import Button
 from codes.rendering.component.maze import Maze
 from codes.rendering.screen.base_screen import Screen

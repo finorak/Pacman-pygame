@@ -8,6 +8,7 @@ from codes.rendering.screen import (
     InstructionsScreen,
     Screen,
 )
+from codes.rendering.screen.finished_screen import FinishedScreen
 from codes.rendering.screen.pause_screen import PauseScreen
 from codes.rendering.utils.sprite_loader import SpriteLoader
 from codes.setting import BACKGROUND_SPEED, FPS
@@ -30,6 +31,7 @@ class Rendering:
             "Instructions": InstructionsScreen(self.game_model),
             "Game": GameScreen(self.game_model),
             "pause": PauseScreen(self.game_model),
+            "finised": FinishedScreen(self.game_model)
         }
 
         self.current_screen = self.screens["Home"]

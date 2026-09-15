@@ -18,6 +18,7 @@ class PauseScreen(Data):
         )
         self.buttons = {}
         self.load_buttons()
+        self.logo = SpriteLoader.import_image("assets", "screen", "pause")
 
     def enter(self, screen: pygame.Surface) -> None:
         self.back = screen.copy()
@@ -40,6 +41,7 @@ class PauseScreen(Data):
     def render(self, screen: pygame.Surface) -> None:
         screen.blit(self.back)
         screen.blit(self.background, self.background_rect)
+        screen.blit(self.logo, (self.get_center(self.logo.width, horizontal=True), 200))
         for button in self.buttons.values():
             button.draw(screen)
 

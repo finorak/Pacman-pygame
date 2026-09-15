@@ -15,12 +15,12 @@ class HighScoreLoader:
         highscores = [
             HighScoreModel.model_validate(value) for value in highscore
         ]
-        return sorted(highscores, key=lambda x: -x.player_score)
+        return sorted(highscores, key=lambda x: -x.player_score)[:10]
 
     def save(self, models: list[HighScoreModel]) -> None:
         with open(self.path, "w") as file:
             file.write(
-                json.dumps([model.model_dump_json() for model in models])
+                json.dumps([model.model_dump_json() for model in models])[:10]
             )
 
     def update(self) -> None:
