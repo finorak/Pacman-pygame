@@ -1,4 +1,5 @@
 import random
+import time
 
 import pygame
 
@@ -47,10 +48,10 @@ class Pacgums:
         self.pacgums.clear()
         self.super_pacgums.clear()
 
-        for i in range(random.randint(1, 15)):
-            random.shuffle(self.all_pos)
+        random.seed(time.time())
+        positions = random.sample(self.all_pos, numbers)
 
-        self.pacgums = set(self.all_pos[:numbers])
+        self.pacgums = set(positions[:numbers])
         self.super_pacgums = {
             (0, 0),
             (len(self.maze) - 1, len(self.maze[0]) - 1),

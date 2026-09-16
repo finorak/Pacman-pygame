@@ -1,4 +1,3 @@
-import random
 from pathlib import Path
 
 import pygame
@@ -35,12 +34,6 @@ class HighScoreScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-        keys = pygame.key.get_just_pressed()
-        if keys[pygame.K_1]:
-            self.highscore_loader.add_score(
-                "aaaa", random.randint(100, 100000), 100
-            )
-            self.leaderboard = self.draw_leaderboard()
         return None
 
     def update(self, dt: float) -> None:

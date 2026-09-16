@@ -5,6 +5,7 @@ from codes.setting import SCREEN_SIZE
 from codes.utilities.error_handling import error_handler
 
 
+@error_handler
 def main() -> None:
     if len(sys.argv) != 2:
         print("[ERROR] Invalid arguments.", file=sys.stderr)
