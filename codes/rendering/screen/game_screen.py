@@ -27,9 +27,6 @@ class GameScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 2:
-                self.data.reset_data(True)
-                return "finished"
         keys = pygame.key.get_pressed()
         if keys[pygame.K_c]:
             self.activate_cheat = not self.activate_cheat
@@ -40,11 +37,10 @@ class GameScreen(Screen):
         if player_output:
             return player_output
         if self.data.finished:
-            self.data.reset_data(True)
             return "finished"
         for ghost in self.data.ghosts:
             ghost.get_input(self.data.player)
-        return None
+        return super().get_input()
 
     def update(self, dt: float) -> None:
         self.data._go_to_next_level()
@@ -60,8 +56,8 @@ class GameScreen(Screen):
         self.data.pacgums.render(self.data.maze.image)
         for ghost in self.data.ghosts:
             ghost.render(self.data.maze.image)
-            for a in self.buttons.values():
-                a.draw(screen)
+        for a in self.buttons.values():
+            a.draw(screen)
         self.ui.render(screen)
         self.data.player.render(self.data.maze.image)
 

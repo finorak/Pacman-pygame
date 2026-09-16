@@ -82,7 +82,7 @@ class Data:
     def _go_to_next_level(self) -> None:
         if not self.switch_level:
             return
-        if self.player.level >= len(self.game_model.levels):
+        if self.player.level >= self.game_model.level_count:
             self.finished = "win"
             return
         self.player.timer = self.game_model.level_max_time

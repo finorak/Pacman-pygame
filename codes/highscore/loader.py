@@ -21,7 +21,10 @@ class HighScoreLoader:
             ]
             return sorted(highscores, key=lambda x: -x.player_score)[:10]
         except (OSError, ValueError) as e:
-            print(f"[WARNING] Cannot load the save file {self.path}: {e}", file=sys.stderr)
+            print(
+                    f"[WARNING] Cannot load the save file {self.path}: {e}",
+                    file=sys.stderr
+                )
         return []
 
     def save(self, models: list[HighScoreModel]) -> None:
@@ -33,7 +36,10 @@ class HighScoreLoader:
                     indent=4,
                 )
             except ValueError as e:
-                print(f"[WARNING] Cannot write the save file: {e}", file=sys.stderr)
+                print(
+                        f"[WARNING] Cannot write the save file: {e}",
+                        file=sys.stderr
+                    )
 
     def add_score(self, name: str, score: int, time: int) -> None:
         self.changed = True
