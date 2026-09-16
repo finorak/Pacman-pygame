@@ -29,7 +29,7 @@ class FinishedScreen(Screen):
         self.input = Input(
             (
                 self.get_center(400),
-                self.background_rect[1] + 155,
+                self.background_rect[1] + 125,
             ),
             self.small_font,
             "ENTER YOUR NAME",
@@ -90,7 +90,7 @@ class FinishedScreen(Screen):
             prompt,
             (
                 self.get_center(prompt.get_width()),
-                self.background_rect[1] + 125,
+                self.background_rect[1] + 95,
             ),
         )
         self.input.render(screen)
