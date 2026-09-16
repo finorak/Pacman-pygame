@@ -32,6 +32,7 @@ class Entity(ABC):
         self.last_dir: str = self.current_dir
         self.next_dir = "up"
 
+        self.speed = 3.0
         self.speed = 3.5
         self.initial_speed = self.speed
         self._move_buffer = 0.0
@@ -177,7 +178,6 @@ class Entity(ABC):
 
         self.current_dir = self.init_current_dir
 
-        self._move_buffer = 0.0
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0
         self._move_start = self.init_move_start

@@ -8,7 +8,7 @@ class Input:
         self,
         pos: tuple[int, int],
         font: pygame.font.Font,
-        placeholder: str = "",
+        placeholder: str = "test",
     ) -> None:
         self.pos = pos
         self.font = font

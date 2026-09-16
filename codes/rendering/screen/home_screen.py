@@ -26,7 +26,7 @@ class HomeScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-        return None
+        return super().get_input()
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():

@@ -55,7 +55,7 @@ class Player(Entity):
         self.score += point
         if point == self.pacgums.super_pacgum_score:
             Ghost.update_ghost_state(True)
-        if self.timer < 0 or self.life <= 0 or key[pygame.K_c]:
+        if self.timer <= 0 or self.life <= 0:
             return "finished"
         if key[pygame.K_w] or key[pygame.K_UP]:
             self.next_dir = "up"

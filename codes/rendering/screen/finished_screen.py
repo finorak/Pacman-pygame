@@ -64,7 +64,7 @@ class FinishedScreen(Screen):
             ):
                 self._save_score()
                 return "HighScore"
-        return None
+        return super().get_input()
 
     def update(self, dt: float) -> None:
         self.input.update(dt)

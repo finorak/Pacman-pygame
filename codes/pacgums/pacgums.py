@@ -82,4 +82,4 @@ class Pacgums:
 
     @property
     def is_empty(self) -> bool:
-        return not self.pacgums and not self.super_pacgums
+        return not self.pacgums

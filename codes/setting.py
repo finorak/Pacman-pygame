@@ -7,7 +7,7 @@ GUM_PADDING: int = 2
 CELL_PADDING: int = 3
 PLAYER_PADDING: int = 2
 
-GHOST_ESCAPE_TIME: int = 30  # second
+GHOST_ESCAPE_TIME: int = 10  # second
 RADIUS_UPGRAD_PER_LEVEL: int = 5
 SUPER_GUM_COUNT: int = 4
 
