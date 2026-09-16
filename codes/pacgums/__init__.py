@@ -1,3 +1,3 @@
-from .pacgum import Pacgum, SuperGum
+from .pacgums import Pacgums
 
-__all__ = ["Pacgum", "SuperGum"]
+__all__ = ["Pacgums"]

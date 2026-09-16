@@ -19,7 +19,7 @@ class Button:
         self.mouse_hover()
         screen.blit(self.current_sprite.image, self.pos)
 
-    def mouse_hover(self):
+    def mouse_hover(self) -> None:
         self.current_sprite = self.sprites["normal"]
         pos = pygame.mouse.get_pos()
         if self.current_sprite.rect.collidepoint(pos):

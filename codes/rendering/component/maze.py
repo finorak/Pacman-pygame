@@ -5,7 +5,7 @@ from codes.setting import CELL_PADDING, CELL_SIZE
 
 
 class Maze:
-    def __init__(self, size: tuple[int, int], seed: int = 42) -> None:
+    def __init__(self, size: tuple[int, int], seed: int = 0) -> None:
         self.maze_gen = MazeGenerator(size, seed=seed)
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
@@ -24,7 +24,6 @@ class Maze:
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
-
         surface = pygame.Surface(
             self.maze_size, pygame.SRCALPHA, 32
         ).convert_alpha()
@@ -44,7 +43,7 @@ class Maze:
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
         real_pos = pos[0] * self.cell_size + 1, pos[1] * self.cell_size + 1
-        color = (255, 255, 255)
+        color = (50, 105, 50)
         i = 0
         while (value >> i) != 0:
             if ((value >> i) & 1) != 1:
@@ -123,3 +122,8 @@ class Maze:
     def render(self, surface: pygame.Surface) -> None:
         surface.blit(self.image, self.rect)
         self._reset()
+
+    def reset(self) -> None:
+        self.maze_gen.generate()
+        self.maze = self.maze_gen.maze
+        self._get_maze_surface()

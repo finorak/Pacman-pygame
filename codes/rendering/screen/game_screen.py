@@ -1,20 +1,22 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
-from codes.players import Ghost
 from codes.rendering.component import (
     AnimatedSprite,
     Button,
 )
-from codes.rendering.component.hud import HUD
+from codes.rendering.screen.base_screen import Screen
+from codes.rendering.ui.ui import UI
+from codes.setting import CURRENT_SCREEN_PADDING
 
-from .data import Data
 
-
-class GameScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
-        self.hub = HUD()
+class GameScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
+        self.activate_cheat: bool = False
+        self.ui = UI(self.data.player)
+        self.buttons: dict[str, Button] = {}
 
     def get_input(self) -> str | None:
         for event in pygame.event.get():
@@ -26,37 +28,48 @@ class GameScreen(Data):
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_c]:
+            self.activate_cheat = not self.activate_cheat
+            self.data.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"
-        self.player.get_input(keys, Ghost)
-        for ghost in self.ghosts:
-            ghost.get_input(self.player)
+        player_output = self.data.player.get_input(keys)
+        if player_output:
+            return player_output
+        if self.data.finished:
+            return "finished"
+        for ghost in self.data.ghosts:
+            ghost.get_input(self.data.player)
+        return None
 
     def update(self, dt: float) -> None:
-        self.hud.update(dt)
-        self.player.update(dt)
-        for ghost in self.ghosts:
+        self.data._go_to_next_level()
+        for ghost in self.data.ghosts:
             ghost.update(dt)
+        self.data.player.update(dt)
         for button in self.buttons.values():
             button.update(dt)
+        self.ui.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
-        self.hud.render(screen)
-        self.player.render(self.maze.image)
-        self.maze.render(screen)
-        for gum_coord in self.gume_dict:
-            gum = self.gume_dict[gum_coord]
-            if gum.eaten:
-                continue
-            gum.render(self.maze.image)
-        for ghost in self.ghosts:
-            ghost.render(self.maze.image)
+        self.data.maze.render(screen)
+        self.data.pacgums.render(self.data.maze.image)
+        for ghost in self.data.ghosts:
+            ghost.render(self.data.maze.image)
         for a in self.buttons.values():
             a.draw(screen)
+        self.ui.render(screen)
+        self.data.player.render(self.data.maze.image)
 
     def load_buttons(self) -> None:
         buttons = {
-            "exit": ((self.screen_size[0] - 60, 5), "pause"),
+            "exit": (
+                (
+                    self.screen_size[0] - CURRENT_SCREEN_PADDING[0],
+                    CURRENT_SCREEN_PADDING[1],
+                ),
+                "pause",
+            ),
         }
         for button, (pos, result) in buttons.items():
             tmp = {}
@@ -74,3 +87,9 @@ class GameScreen(Data):
             )
             a = Button(pos, tmp, result)
             self.buttons[button] = a
+
+    def new(self) -> None:
+        self.data.maze.reset()
+        self.data.player._reset()
+        for ghost in self.data.ghosts:
+            ghost._reset()

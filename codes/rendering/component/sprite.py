@@ -26,8 +26,8 @@ class AnimatedSprite(Sprite):
         sprites: list[pygame.Surface],
     ) -> None:
         self.sprites = sprites
-        self.sprite_index = 0
-        self.animation_speed = 8
+        self.sprite_index = 0.0
+        self.animation_speed = 10
         self.sprite_count = len(self.sprites)
         super().__init__(pos, sprites[0])
 

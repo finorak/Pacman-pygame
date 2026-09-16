@@ -1,6 +1,8 @@
-from collections import deque
+from typing import Any
 
-from codes.utilities import find_cell_neighboors
+from mazegenerator import MazeGenerator
+
+from codes.setting import DIRECTION
 
 
 class Algorithm:
@@ -8,46 +10,29 @@ class Algorithm:
         pass
 
     def bfs(
-            self,
-            start_pos: tuple[int, int],
-            end_pos: tuple[int, int],
-            maze: list[list[int]]
+        self,
+        start_pos: tuple[int, int],
+        end_pos: tuple[int, int],
+        maze_gen: MazeGenerator,
     ) -> list[tuple[int, int]]:
-        stack = deque([start_pos])
-        came_from: dict[tuple[int, int], tuple[int, int] | None] = {
-                start_pos: None
-                }
-        visited: set[tuple[int, int]] = set()
-        while stack:
-            current = stack.popleft()
-            if current == end_pos:
-                return self._reconstruct_path(start_pos, end_pos, came_from)
-            if current in visited:
-                continue
-            visited.add(current)
-            neighboors: list[tuple[int, int]] = find_cell_neighboors(
-                    maze, current)
-            filtered_cells: list[tuple[int, int]] = []
-            for cell in neighboors:
-                if cell in visited:
-                    continue
-                filtered_cells.append(cell)
-                came_from[cell] = current
-            stack.extend(filtered_cells)
-        return []
+        maze_gen._entryx = start_pos[0]
+        maze_gen._entryy = start_pos[1]
+        maze_gen._exitx = end_pos[0]
+        maze_gen._exity = end_pos[1]
+        maze_gen._find_short_path()
+        found_path: str | Any = maze_gen.shortest_path
+        if not found_path:
+            return []
+        return self._reconstruct_path(found_path, start_pos)
 
     def _reconstruct_path(
-            self,
-            start_pos: tuple[int, int],
-            end_pos: tuple[int, int],
-            came_from: dict[tuple[int, int], tuple[int, int] | None]
+        self, found_path: str | Any, start_pos: tuple[int, int]
     ) -> list[tuple[int, int]]:
-        current: tuple[int, int] | None = came_from[end_pos]
         paths: list[tuple[int, int]] = []
-        while current is not None:
-            if current == start_pos:
-                break
-            paths.append(current)
-            current = came_from[current]
-        paths.reverse()
+        current: tuple[int, int] = start_pos
+        for direcition in found_path:
+            x: int = current[0] + DIRECTION[direcition][0]
+            y: int = current[1] + DIRECTION[direcition][1]
+            paths.append((x, y))
+            current = paths[-1]
         return paths

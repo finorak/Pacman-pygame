@@ -1,17 +1,18 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
+from codes.rendering.screen.base_screen import Screen
 
 from ..component import AnimatedSprite
-from .data import Data
 
 
-class InstructionsScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class InstructionsScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.assets = self.load_assets()
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
         self.load_buttons()
 
     def get_input(self) -> str | None:
@@ -23,6 +24,7 @@ class InstructionsScreen(Data):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
+        return None
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():

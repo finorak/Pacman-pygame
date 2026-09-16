@@ -1,27 +1,24 @@
-import random
 from pathlib import Path
 
-from codes.parsing.parse import GameModel
-from codes.rendering.component.button import Button
-
-from ..component import AnimatedSprite
-from .data import Data
 import pygame
 
-from ...highscore import HighScoreLoader, HighScoreModel
-from ..component import AnimatedSprite, Button
-from .base_screen import Screen
+from codes.data.data import Data
+from codes.parsing.parse import GameModel
+from codes.rendering.component.button import Button
+from codes.rendering.screen.base_screen import Screen
+
+from ...highscore import HighScoreLoader
+from ..component import AnimatedSprite
 
 
-class HighScoreScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class HighScoreScreen(Screen):
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
 
         self.logo = self.load_logo()
-        self.buttons = {}
+        self.buttons: dict[str, Button] = {}
         self.load_buttons()
         self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
-        self.highscore: list[HighScoreModel] = self.highscore_loader.highscore
 
         self.fonts = pygame.Font(
             Path("assets", "fonts", "BoldsPixels.ttf"), size=32
@@ -37,11 +34,7 @@ class HighScoreScreen(Data):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-        keys = pygame.key.get_just_pressed()
-        if keys[pygame.K_1]:
-            self.highscore_loader.add_score("aaaa", random.randint(100, 100000))
-            self.leaderboard = self.draw_leaderboard()
-            self.highscore = self.highscore_loader.highscore
+        return None
 
     def update(self, dt: float) -> None:
         for button in self.buttons.values():
@@ -51,22 +44,46 @@ class HighScoreScreen(Data):
         screen.blit(self.logo.image, self.logo.rect)
         for a in self.buttons.values():
             a.draw(screen)
-        screen.blit(self.leaderboard, (100, 100))
+        screen.blit(self.leaderboard)
 
     def load_logo(self) -> AnimatedSprite:
         path = ("assets", "highscore", "Logo")
-        return AnimatedSprite((100, 40), [self.loader.import_image(*path)])
+        return AnimatedSprite((470, 50), [self.loader.import_image(*path)])
 
     def draw_leaderboard(self) -> pygame.Surface:
-        surface = pygame.Surface(self.screen_size).convert_alpha()
+        surface = pygame.Surface(
+            self.screen_size, pygame.SRCALPHA, 32
+        ).convert_alpha()
         surface.fill((0, 0, 0, 0))
-        for i, score in enumerate(self.highscore, 1):
-            text = self.fonts.render(
-                f"{i:02} - {score.player_name}: {score.player_score}",
-                True,
-                "yellow",
+        for i, score in enumerate(self.highscore_loader.highscore, 1):
+            if i == 1:
+                text = self.fonts.render(
+                    f"{i:02} - {score.player_name}: {score.player_score}",
+                    True,
+                    "red",
+                )
+            elif i == 2:
+                text = self.fonts.render(
+                    f"{i:02} - {score.player_name}: {score.player_score}",
+                    True,
+                    "gold",
+                )
+            elif i == 3:
+                text = self.fonts.render(
+                    f"{i:02} - {score.player_name}: {score.player_score}",
+                    True,
+                    "pink",
+                )
+            else:
+                text = self.fonts.render(
+                    f"{i:02} - {score.player_name}: {score.player_score}",
+                    True,
+                    (230, 230, 230),
+                )
+            surface.blit(
+                text,
+                (self.get_center(text.width), i * 50 + 100),
             )
-            surface.blit(text, (0, i * 50))
         return surface
 
     def load_buttons(self) -> None:

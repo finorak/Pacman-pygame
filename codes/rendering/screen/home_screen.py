@@ -1,15 +1,17 @@
 import pygame
 
+from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.sprite import Sprite
+from codes.rendering.screen.base_screen import Screen
 
 from ..component import AnimatedSprite, Button
-from .data import Data
 
 
-class HomeScreen(Data):
-    def __init__(self, game_model: GameModel) -> None:
-        super().__init__(game_model)
+class HomeScreen(Screen):
+
+    def __init__(self, game_model: GameModel, data: Data) -> None:
+        super().__init__(game_model, data)
         self.assets: dict[str, AnimatedSprite] = {}
         self.buttons: dict[str, Button] = {}
         self.load_buttons()
@@ -34,8 +36,8 @@ class HomeScreen(Data):
         screen.blit(self.logo.image, self.logo.rect)
         for a in self.assets.values():
             screen.blit(a.image, a.rect)
-        for a in self.buttons.values():
-            a.draw(screen)
+        for b in self.buttons.values():
+            b.draw(screen)
 
     def load_assets(self) -> dict[str, AnimatedSprite]:
         image_path = {"logo": ("assets", "Logo")}

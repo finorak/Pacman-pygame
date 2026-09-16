@@ -2,35 +2,46 @@ import random
 from time import perf_counter
 from typing import Any, ClassVar
 
+from mazegenerator import MazeGenerator
+
 from codes.algorithm import Algorithm
 from codes.rendering.component import AnimatedSprite
 from codes.rendering.utils import SpriteLoader
 from codes.setting import (
+    DIR_VEC,
     GHOST_ESCAPE_TIME,
     RADIUS_UPGRAD_PER_LEVEL,
-    TARGET_DIRECTION,
 )
-from codes.utilities import get_state, player_in_range
+from codes.utilities import get_direction, player_in_range
 
 from .entity import Entity
 
 
 class Ghost(Entity):
-    GHOSTS_STORE: ClassVar = []
+    GHOSTS_STORE: ClassVar[list["Ghost"]] = []
+
     def __init__(
-        self, pos: tuple[int, int],
-        maze: list[list[int]], name: str,
-        score: int
+        self,
+        pos: tuple[int, int],
+        maze: list[list[int]],
+        name: str,
+        score: int,
+        maze_gen: MazeGenerator,
     ) -> None:
         self.name = name
         super().__init__(pos, maze)
         self.speed = 2.0
+        self.initial_speed = self.speed
         self.can_be_eaten: bool = False
         self.algorithm = Algorithm()
-        self.start_timer: float = 0
+        self.start_timer: float = 0.0
         self.score: int = score
-        self._radius: int = 2 # cell to count just upgrade as level grow
+        self._radius: int = 4  # cell to count just upgrade as level grow
         self._target_position = pos
+        self.maze_gen: MazeGenerator = maze_gen
+
+        self.spawn_time = 2.0
+        self.player_dead = False
         Ghost.GHOSTS_STORE.append(self)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -42,14 +53,20 @@ class Ghost(Entity):
                     "assets", "ghosts", self.name, direction
                 ),
             )
+        result["fragile"] = AnimatedSprite(
+            (0, 0), SpriteLoader.import_folder("assets", "ghosts", "fragile")
+        )
         return result
 
     def update(self, dt: float) -> None:
+        if self.player_dead:
+            return
         # initialize timer
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
         # update timer
         if self.can_be_eaten:
+            self.update_sprite("fragile")
             end = perf_counter()
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
@@ -57,37 +74,20 @@ class Ghost(Entity):
         super().update(dt)
 
     def _find_path(self, player: Any) -> str:
-        # TODO: find why the ghost isn't moving
-        # in the direction of the player even though
-        # the algorithm seems right
-        choices = ['down', 'left', 'right', 'up']
+        choices = ["down", "left", "right", "up"]
         next_dir = random.choice(choices)
-        paths = self.algorithm.bfs(
-                (
-                    self.pos[0] - self.DIR_VEC[self.current_dir][0],
-                    self.pos[1] - self.DIR_VEC[self.current_dir][1],
-                 ),
-                player.pos, self.maze)
+        paths = self.algorithm.bfs(self.pos, player.pos, self.maze_gen)
         if self.can_be_eaten:
             if not paths:
                 return self.next_dir
-            target_vec = get_state(paths[0], self.pos)
-            state = TARGET_DIRECTION[target_vec]
-            choices.remove(state)
+            removed_dir = get_direction(paths[0], self.pos)
+            choices.remove(removed_dir)
             return random.choice(choices)
-        if (
-                player_in_range(
-                    (
-                        self.pos[0] - self.DIR_VEC[self.current_dir][0],
-                        self.pos[1] - self.DIR_VEC[self.current_dir][1]
-                    ),
-                    player.pos, self._radius)
-        ):
+        if player_in_range(self.pos, player.pos, self._radius):
             if not paths:
                 return self.next_dir
-            target_vec = get_state(paths[0], self.pos)
-            state = TARGET_DIRECTION[target_vec]
-            return state
+            direction: str = get_direction(paths[0], self.pos)
+            return direction
         return next_dir
 
     def get_input(self, player: Any) -> None:
@@ -95,18 +95,34 @@ class Ghost(Entity):
         of the ghost.
         # player -> Player class
         """
-        if self._is_moving:
+        self.player_dead = player.is_dead
+        if self.player_dead:
             return
-        if self.pos == player.pos:
+        if self.collides_with(player):
+            if player.cheat_mode:
+                return
             if self.can_be_eaten:
                 player.score += self.score
-                self.can_be_eaten = False
                 self.start_timer = 0
+                self.can_be_eaten = False
                 self._reset()
             else:
                 Ghost.update_ghost_state(False)
-                player._reset(True)
-        self.next_dir = self.OPPOSITE[self._find_path(player)]
+                player.dead()
+        if self._is_moving:
+            return
+        self.next_dir = self._find_path(player)
+
+    def start_move(self, direction: str) -> None:
+        dx, dy = DIR_VEC[direction]
+        self.grid_x += dx
+        self.grid_y += dy
+        self.current_dir = direction
+        self._is_moving = True
+        self.update_sprite("fragile" if self.can_be_eaten else direction)
+        self._move_progress = 0.0
+        self._move_start = (self.grid_x - dx, self.grid_y - dy)
+        self._move_target = (self.grid_x, self.grid_y)
 
     @classmethod
     def level_update(cls: Any) -> None:
@@ -119,3 +135,13 @@ class Ghost(Entity):
             if not value:
                 ghost.start_timer = 0
             ghost.can_be_eaten = value
+            if ghost.can_be_eaten:
+                ghost.speed = 1.5
+                ghost.start_timer = 0
+            else:
+                ghost.speed = ghost.initial_speed
+
+    def _reset(self, kill: bool = False) -> None:
+        self.player_dead = False
+        print(self.player_dead)
+        return super()._reset(kill)

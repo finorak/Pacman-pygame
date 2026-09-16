@@ -1,5 +1,3 @@
-# This will be changed to pac-man.py later on
-# AS THE SUBJECT ASK FOR IT.
 NAME = pac-man.py
 
 UV = uv
@@ -17,9 +15,8 @@ debug:
 clean:
 	find . -name "*.pyc" -exec rm -rf {} +
 	find . -type d \( -name "__pycache__" -o -name ".mypy_cache" \) -exec rm -rf {} +
+	rm -rf dist/ build/ pac-man.spec
 
-# this reciep is only used for testing
-# launch it with the command `make -B test`
 test:
 	$(UV) run python -m test.main config.json
 
@@ -36,4 +33,12 @@ lint-strict:
 
 re: fclean install
 
-.PHONY: install run fclean re clean debug test
+build_game:
+	$(UV) add --dev pyinstaller
+	$(UV) run pyinstaller \
+		--onefile \
+		--windowed \
+		--add-data "assets:assets" \
+		pac-man.py
+
+.PHONY: install run fclean re clean debug test build_game
