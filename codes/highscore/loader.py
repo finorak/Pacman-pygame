@@ -22,9 +22,9 @@ class HighScoreLoader:
             return sorted(highscores, key=lambda x: -x.player_score)[:10]
         except (OSError, ValueError) as e:
             print(
-                    f"[WARNING] Cannot load the save file {self.path}: {e}",
-                    file=sys.stderr
-                )
+                f"[WARNING] Cannot load the save file {self.path}: {e}",
+                file=sys.stderr,
+            )
         return []
 
     def save(self, models: list[HighScoreModel]) -> None:
