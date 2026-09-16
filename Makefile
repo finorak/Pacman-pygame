@@ -1,4 +1,4 @@
-NAME = pac-man.py
+NAME = pac-man
 
 UV = uv
 VENV = .venv
@@ -7,7 +7,7 @@ install:
 	$(UV) sync
 
 run:
-	$(UV) run $(NAME) config.json
+	$(UV) run $(NAME).py config.json
 
 debug:
 	$(UV) run python -m pdb $(NAME)
@@ -41,4 +41,7 @@ build_game:
 		--add-data "assets:assets" \
 		pac-man.py
 
-.PHONY: install run fclean re clean debug test build_game
+run_built_game: build_game
+	./dist/$(NAME) config.json
+
+.PHONY: install run fclean re clean debug test build_game run_built_game
