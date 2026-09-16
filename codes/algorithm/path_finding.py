@@ -1,3 +1,5 @@
+"""This module contains the path finding Algorithm."""
+
 from typing import Any
 
 from mazegenerator import MazeGenerator
@@ -6,8 +8,7 @@ from codes.setting import DIRECTION
 
 
 class Algorithm:
-    def __init__(self) -> None:
-        pass
+    """Algorithm class container."""
 
     def bfs(
         self,
@@ -15,6 +16,20 @@ class Algorithm:
         end_pos: tuple[int, int],
         maze_gen: MazeGenerator,
     ) -> list[tuple[int, int]]:
+        """Maze solver algorithm.
+
+        For the algorithm part, we use the one
+        provided by the `MazeGenerator` itself
+        as we can use this package however we like
+        as long as we don't modify it's content.
+
+        Args:
+            start_pos: where to start our solver.
+            end_pos: where the exit is.
+            maze_gen: a MazeGenerator instance.
+        Returns:
+            paths: a list of cell that leat to `end_pos`
+        """
         maze_gen._entryx = start_pos[0]
         maze_gen._entryy = start_pos[1]
         maze_gen._exitx = end_pos[0]

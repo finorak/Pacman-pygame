@@ -1,3 +1,5 @@
+"""Module that contain all the necessity constant for our implementation."""
+
 SCREEN_SIZE: tuple[int, int] = 1280, 720
 CURRENT_SCREEN_PADDING: tuple[int, int] = 60, 5
 

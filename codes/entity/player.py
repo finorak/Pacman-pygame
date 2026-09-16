@@ -74,17 +74,17 @@ class Player(Entity):
             if self.dead_timer > self.dead_max:
                 self.is_dead = False
                 self.dead_timer = 0.0
-                self._reset(kill=True)
+                self.reset(kill=True)
             self.current_sprite.animate(dt)
             return
         if not self.cheat_mode:
             self.timer -= dt
             if self.timer < 0:
-                self._reset(True)
+                self.reset(True)
         return super().update(dt)
 
-    def _reset(self, kill: bool = False) -> None:
-        return super()._reset(kill)
+    def reset(self, kill: bool = False) -> None:
+        return super().reset(kill)
 
     def dead(self) -> None:
         self.is_dead = True

@@ -90,6 +90,6 @@ class GameScreen(Screen):
 
     def new(self) -> None:
         self.data.maze.reset()
-        self.data.player._reset()
+        self.data.player.reset()
         for ghost in self.data.ghosts:
-            ghost._reset()
+            ghost.reset()

@@ -1,3 +1,5 @@
+"""Data module container for a smooth management."""
+
 import gc
 from pathlib import Path
 
@@ -8,20 +10,30 @@ from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.rendering.component.maze import Maze
 from codes.setting import GHOST_START_SETTING, SCREEN_SIZE
+from codes.utilities import get_center
 
 
 class Data:
+    """Class used to store all necessary data for our project."""
+
     def __init__(self, game_model: GameModel) -> None:
+        """Initialize a `Data` class instance.
+
+        Args:
+            game_model: config for the game.
+        """
         self.game_model = game_model
         self.finished: str | None = None
 
         self.screen_size = SCREEN_SIZE
 
         self.maze = Maze((19, 19), game_model.seed)
-        self.maze = Maze((19, 19), game_model.seed)
-        self.maze.rect.topleft = (
-            self.get_center(self.maze.rect.width),
-            self.get_center(self.maze.rect.height, horizontal=False),
+        self.maze.rect.topleft = self.maze_render_pos = (
+            get_center(self.screen_size, self.maze.rect.width),
+            get_center(
+                self.screen_size, self.maze.rect.height,
+                horizontal=False
+                ),
         )
         self.pacgums = Pacgums(
             self.maze.maze,
@@ -49,16 +61,17 @@ class Data:
 
         self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
 
-    def get_center(self, lengh: float, horizontal: bool = True) -> int:
-        if horizontal:
-            return int((self.screen_size[0] - lengh) // 2)
-        return int((self.screen_size[1] - lengh) // 2)
-
     @property
     def switch_level(self) -> bool:
+        """This decide wether we should switch a level or not."""
         return self.pacgums.is_empty
 
     def reset_data(self, new_game: bool = False) -> None:
+        """Reset the data after a game over of new game.
+
+        Args:
+            new_game: weather to to a start from scratch or not.
+        """
         self.finished = None
         # delete from memory
         del self.maze
@@ -67,17 +80,14 @@ class Data:
             self.maze = Maze((19, 19), seed=self.game_model.seed)
         else:
             self.maze = Maze((19, 19))
-        self.maze.rect.topleft = (
-            self.get_center(self.maze.rect.width),
-            self.get_center(self.maze.rect.height, horizontal=False),
-        )
+        self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
-        self.player._reset()
+        self.player.reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze
             ghost.maze_gen = self.maze.maze_gen
-            ghost._reset()
+            ghost.reset()
 
     def _go_to_next_level(self) -> None:
         if not self.switch_level:
