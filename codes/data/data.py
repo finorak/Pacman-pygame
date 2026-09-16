@@ -1,7 +1,9 @@
 import gc
+from pathlib import Path
 
 from codes.entity.ghost import Ghost
 from codes.entity.player import Player
+from codes.highscore import HighScoreLoader
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.rendering.component.maze import Maze
@@ -44,6 +46,8 @@ class Data:
             )
             for color in GHOST_START_SETTING
         ]
+
+        self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
 
     def get_center(self, lengh: float, horizontal: bool = True) -> int:
         if horizontal:

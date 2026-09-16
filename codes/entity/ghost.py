@@ -143,5 +143,4 @@ class Ghost(Entity):
 
     def _reset(self, kill: bool = False) -> None:
         self.player_dead = False
-        print(self.player_dead)
         return super()._reset(kill)
