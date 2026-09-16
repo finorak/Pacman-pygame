@@ -131,5 +131,6 @@ class Ghost(Entity):
             ghost.can_be_eaten = value
             if ghost.can_be_eaten:
                 ghost.speed = 1.5
+                ghost.start_timer = 0
             else:
                 ghost.speed = ghost.initial_speed
