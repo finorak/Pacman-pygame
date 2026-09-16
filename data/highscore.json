@@ -33,5 +33,10 @@
         "player_name": "nyramana",
         "player_score": 10,
         "player_time": 18
+    },
+    {
+        "player_name": "coold",
+        "player_score": 8,
+        "player_time": 31
     }
 ]

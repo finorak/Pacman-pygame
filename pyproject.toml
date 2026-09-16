@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "flake8>=7.3.0",
+    "flake8-docstrings>=1.7.0",
     "mazegenerator",
     "mypy>=2.3.1",
     "pydantic>=2.13.4",

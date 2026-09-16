@@ -69,7 +69,7 @@ class Ghost(Entity):
             if self.spawn_time > self.max_time:
                 self.is_dead = False
                 self.spawn_time = 0.0
-                self._reset()
+                self.reset()
         # initialize timer
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
@@ -152,9 +152,9 @@ class Ghost(Entity):
             else:
                 ghost.speed = ghost.initial_speed
 
-    def _reset(self, kill: bool = False) -> None:
+    def reset(self, kill: bool = False) -> None:
         self.player_dead = False
-        return super()._reset(kill)
+        return super().reset(kill)
 
     def render(self, screen: pygame.Surface) -> None:
         if self.is_dead:

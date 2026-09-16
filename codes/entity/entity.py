@@ -1,22 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, ClassVar, Self
+from typing import TYPE_CHECKING, Any
 
 import pygame
 
 from codes.rendering.component import AnimatedSprite
 from codes.setting import (
     CELL_SIZE,
-    DIR_BIT,
     DIR_VEC,
     OPPOSITE,
     PLAYER_PADDING,
 )
-from codes.utilities.utils import in_bounds, player_in_range
+from codes.utilities import can_move, player_in_range
 
 
 class Entity(ABC):
-    ENTITY_STORE: ClassVar[list[Self]] = []
-
     def __init__(
         self, pos: tuple[int, int], maze: list[list[int]], life: int = 3
     ) -> None:
@@ -49,7 +46,6 @@ class Entity(ABC):
             self.render_x,
             self.render_y,
         )
-        Entity.ENTITY_STORE.append(self)
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -66,31 +62,6 @@ class Entity(ABC):
     @property
     def pos(self) -> tuple[int, int]:
         return self.grid_x, self.grid_y
-
-    def can_move(self, direction: str) -> bool:
-        dx, dy = DIR_VEC[direction]
-        nx, ny = self.grid_x + dx, self.grid_y + dy
-
-        if not in_bounds(self.grid_x, self.grid_y, self.maze) or not in_bounds(
-            nx, ny, self.maze
-        ):
-            return False
-        # typechecking prevent mypy error.
-        if (
-            not TYPE_CHECKING
-            and hasattr(self, "_cheat_mode")
-            and self.cheat_mode
-        ):
-            return True
-
-        cur_mask = self.maze[self.grid_y][self.grid_x]
-
-        if cur_mask == 15:
-            return False
-
-        out_bit = DIR_BIT[direction]
-
-        return (cur_mask & out_bit) == 0
 
     @abstractmethod
     def get_input(self, *arg: Any, **kwarg: Any) -> None | str: ...
@@ -118,21 +89,24 @@ class Entity(ABC):
 
     def update(self, dt: float) -> None:
         self.current_sprite.animate(dt)
+        cheat_mode: bool = False
+        if hasattr(self, "_cheat_mode") and not TYPE_CHECKING:
+            cheat_mode = self.cheat_mode
 
         if self._is_moving:
             if (
                 self.next_dir == OPPOSITE[self.current_dir]
                 and self.next_dir != self.current_dir
             ):
-                self.reverse_move(self.next_dir)
-            self.move(dt)
+                self._reverse_move(self.next_dir)
+            self._move(dt)
             return
-        if self.can_move(self.next_dir):
+        if can_move(*self.pos, self.next_dir, self.maze, cheat_mode):
             self.start_move(self.next_dir)
-        elif self.can_move(self.current_dir):
+        elif can_move(*self.pos, self.current_dir, self.maze, cheat_mode):
             self.start_move(self.current_dir)
 
-    def reverse_move(self, direction: str) -> None:
+    def _reverse_move(self, direction: str) -> None:
         old_start = self._move_start
         old_target = self._move_target
 
@@ -145,7 +119,7 @@ class Entity(ABC):
         self._move_target = old_start
         self._is_moving = True
 
-    def move(self, dt: float) -> None:
+    def _move(self, dt: float) -> None:
         self._move_progress += dt * self.speed
         if self._move_progress >= 1.0:
             self._move_progress = 1.0
@@ -165,7 +139,7 @@ class Entity(ABC):
             ),
         )
 
-    def _reset(self, kill: bool = False) -> None:
+    def reset(self, kill: bool = False) -> None:
         if kill:
             self.life -= 1
         if hasattr(self, "can_be_eaten"):
