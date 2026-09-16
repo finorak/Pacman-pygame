@@ -1,7 +1,6 @@
 import json
 import math
 import sys
-from typing import final
 
 from codes.parsing.parse import GameModel
 from codes.setting import DIR_BIT, TARGET_DIRECTION
