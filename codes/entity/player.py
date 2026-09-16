@@ -1,3 +1,4 @@
+
 import pygame
 from pygame.key import ScancodeWrapper
 
@@ -28,18 +29,24 @@ class Player(Entity):
         self.max_time = max_time
         self.timer: float = max_time
 
+        self.is_dead = False
+        self.dead_timer = 0.0
+        self.dead_max = 1.8
         self.level = 1
 
     def load_image(self) -> dict[str, AnimatedSprite]:
         result: dict[str, AnimatedSprite] = {}
-        for direction in ("down", "left", "right", "up"):
+        for direction in ("down", "left", "right", "up", "dead"):
             result[direction] = AnimatedSprite(
                 (0, 0),
                 SpriteLoader.import_folder("assets", "pacman", direction),
             )
+        result["dead"].animation_speed = 6
         return result
 
     def get_input(self, key: ScancodeWrapper) -> str | None:
+        if self.is_dead:
+            return None
         curr_pos = (
             round(self.render_x),
             round(self.render_y),
@@ -61,6 +68,15 @@ class Player(Entity):
         return None
 
     def update(self, dt: float) -> None:
+        if self.is_dead:
+            self.dead_timer += dt
+            self.current_sprite = self.sprites["dead"]
+            if self.dead_timer > self.dead_max:
+                self.is_dead = False
+                self.dead_timer = 0.0
+                self._reset(kill=True)
+            self.current_sprite.animate(dt)
+            return
         if not self.cheat_mode:
             self.timer -= dt
             if self.timer < 0:
@@ -69,6 +85,9 @@ class Player(Entity):
 
     def _reset(self, kill: bool = False) -> None:
         return super()._reset(kill)
+
+    def dead(self) -> None:
+        self.is_dead = True
 
     @property
     def cheat_mode(self) -> bool:

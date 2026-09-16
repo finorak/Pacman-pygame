@@ -44,22 +44,22 @@ class GameScreen(Screen):
 
     def update(self, dt: float) -> None:
         self.data._go_to_next_level()
-        self.data.player.update(dt)
         for ghost in self.data.ghosts:
             ghost.update(dt)
+        self.data.player.update(dt)
         for button in self.buttons.values():
             button.update(dt)
         self.ui.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
         self.data.maze.render(screen)
-        self.ui.render(screen)
         self.data.pacgums.render(self.data.maze.image)
-        self.data.player.render(self.data.maze.image)
         for ghost in self.data.ghosts:
             ghost.render(self.data.maze.image)
             for a in self.buttons.values():
                 a.draw(screen)
+        self.ui.render(screen)
+        self.data.player.render(self.data.maze.image)
 
     def load_buttons(self) -> None:
         buttons = {
