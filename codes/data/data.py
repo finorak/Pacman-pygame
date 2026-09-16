@@ -73,6 +73,9 @@ class Data:
         )
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
+        self.player.life = self.game_model.life
+        self.player.cheat_mode = False
+        self.player.timer = self.game_model.level_max_time
         self.player._reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze

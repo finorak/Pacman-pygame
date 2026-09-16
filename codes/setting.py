@@ -1,7 +1,6 @@
 SCREEN_SIZE: tuple[int, int] = 1280, 720
 CURRENT_SCREEN_PADDING: tuple[int, int] = 60, 5
 
-# SUPPOSED CELL SIZE
 CELL_SIZE: int = 32
 GUM_PADDING: int = 2
 CELL_PADDING: int = 3
