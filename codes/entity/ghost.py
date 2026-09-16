@@ -2,6 +2,7 @@ import random
 from time import perf_counter
 from typing import Any, ClassVar
 
+import pygame
 from mazegenerator import MazeGenerator
 
 from codes.algorithm import Algorithm
@@ -40,7 +41,9 @@ class Ghost(Entity):
         self._target_position = pos
         self.maze_gen: MazeGenerator = maze_gen
 
-        self.spawn_time = 2.0
+        self.is_dead = False
+        self.spawn_time = 0.0
+        self.max_time = 2.0
         self.player_dead = False
         Ghost.GHOSTS_STORE.append(self)
 
@@ -61,6 +64,12 @@ class Ghost(Entity):
     def update(self, dt: float) -> None:
         if self.player_dead:
             return
+        if self.is_dead:
+            self.spawn_time += dt
+            if self.spawn_time > self.max_time:
+                self.is_dead = False
+                self.spawn_time = 0.0
+                self._reset()
         # initialize timer
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
@@ -95,6 +104,8 @@ class Ghost(Entity):
         of the ghost.
         # player -> Player class
         """
+        if self.is_dead:
+            return
         self.player_dead = player.is_dead
         if self.player_dead:
             return
@@ -105,7 +116,7 @@ class Ghost(Entity):
                 player.score += self.score
                 self.start_timer = 0
                 self.can_be_eaten = False
-                self._reset()
+                self.is_dead = True
             else:
                 Ghost.update_ghost_state(False)
                 player.dead()
@@ -143,5 +154,9 @@ class Ghost(Entity):
 
     def _reset(self, kill: bool = False) -> None:
         self.player_dead = False
-        print(self.player_dead)
         return super()._reset(kill)
+
+    def render(self, screen: pygame.Surface) -> None:
+        if self.is_dead:
+            return
+        return super().render(screen)

@@ -10,7 +10,7 @@ def log(msg: Any) -> None:
     print(msg, file=sys.stderr)
 
 
-def error_handler(func: Callable) -> Callable:
+def error_handler(func: Callable[..., None]) -> Callable:
     @wraps(func)
     def wrapper(*arg: Any, **kwarg: Any) -> Any:
         try:

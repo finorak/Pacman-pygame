@@ -18,7 +18,11 @@ class Screen(ABC):
         self.loader = SpriteLoader()
 
     @abstractmethod
-    def get_input(self) -> str | None: ...
+    def get_input(self) -> str | None:
+        keys = pygame.key.get_just_pressed()
+        if keys[pygame.K_f]:
+            pygame.display.toggle_fullscreen()
+        return None
 
     @abstractmethod
     def update(self, dt: float) -> None: ...

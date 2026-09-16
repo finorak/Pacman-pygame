@@ -1,7 +1,9 @@
 import gc
+from pathlib import Path
 
 from codes.entity.ghost import Ghost
 from codes.entity.player import Player
+from codes.highscore import HighScoreLoader
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.rendering.component.maze import Maze
@@ -45,6 +47,8 @@ class Data:
             for color in GHOST_START_SETTING
         ]
 
+        self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
+
     def get_center(self, lengh: float, horizontal: bool = True) -> int:
         if horizontal:
             return int((self.screen_size[0] - lengh) // 2)
@@ -69,6 +73,9 @@ class Data:
         )
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
+        self.player.life = self.game_model.life
+        self.player.cheat_mode = False
+        self.player.timer = self.game_model.level_max_time
         self.player._reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze
@@ -78,7 +85,7 @@ class Data:
     def _go_to_next_level(self) -> None:
         if not self.switch_level:
             return
-        if self.player.level >= len(self.game_model.levels):
+        if self.player.level >= self.game_model.level_count:
             self.finished = "win"
             return
         self.player.timer = self.game_model.level_max_time

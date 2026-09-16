@@ -40,7 +40,7 @@ class GameScreen(Screen):
             return "finished"
         for ghost in self.data.ghosts:
             ghost.get_input(self.data.player)
-        return None
+        return super().get_input()
 
     def update(self, dt: float) -> None:
         self.data._go_to_next_level()
@@ -56,8 +56,8 @@ class GameScreen(Screen):
         self.data.pacgums.render(self.data.maze.image)
         for ghost in self.data.ghosts:
             ghost.render(self.data.maze.image)
-            for a in self.buttons.values():
-                a.draw(screen)
+        for a in self.buttons.values():
+            a.draw(screen)
         self.ui.render(screen)
         self.data.player.render(self.data.maze.image)
 

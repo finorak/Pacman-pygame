@@ -35,7 +35,7 @@ class UI:
         self.current_level = self.player.level
 
         self.current_score_surface = self.font.render(
-            f"SCORE: {self.player.level}", True, "white"
+            f"SCORE: {self.player.score}", True, "white"
         )
         self.current_score = self.player.score
 
@@ -65,14 +65,15 @@ class UI:
         if value < 5:
             for i in range(value):
                 surface.blit(self.heart, (120 + 30 * i, 100))
-        else:
-            for i in range(4):
-                surface.blit(self.heart, (120 + 30 * i, 100))
-            for i in range(min(value - 4, 6)):
-                surface.blit(self.heart, (60 + 30 * i, 132))
+            return
+        for i in range(4):
+            surface.blit(self.heart, (120 + 30 * i, 100))
+        for i in range(min(value - 4, 6)):
+            surface.blit(self.heart, (60 + 30 * i, 132))
 
     def draw_time(self, surface: pygame.Surface) -> None:
+        player_timer = max(0, self.player.timer)
         surface.blit(
-            self.font.render(f"TIME: {self.player.timer:.0f}", True, "white"),
+            self.font.render(f"TIME: {player_timer:.0f}", True, "white"),
             (60, 165),
         )

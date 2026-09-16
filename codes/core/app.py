@@ -3,14 +3,14 @@ import pygame
 from codes.data.data import Data
 from codes.rendering.component import Sprite
 from codes.rendering.screen import (
+    FinishedScreen,
     GameScreen,
     HighScoreScreen,
     HomeScreen,
     InstructionsScreen,
+    PauseScreen,
     Screen,
 )
-from codes.rendering.screen.finished_screen import FinishedScreen
-from codes.rendering.screen.pause_screen import PauseScreen
 from codes.rendering.utils.sprite_loader import SpriteLoader
 from codes.setting import BACKGROUND_SPEED, FPS
 from codes.utilities import load_data
@@ -50,23 +50,22 @@ class Rendering:
 
     def get_event(self) -> None:
         flags = self.current_screen.get_input()
-        if flags:
-            if flags == "new":
-                self.data.reset_data(new_game=True)
-                self.screens["Game"] = GameScreen(self.game_model, self.data)
-                flags = "Game"
-            if flags == "exit":
-                self.running = False
-                return
-            self.current_screen = self.screens[flags]
-            if flags == "pause" and isinstance(
-                self.current_screen, PauseScreen
-            ):
-                self.current_screen.enter(self.screen)
-            if flags == "finished" and isinstance(
-                self.current_screen, FinishedScreen
-            ):
-                self.current_screen.enter(self.screen)
+        if not flags:
+            return
+        if flags == "new":
+            self.data.reset_data(new_game=True)
+            self.screens["Game"] = GameScreen(self.game_model, self.data)
+            flags = "Game"
+        if flags == "exit":
+            self.running = False
+            return
+        self.current_screen = self.screens[flags]
+        if isinstance(self.current_screen, PauseScreen):
+            self.current_screen.enter(self.screen)
+        if flags == "finished" and isinstance(
+            self.current_screen, FinishedScreen
+        ):
+            self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
         if not isinstance(self.current_screen, PauseScreen):
@@ -74,7 +73,8 @@ class Rendering:
         self.current_screen.update(dt)
 
     def render(self) -> None:
-        self._render_background(self.screen)
+        if not isinstance(self.current_screen, PauseScreen):
+            self._render_background(self.screen)
         self.current_screen.render(self.screen)
         pygame.display.update()
 

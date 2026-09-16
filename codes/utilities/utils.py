@@ -1,7 +1,6 @@
 import json
 import math
 import sys
-from typing import final
 
 from codes.parsing.parse import GameModel
 from codes.setting import DIR_BIT, TARGET_DIRECTION
@@ -77,19 +76,9 @@ def load_data(config_file: str) -> GameModel:
         print(
             f"[WARNING] Cannot load file {config_file}: {e}", file=sys.stderr
         )
-        print("[WARNING] Default value will be used")
+        print("[WARNING] Default value will be used", file=sys.stderr)
     except ValueError as e:
         print(
             f"[WARNING] Cannot load the file as a json: {e}", file=sys.stderr
         )
-        print("[WARNING] Default value will be used")
-    return GameModel(
-        pacgum_number=30,
-        points_per_pacgum=10,
-        points_per_super_pacgum=25,
-        points_per_ghost=100,
-        level_max_time=120,
-        life=3,
-        seed=42,
-        levels=[[]],
-    )
+    return GameModel()

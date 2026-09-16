@@ -3,7 +3,6 @@ from pathlib import Path
 import pygame
 
 from codes.data.data import Data
-from codes.highscore import HighScoreLoader
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.component.sprite import AnimatedSprite
@@ -38,7 +37,6 @@ class FinishedScreen(Screen):
         self.load_buttons()
         self.back = pygame.Surface(self.screen_size)
         self.submitted = False
-        self.highscore_loader = HighScoreLoader(Path("data", "highscore.json"))
 
     @property
     def won(self) -> bool:
@@ -66,6 +64,8 @@ class FinishedScreen(Screen):
             ):
                 self._save_score()
                 return "HighScore"
+        if not self.input.active:
+            return super().get_input()
         return None
 
     def update(self, dt: float) -> None:
@@ -143,8 +143,8 @@ class FinishedScreen(Screen):
         elapsed = max(
             0, int(self.game_model.level_max_time - self.data.player.timer)
         )
-        self.highscore_loader.add_score(
+        self.data.highscore_loader.add_score(
             self.input.text.strip(), self.data.player.score, elapsed
         )
-        self.highscore_loader.save(self.highscore_loader.highscore)
+        self.data.highscore_loader.save(self.data.highscore_loader.highscore)
         self.submitted = True
