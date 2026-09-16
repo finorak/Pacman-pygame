@@ -1,5 +1,7 @@
 import json
 import math
+import sys
+from typing import final
 
 from codes.parsing.parse import GameModel
 from codes.setting import DIR_BIT, TARGET_DIRECTION
@@ -61,12 +63,33 @@ def player_in_range(
 
 def load_data(config_file: str) -> GameModel:
     lines: list[str] = []
-    with open(config_file, mode="r", encoding="utf-8") as f:
-        raw_data = f.readlines()
-    for line in raw_data:
-        curr_line = line.strip()
-        if not curr_line or curr_line.startswith("#"):
-            continue
-        lines.append(curr_line)
-    data = json.loads("".join(lines))
-    return GameModel(**data)
+    try:
+        with open(config_file, mode="r", encoding="utf-8") as f:
+            raw_data = f.readlines()
+        for line in raw_data:
+            curr_line = line.strip()
+            if not curr_line or curr_line.startswith("#"):
+                continue
+            lines.append(curr_line)
+        data = json.loads("".join(lines))
+        return GameModel.model_validate(data)
+    except OSError as e:
+        print(
+            f"[WARNING] Cannot load file {config_file}: {e}", file=sys.stderr
+        )
+        print("[WARNING] Default value will be used")
+    except ValueError as e:
+        print(
+            f"[WARNING] Cannot load the file as a json: {e}", file=sys.stderr
+        )
+        print("[WARNING] Default value will be used")
+    return GameModel(
+        pacgum_number=30,
+        points_per_pacgum=10,
+        points_per_super_pacgum=25,
+        points_per_ghost=100,
+        level_max_time=120,
+        life=3,
+        seed=42,
+        levels=[[]],
+    )

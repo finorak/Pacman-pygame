@@ -11,6 +11,7 @@ from codes.setting import GHOST_START_SETTING, SCREEN_SIZE
 class Data:
     def __init__(self, game_model: GameModel) -> None:
         self.game_model = game_model
+        self.finished: str | None = None
 
         self.screen_size = SCREEN_SIZE
 
@@ -54,6 +55,7 @@ class Data:
         return self.pacgums.is_empty
 
     def reset_data(self, new_game: bool = False) -> None:
+        self.finished = None
         # delete from memory
         del self.maze
         gc.collect()
@@ -75,6 +77,9 @@ class Data:
 
     def _go_to_next_level(self) -> None:
         if not self.switch_level:
+            return
+        if self.player.level >= len(self.game_model.levels):
+            self.finished = "win"
             return
         self.player.timer = self.game_model.level_max_time
         self.player.level += 1

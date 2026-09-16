@@ -41,6 +41,7 @@ class Ghost(Entity):
         self.maze_gen: MazeGenerator = maze_gen
 
         self.spawn_time = 2.0
+        self.player_dead = False
         Ghost.GHOSTS_STORE.append(self)
 
     def load_image(self) -> dict[str, AnimatedSprite]:
@@ -58,6 +59,8 @@ class Ghost(Entity):
         return result
 
     def update(self, dt: float) -> None:
+        if self.player_dead:
+            return
         # initialize timer
         if self.can_be_eaten and self.start_timer == 0:
             self.start_timer = perf_counter()
@@ -92,6 +95,9 @@ class Ghost(Entity):
         of the ghost.
         # player -> Player class
         """
+        self.player_dead = player.is_dead
+        if self.player_dead:
+            return
         if self.collides_with(player):
             if player.cheat_mode:
                 return
@@ -102,7 +108,7 @@ class Ghost(Entity):
                 self._reset()
             else:
                 Ghost.update_ghost_state(False)
-                player._reset(kill=True)
+                player.dead()
         if self._is_moving:
             return
         self.next_dir = self._find_path(player)
@@ -131,5 +137,11 @@ class Ghost(Entity):
             ghost.can_be_eaten = value
             if ghost.can_be_eaten:
                 ghost.speed = 1.5
+                ghost.start_timer = 0
             else:
                 ghost.speed = ghost.initial_speed
+
+    def _reset(self, kill: bool = False) -> None:
+        self.player_dead = False
+        print(self.player_dead)
+        return super()._reset(kill)
