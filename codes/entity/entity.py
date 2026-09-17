@@ -1,3 +1,6 @@
+"""Entity module that contains the base of playe/ghost."""
+
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -14,9 +17,18 @@ from codes.utilities import can_move, player_in_range
 
 
 class Entity(ABC):
+    """Entity class to manage player/ghost."""
+
     def __init__(
         self, pos: tuple[int, int], maze: list[list[int]], life: int = 3
     ) -> None:
+        """Initialize an entity class instance.
+
+        Args:
+            pos: the current position of the entity.
+            maze: the current maze.
+            life: number of life the entity has.
+        """
         self.grid_x = self.init_grid_x = pos[0]
         self.grid_y = self.init_grid_y = pos[1]
         self.render_x = self.init_render_x = float(pos[0])
@@ -49,8 +61,7 @@ class Entity(ABC):
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
-        """
-        Loads the image for the sprite.
+        """Load sprites images.
 
         The key for the sprite should always be "up", "down", "left", "right"
         to make the movement easier. We can also add another state as long as
@@ -61,12 +72,20 @@ class Entity(ABC):
 
     @property
     def pos(self) -> tuple[int, int]:
+        """Get entity position."""
         return self.grid_x, self.grid_y
 
     @abstractmethod
-    def get_input(self, *arg: Any, **kwarg: Any) -> None | str: ...
+    def get_input(self, *arg: Any, **kwarg: Any) -> None | str:
+        """Get input from user."""
 
     def start_move(self, direction: str) -> None:
+        """Start move from current posiion to choosen direction.
+
+        Args:
+            direction: the direction choosen by the player, one of \
+`up`, `down`, `left` and `right`
+        """
         dx, dy = DIR_VEC[direction]
         self.grid_x += dx
         self.grid_y += dy
@@ -78,16 +97,35 @@ class Entity(ABC):
         self._move_target = (self.grid_x, self.grid_y)
 
     def update_sprite(self, sprite_name: str) -> None:
+        """Update entity sprite.
+
+        Args:
+            sprite_name: the name of the choosen sprite.
+        """
         self.current_sprite = self.sprites[sprite_name]
 
     def collides_with(self, other: "Entity") -> bool:
+        """Look for collision between two entity.
+
+        Args:
+            other: an other entity object.
+        Returns:
+            is_collide: the two entity do collide.
+        """
         return player_in_range(
             (self.render_x, self.render_y),
             (other.render_x, other.render_y),
             0.6,
         )
 
+    @abstractmethod
     def update(self, dt: float) -> None:
+        """Update current entity position and animation.
+
+        Args:
+            dt: delta time used so that the animation stays \
+consistent even with other hardware.
+        """
         self.current_sprite.animate(dt)
         cheat_mode: bool = False
         if hasattr(self, "_cheat_mode") and not TYPE_CHECKING:
@@ -131,6 +169,11 @@ class Entity(ABC):
         self.current_sprite.position = (self.render_x, self.render_y)
 
     def render(self, screen: pygame.Surface) -> None:
+        """Render entity onto the screen.
+
+        Args:
+            screen: the surface to where to render the entity.
+        """
         screen.blit(
             self.current_sprite.image,
             (
@@ -139,7 +182,13 @@ class Entity(ABC):
             ),
         )
 
+    @abstractmethod
     def reset(self, kill: bool = False) -> None:
+        """Reset the entity's information.
+
+        Args:
+            kill: wether diminue the entity's life or not.
+        """
         if kill:
             self.life -= 1
         if hasattr(self, "can_be_eaten"):
@@ -149,8 +198,6 @@ class Entity(ABC):
         self.grid_y = self.init_grid_y
         self.render_x = self.init_render_x
         self.render_y = self.init_render_y
-
-        self.current_dir = self.init_current_dir
 
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0

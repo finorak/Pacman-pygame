@@ -1,3 +1,4 @@
+"""Player module to manage player."""
 
 import pygame
 from pygame.key import ScancodeWrapper
@@ -11,6 +12,8 @@ from .entity import Entity
 
 
 class Player(Entity):
+    """Player class for managing pac-man."""
+
     def __init__(
         self,
         pos: tuple[int, int],
@@ -19,6 +22,17 @@ class Player(Entity):
         life: int,
         max_time: int,
     ) -> None:
+        """Initialize a player class instance.
+
+        Args:
+            pos: the position of the player.
+            maze: the current maze.
+            gums: class containing all the gum the player \
+can eat.
+            life: the life of the player.
+            max_time: how many time in seconds te player has to complete \
+a level.
+        """
         super().__init__(pos, maze, life)
         self.pacgums = gums
         self.can_eat_ghost: bool = False
@@ -35,6 +49,14 @@ class Player(Entity):
         self.level = 1
 
     def load_image(self) -> dict[str, AnimatedSprite]:
+        """Load sprites images.
+
+        The key for the sprite should always be "up", "down", "left", "right"
+        to make the movement easier. We can also add another state as long as
+        these keys is present.
+        Returns:
+            dict: The dictionnary containing the sprites.
+        """
         result: dict[str, AnimatedSprite] = {}
         for direction in ("down", "left", "right", "up", "dead"):
             result[direction] = AnimatedSprite(
@@ -45,6 +67,11 @@ class Player(Entity):
         return result
 
     def get_input(self, key: ScancodeWrapper) -> str | None:
+        """Get input from user.
+
+        Args:
+            player: the player
+        """
         if self.is_dead:
             return None
         curr_pos = (
@@ -68,6 +95,12 @@ class Player(Entity):
         return None
 
     def update(self, dt: float) -> None:
+        """Update ghosts state after each reset.
+
+        Args:
+            value: the state for each ghost after updating \
+the default value is `False`
+        """
         if self.is_dead:
             self.dead_timer += dt
             self.current_sprite = self.sprites["dead"]
@@ -84,16 +117,23 @@ class Player(Entity):
         return super().update(dt)
 
     def reset(self, kill: bool = False) -> None:
+        """Reset the entity's information.
+
+        Args:
+            kill: wether diminue the entity's life or not.
+        """
         return super().reset(kill)
 
     def dead(self) -> None:
+        """Change player state to dead."""
         self.is_dead = True
 
     @property
     def cheat_mode(self) -> bool:
-        """The  property."""
+        """Get cheat mode value."""
         return self._cheat_mode
 
     @cheat_mode.setter
     def cheat_mode(self, value: bool = False) -> None:
+        """Set cheat mode value."""
         self._cheat_mode = value

@@ -35,7 +35,7 @@ class GameModel(BaseModel):
 
     @model_validator(mode="after")
     def check_numbers(self) -> Self:
-        """Validate model"""
+        """Validate model."""
         if self.pacgum_number > 343 or self.pacgum_number <= 0:
             raise ValueError("Pacgum number must be between 343 and 1")
         if self.points_per_pacgum > 1000 or self.points_per_pacgum <= 0:
