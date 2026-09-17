@@ -1,3 +1,5 @@
+"""Module that contains the highscore screen for the program."""
+
 from pathlib import Path
 
 import pygame
@@ -11,7 +13,18 @@ from ..component import AnimatedSprite
 
 
 class HighScoreScreen(Screen):
+    """The highscore screen for the rendering system."""
+
     def __init__(self, game_model: GameModel, data: Data) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            game_model (GameModel): THe model or variable class for
+            the program.
+            data (Data): The data that stores every data used during
+            the program.
+        """
         super().__init__(game_model, data)
 
         self.logo = self.load_logo()
@@ -24,6 +37,7 @@ class HighScoreScreen(Screen):
         self.leaderboard = self.draw_leaderboard()
 
     def get_input(self) -> str | None:
+        """Get the input from the user."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -35,6 +49,12 @@ class HighScoreScreen(Screen):
         return super().get_input()
 
     def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
         if self.data.highscore_loader.changed:
             self.leaderboard = self.draw_leaderboard()
             self.data.highscore_loader.changed = False
@@ -42,16 +62,29 @@ class HighScoreScreen(Screen):
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         screen.blit(self.logo.image, self.logo.rect)
         for a in self.buttons.values():
             a.draw(screen)
         screen.blit(self.leaderboard)
 
     def load_logo(self) -> AnimatedSprite:
+        """Load the logo or header of the screen."""
         path = ("assets", "highscore", "Logo")
         return AnimatedSprite((470, 50), [self.loader.import_image(*path)])
 
     def draw_leaderboard(self) -> pygame.Surface:
+        """
+        Draw the leaderboard screen.
+
+        Returns:
+            pygame: The leaderboard as a surface.
+        """
         surface = pygame.Surface(
             self.screen_size, pygame.SRCALPHA, 32
         ).convert_alpha()
@@ -88,6 +121,7 @@ class HighScoreScreen(Screen):
         return surface
 
     def load_buttons(self) -> None:
+        """Load the buttons sprites."""
         buttons = {
             "exit": ((self.screen_size[0] - 60, 5), "Home"),
         }

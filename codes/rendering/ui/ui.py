@@ -1,3 +1,5 @@
+"""Module that contains the UI class."""
+
 from pathlib import Path
 
 import pygame
@@ -15,7 +17,15 @@ from ..utils import SpriteLoader
 
 
 class UI:
+    """Basic UI class for the main game loop."""
+
     def __init__(self, player: Player) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            player (Player): The player as a class.
+        """
         self.surface = pygame.Surface(SCREEN_SIZE, pygame.SRCALPHA, 32)
 
         self.player = player
@@ -40,6 +50,12 @@ class UI:
         self.current_score = self.player.score
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         self.surface.blit(self.background, (10, 50))
         self.draw_heart(self.surface)
         self.draw_time(self.surface)
@@ -48,6 +64,12 @@ class UI:
         screen.blit(self.surface)
 
     def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
         if self.player.level != self.current_level:
             self.current_level_surface = self.font.render(
                 f"LEVEL: {self.player.level}", True, "white"
@@ -60,6 +82,12 @@ class UI:
             self.current_score = self.player.score
 
     def draw_heart(self, surface: pygame.Surface) -> None:
+        """
+        Draw a heart to represent a life.
+
+        Args:
+            surface (pygame.Surface): The surface to draw on.
+        """
         value = self.player.life
         surface.blit(self.font.render("LIFE: ", True, "white"), (60, 105))
         if value < 5:
@@ -72,6 +100,12 @@ class UI:
             surface.blit(self.heart, (60 + 30 * i, 132))
 
     def draw_time(self, surface: pygame.Surface) -> None:
+        """
+        Draw a time to represent the remaining time.
+
+        Args:
+            surface (pygame.Surface): The surface to draw on.
+        """
         player_timer = max(0, self.player.timer)
         surface.blit(
             self.font.render(f"TIME: {player_timer:.0f}", True, "white"),

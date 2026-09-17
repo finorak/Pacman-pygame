@@ -1,3 +1,5 @@
+"""Module that contains the base of the maze."""
+
 import pygame
 from mazegenerator import MazeGenerator
 
@@ -5,7 +7,16 @@ from codes.setting import CELL_PADDING, CELL_SIZE
 
 
 class Maze:
+    """class that store The maze in the program and more."""
+
     def __init__(self, size: tuple[int, int], seed: int = 0) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            size (tuple[int, int]): The size of the maze.
+            seed (int): The seed to generate the maze.
+        """
         self.maze_gen = MazeGenerator(size, seed=seed)
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
@@ -17,13 +28,26 @@ class Maze:
 
     @property
     def size(self) -> tuple[int, int]:
+        """
+        The size of the maze.
+
+        Returns:
+            tuple: Value as a width, height tupple.
+        """
         return self.width, self.height
 
     def _reset(self) -> None:
+        """Reset the screen to be only the background."""
         self.image.fill((20, 20, 20, 140))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
+        """
+        Get The maze rendered as a surface.
+
+        Returns:
+            pygame: The surface that contains the maze.
+        """
         surface = pygame.Surface(
             self.maze_size, pygame.SRCALPHA, 32
         ).convert_alpha()
@@ -34,6 +58,14 @@ class Maze:
         return surface
 
     def _get_maze_size(self, maze: list[list[int]]) -> tuple[int, int]:
+        """
+        Get the size of the maze.
+
+        Args:
+            maze (list[list[int]]): The maze.
+        Returns:
+            tuple: the surface size as a width, height tuple.
+        """
         return (
             len(maze[0]) * self.cell_size + CELL_PADDING,
             len(maze) * self.cell_size + CELL_PADDING,
@@ -42,6 +74,14 @@ class Maze:
     def _draw_cell(
         self, surface: pygame.Surface, pos: tuple[int, int], value: int
     ) -> None:
+        """
+        Draw a cell in a surface.
+
+        Args:
+            surface (pygame.Surface): The surface to draw the cell.
+            pos (tuple[int, int]): The position of the cell.
+            value (int): The value of the cell (0 - 15).
+        """
         real_pos = pos[0] * self.cell_size + 1, pos[1] * self.cell_size + 1
         color = (50, 105, 50)
         i = 0
@@ -93,6 +133,15 @@ class Maze:
         color: tuple[int, int, int],
         thickness: int = 2,
     ) -> None:
+        """
+        Draw a line in a surface.
+
+        Args:
+            surface (pygame.Surface): The surface to draw the cell.
+            start (tuple[int, int]): The starting position of the line
+            end (tuple[int, int]): The ending position of the line
+            thickness (int): The thickness of the line. Default=2
+        """
         x0, y0 = start
         x1, y1 = end
 
@@ -120,10 +169,22 @@ class Maze:
                 y0 += sy
 
     def render(self, surface: pygame.Surface) -> None:
+        """
+        Render the maze in a surface.
+
+        Args:
+            surface (pygame.Surface): The surface to draw on.
+        """
         surface.blit(self.image, self.rect)
         self._reset()
 
-    def reset(self) -> None:
-        self.maze_gen.generate()
+    def reset(self, seed: int = 0) -> None:
+        """
+        Reset the maze screen.
+
+        Args:
+            seed (int): the seed of the maze.
+        """
+        self.maze_gen.generate(seed)
         self.maze = self.maze_gen.maze
         self._get_maze_surface()

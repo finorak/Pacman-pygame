@@ -1,3 +1,4 @@
+"""Module that contains the instruction screen for the program."""
 import pygame
 
 from codes.data.data import Data
@@ -9,13 +10,30 @@ from ..component import AnimatedSprite
 
 
 class InstructionsScreen(Screen):
+    """The finished screen for the rendering system."""
+
     def __init__(self, game_model: GameModel, data: Data) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            game_model (GameModel): THe model or variable class for
+            the program.
+            data (Data): The data that stores every data used during
+            the program.
+        """
         super().__init__(game_model, data)
         self.assets = self.load_assets()
         self.buttons: dict[str, Button] = {}
         self.load_buttons()
 
     def get_input(self) -> str | None:
+        """
+        Get the input from the user.
+
+        Returns:
+            str: a signal if there is any.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -27,15 +45,33 @@ class InstructionsScreen(Screen):
         return super().get_input()
 
     def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
         for button in self.buttons.values():
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         screen.blit(self.assets["logo"].image, self.assets["logo"].rect)
         for a in self.buttons.values():
             a.draw(screen)
 
     def load_assets(self) -> dict[str, AnimatedSprite]:
+        """
+        Load assets from file.
+
+        Returns:
+            dict: A dict containing the assets.
+        """
         image_path = {"logo": ("assets", "highscore", "Logo")}
         result = {}
         for name, path in image_path.items():
@@ -45,6 +81,7 @@ class InstructionsScreen(Screen):
         return result
 
     def load_buttons(self) -> None:
+        """Load the buttons sprites."""
         buttons = {
             "exit": ((self.screen_size[0] - 60, 5), "Home"),
         }
