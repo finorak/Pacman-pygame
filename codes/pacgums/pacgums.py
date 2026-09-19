@@ -13,9 +13,19 @@ class Pacgums:
     """Pacgum class manager."""
 
     def __init__(
-        self, maze: list[list[int]], pacgum_score: int, super_pacgum_score: int
+        self,
+        maze: list[list[int]],
+        pacgum_score: int,
+        super_pacgum_score: int,
     ) -> None:
-        """Initialize a Pacgums class instance."""
+        """
+        Everything starts here.
+
+        Args:
+            maze (list[list[int]]): The maze for the pacgum.
+            pacgum_score (int): The score for the pacgum.
+            super_pacgum_score (int): The score for the super pacgum.
+        """
         self.pacgums: set[tuple[int, int]] = set()
         self.super_pacgums: set[tuple[int, int]] = set()
 
@@ -69,9 +79,9 @@ class Pacgums:
         self.pacgums = set(positions[:numbers])
         self.super_pacgums = {
             (0, 0),
-            (len(self.maze) - 1, len(self.maze[0]) - 1),
-            (0, len(self.maze[0]) - 1),
-            (len(self.maze) - 1, 0),
+            (len(self.maze[0]) - 1, len(self.maze) - 1),
+            (0, len(self.maze) - 1),
+            (len(self.maze[0]) - 1, 0),
         }
 
     def _get_all_pos(self) -> list[tuple[int, int]]:

@@ -3,6 +3,7 @@
 import pygame
 from mazegenerator import MazeGenerator
 
+from codes.rendering.utils import SpriteLoader
 from codes.setting import CELL_PADDING, CELL_SIZE
 
 
@@ -21,6 +22,9 @@ class Maze:
         self.maze = self.maze_gen.maze
         self.cell_size: int = CELL_SIZE
         self.maze_size = self._get_maze_size(self.maze)
+        self.full_block = SpriteLoader.import_image(
+            "assets", "other", "full_cell"
+        )
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
         self.rect: pygame.FRect = self.image.get_frect()
@@ -38,7 +42,7 @@ class Maze:
 
     def _reset(self) -> None:
         """Reset the screen to be only the background."""
-        self.image.fill((20, 20, 20, 140))
+        self.image.fill((0, 0, 0, 30))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
@@ -54,6 +58,10 @@ class Maze:
         surface.fill((0, 0, 0, 0))
         for y, row in enumerate(self.maze):
             for x, col in enumerate(row):
+                if col == 15:
+                    real_pos = x * self.cell_size + 1, y * self.cell_size + 1
+                    surface.blit(self.full_block, (real_pos))
+                    continue
                 self._draw_cell(surface, (x, y), col)
         return surface
 

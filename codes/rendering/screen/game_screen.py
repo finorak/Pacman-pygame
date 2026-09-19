@@ -41,9 +41,13 @@ class GameScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_just_pressed()
         if keys[pygame.K_c]:
             self.activate_cheat = not self.activate_cheat
+            print(
+                "Cheat mode",
+                "Activated" if self.activate_cheat else "Desactivated",
+            )
             self.data.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"

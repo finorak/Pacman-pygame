@@ -85,6 +85,9 @@ class Ghost(Entity):
         result["fragile"] = AnimatedSprite(
             (0, 0), SpriteLoader.import_folder("assets", "ghosts", "fragile")
         )
+        result["fragile2"] = AnimatedSprite(
+            (0, 0), SpriteLoader.import_folder("assets", "ghosts", "fragile2")
+        )
         return result
 
     def update(self, dt: float) -> None:
@@ -106,8 +109,11 @@ class Ghost(Entity):
             self.start_timer = perf_counter()
         # update timer
         if self.can_be_eaten:
-            self.update_sprite("fragile")
             end = perf_counter()
+            if (end - self.start_timer) + 2 >= GHOST_ESCAPE_TIME:
+                self.update_sprite("fragile2")
+            else:
+                self.update_sprite("fragile")
             if end - self.start_timer >= GHOST_ESCAPE_TIME:
                 self.can_be_eaten = False
                 self.start_timer = 0
@@ -171,8 +177,8 @@ position.
         """Start move from current posiion to choosen direction.
 
         Args:
-            direction: the direction choosen by the player, one of \
-`up`, `down`, `left` and `right`
+            direction: the direction choosen by the player, one of
+            `up`, `down`, `left` and `right`
         """
         dx, dy = DIR_VEC[direction]
         self.grid_x += dx
@@ -195,8 +201,8 @@ position.
         """Update ghosts state after each reset.
 
         Args:
-            value: the state for each ghost after updating \
-the default value is `False`
+            value: the state for each ghost after updating
+            the default value is `False`
         """
         for ghost in Ghost.GHOSTS_STORE:
             ghost.start_timer = 0

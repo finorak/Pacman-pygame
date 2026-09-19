@@ -122,9 +122,12 @@ the default value is `False`
         Args:
             kill: wether diminue the entity's life or not.
         """
-        return super().reset(kill)
+        super().reset(kill)
+        if self.cheat_mode:
+            self.speed = 5.0
 
     def new_game(self) -> None:
+        """Start a new game."""
         self.timer = self.max_time
         self.reset()
 
@@ -141,3 +144,4 @@ the default value is `False`
     def cheat_mode(self, value: bool = False) -> None:
         """Set cheat mode value."""
         self._cheat_mode = value
+        self.speed = 5.0 if value else 3.5

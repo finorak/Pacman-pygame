@@ -9,7 +9,7 @@ from codes.highscore import HighScoreLoader
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.rendering.component.maze import Maze
-from codes.setting import GHOST_START_SETTING, SCREEN_SIZE
+from codes.setting import GHOST_START_SETTING, MAZE_SIZE, SCREEN_SIZE
 from codes.utilities import get_center
 
 
@@ -27,7 +27,7 @@ class Data:
 
         self.screen_size = SCREEN_SIZE
 
-        self.maze = Maze((19, 19), game_model.seed)
+        self.maze = Maze((MAZE_SIZE), game_model.seed)
         self.maze.rect.topleft = self.maze_render_pos = (
             get_center(self.screen_size, self.maze.rect.width),
             get_center(
@@ -76,9 +76,9 @@ class Data:
         del self.maze
         gc.collect()
         if new_game:
-            self.maze = Maze((19, 19), seed=self.game_model.seed)
+            self.maze = Maze((MAZE_SIZE), seed=self.game_model.seed)
         else:
-            self.maze = Maze((19, 19))
+            self.maze = Maze(MAZE_SIZE)
         self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze

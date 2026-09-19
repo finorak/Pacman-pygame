@@ -24,7 +24,7 @@ def in_bounds(x: int, y: int, maze: list[list[int]]) -> bool:
     Returns:
         bound: boolean value that determine if its' in bound.
     """
-    return 0 <= x < len(maze) and 0 <= y < len(maze[0])
+    return 0 <= x < len(maze[0]) and 0 <= y < len(maze)
 
 
 def get_center(
@@ -117,7 +117,7 @@ def can_move(
 
     if not in_bounds(grid_x, grid_y, maze) or not in_bounds(nx, ny, maze):
         return False
-    if not TYPE_CHECKING and cheat_mode:
+    if not TYPE_CHECKING and cheat_mode and maze[ny][nx] != 15:
         return True
 
     cur_mask = maze[grid_y][grid_x]
@@ -164,8 +164,10 @@ def load_data(config_file: str) -> GameModel:
                 f"[WARNING] Cannot load the file as json: {error['msg']}",
                 file=sys.stderr,
             )
+        print("[WARNING] Default value will be used", file=sys.stderr)
     except ValueError as e:
         print(
             f"[WARNING] Cannot load the file as a json: {e}", file=sys.stderr
         )
+        print("[WARNING] Default value will be used", file=sys.stderr)
     return GameModel()
