@@ -42,7 +42,7 @@ class Maze:
 
     def _reset(self) -> None:
         """Reset the screen to be only the background."""
-        self.image.fill((0, 0, 0, 30))
+        self.image.fill((0, 0, 0, 100))
         self.image.blit(self.background)
 
     def _get_maze_surface(self) -> pygame.Surface:
