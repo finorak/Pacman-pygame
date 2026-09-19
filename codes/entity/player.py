@@ -37,7 +37,7 @@ a level.
         self.pacgums = gums
         self.can_eat_ghost: bool = False
         self.score: int = 0
-        self.current_level: int = 0
+        self.current_level: int = 1
         self._cheat_mode: bool = False
 
         self.max_time = max_time
@@ -129,6 +129,9 @@ the default value is `False`
     def new_game(self) -> None:
         """Start a new game."""
         self.timer = self.max_time
+        self.score = 0
+        self.current_level = 1
+        self.cheat_mode = False
         self.reset()
 
     def dead(self) -> None:
