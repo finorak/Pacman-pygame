@@ -3,11 +3,12 @@
 This module helpers for the basic of our implementation.
 """
 
-
 import json
 import math
 import sys
 from typing import TYPE_CHECKING
+
+from pydantic import ValidationError
 
 from codes.parsing.parse import GameModel
 from codes.setting import DIR_BIT, DIR_VEC, TARGET_DIRECTION
@@ -27,8 +28,7 @@ def in_bounds(x: int, y: int, maze: list[list[int]]) -> bool:
 
 
 def get_center(
-        screen_size: tuple[int, int],
-        lengh: float, horizontal: bool = True
+    screen_size: tuple[int, int], lengh: float, horizontal: bool = True
 ) -> int:
     """Extract the center of the screen.
 
@@ -95,10 +95,11 @@ def player_in_range(
 
 
 def can_move(
-        grid_x: int, grid_y: int,
-        direction: str,
-        maze: list[list[int]],
-        cheat_mode: bool = False
+    grid_x: int,
+    grid_y: int,
+    direction: str,
+    maze: list[list[int]],
+    cheat_mode: bool = False,
 ) -> bool:
     """Check validity of choosed direction.
 
@@ -114,14 +115,9 @@ def can_move(
     dx, dy = DIR_VEC[direction]
     nx, ny = grid_x + dx, grid_y + dy
 
-    if not in_bounds(grid_x, grid_y, maze) or not in_bounds(
-        nx, ny, maze
-    ):
+    if not in_bounds(grid_x, grid_y, maze) or not in_bounds(nx, ny, maze):
         return False
-    if (
-        not TYPE_CHECKING
-        and cheat_mode
-    ):
+    if not TYPE_CHECKING and cheat_mode:
         return True
 
     cur_mask = maze[grid_y][grid_x]
@@ -162,6 +158,12 @@ def load_data(config_file: str) -> GameModel:
             f"[WARNING] Cannot load file {config_file}: {e}", file=sys.stderr
         )
         print("[WARNING] Default value will be used", file=sys.stderr)
+    except ValidationError as e:
+        for error in e.errors():
+            print(
+                f"[WARNING] Cannot load the file as json: {error['msg']}",
+                file=sys.stderr,
+            )
     except ValueError as e:
         print(
             f"[WARNING] Cannot load the file as a json: {e}", file=sys.stderr

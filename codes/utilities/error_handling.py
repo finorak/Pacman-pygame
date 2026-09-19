@@ -27,6 +27,7 @@ def error_handler(func: Callable[..., None]) -> Callable[..., Any]:
     Returns:
         wrapper: the wrapper function to wrap our functin.
     """
+
     @wraps(func)
     def wrapper(*arg: Any, **kwarg: Any) -> Any:
         """Wrap function."""

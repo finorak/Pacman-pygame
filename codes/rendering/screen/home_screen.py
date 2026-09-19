@@ -1,4 +1,5 @@
 """Module that contains the home screen for the program."""
+
 import pygame
 
 from codes.data.data import Data

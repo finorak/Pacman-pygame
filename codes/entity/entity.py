@@ -1,6 +1,5 @@
 """Entity module that contains the base of playe/ghost."""
 
-
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -198,6 +197,9 @@ consistent even with other hardware.
         self.grid_y = self.init_grid_y
         self.render_x = self.init_render_x
         self.render_y = self.init_render_y
+
+        self.current_dir = "up"
+        self.next_dir = "up"
 
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0

@@ -1,6 +1,5 @@
 """Parsing module container."""
 
-
 from typing import Self
 
 from pydantic import (

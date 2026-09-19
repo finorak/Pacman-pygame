@@ -1,6 +1,5 @@
 """Module used to combine our implementatoin."""
 
-
 import pygame
 
 from codes.data.data import Data

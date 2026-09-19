@@ -124,6 +124,10 @@ the default value is `False`
         """
         return super().reset(kill)
 
+    def new_game(self) -> None:
+        self.timer = self.max_time
+        self.reset()
+
     def dead(self) -> None:
         """Change player state to dead."""
         self.is_dead = True

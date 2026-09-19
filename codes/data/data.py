@@ -31,9 +31,8 @@ class Data:
         self.maze.rect.topleft = self.maze_render_pos = (
             get_center(self.screen_size, self.maze.rect.width),
             get_center(
-                self.screen_size, self.maze.rect.height,
-                horizontal=False
-                ),
+                self.screen_size, self.maze.rect.height, horizontal=False
+            ),
         )
         self.pacgums = Pacgums(
             self.maze.maze,
@@ -83,7 +82,10 @@ class Data:
         self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
-        self.player.reset()
+        if new_game:
+            self.player.new_game()
+        else:
+            self.player.reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze
             ghost.maze_gen = self.maze.maze_gen

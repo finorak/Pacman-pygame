@@ -114,4 +114,4 @@ class Pacgums:
     @property
     def is_empty(self) -> bool:
         """Check for pacgums valability."""
-        return not self.pacgums
+        return not self.pacgums and not self.super_pacgums

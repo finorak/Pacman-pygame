@@ -41,9 +41,6 @@ class Input:
         Args:
             event (Event): The evenment from the user.
         """
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.active = self.rect.collidepoint(event.pos)
-
         if event.type == pygame.KEYDOWN and self.active:
             if event.key == pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
@@ -63,6 +60,8 @@ class Input:
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
+        if not self.active:
+            return
         screen.blit(self.background, self.pos)
         text = self.text
         if self.indicator and self.active:

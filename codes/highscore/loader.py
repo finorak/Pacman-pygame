@@ -52,9 +52,9 @@ class HighScoreLoader:
                 )
             except ValueError as e:
                 print(
-                        f"[WARNING] Cannot write the save file: {e}",
-                        file=sys.stderr
-                    )
+                    f"[WARNING] Cannot write the save file: {e}",
+                    file=sys.stderr,
+                )
 
     def add_score(self, name: str, score: int, time: int) -> None:
         """Add new score into database.

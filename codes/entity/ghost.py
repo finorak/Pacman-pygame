@@ -35,7 +35,8 @@ class Ghost(Entity):
         self,
         pos: tuple[int, int],
         maze: list[list[int]],
-        name: str, score: int,
+        name: str,
+        score: int,
         maze_gen: MazeGenerator,
     ) -> None:
         """Initialize a ghost instance class.
@@ -131,17 +132,14 @@ position.
         choices = ["down", "left", "right", "up"]
         next_dir = random.choice(choices)
         paths = self.algorithm.bfs(self.pos, player.pos, self.maze_gen)
-        if (
-                self.can_be_eaten
-                or player_in_range(
-                    self.pos, player.pos, self._radius
-                    )
+        if self.can_be_eaten or player_in_range(
+            self.pos, player.pos, self._radius
         ):
             if not paths:
                 return self.next_dir
             next_dir = get_direction(paths[0], self.pos)
             choices.remove(next_dir)
-            return (random.choice(choices) if self.can_be_eaten else next_dir)
+            return random.choice(choices) if self.can_be_eaten else next_dir
         return next_dir
 
     def get_input(self, player: Any) -> None:
