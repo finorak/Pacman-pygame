@@ -65,6 +65,8 @@ class Data:
         gc.collect()
         if new_game:
             self.maze = Maze((19, 19), seed=self.game_model.seed)
+            self.player.level = 1
+            self.player.score = 0
         else:
             self.maze = Maze((19, 19))
         self.maze.rect.topleft = (
