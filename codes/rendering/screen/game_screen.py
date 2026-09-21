@@ -1,3 +1,5 @@
+"""Module that contains the game screen for the program."""
+
 import pygame
 
 from codes.data.data import Data
@@ -12,13 +14,25 @@ from codes.setting import CURRENT_SCREEN_PADDING
 
 
 class GameScreen(Screen):
+    """The game screen for the rendering system."""
+
     def __init__(self, game_model: GameModel, data: Data) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            game_model (GameModel): THe model or variable class for
+            the program.
+            data (Data): The data that stores every data used during
+            the program.
+        """
         super().__init__(game_model, data)
         self.activate_cheat: bool = False
         self.ui = UI(self.data.player)
         self.buttons: dict[str, Button] = {}
 
     def get_input(self) -> str | None:
+        """Get the input from the user."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -27,9 +41,13 @@ class GameScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_just_pressed()
         if keys[pygame.K_c]:
             self.activate_cheat = not self.activate_cheat
+            print(
+                "Cheat mode",
+                "Activated" if self.activate_cheat else "Desactivated",
+            )
             self.data.player.cheat_mode = self.activate_cheat
         if keys[pygame.K_ESCAPE]:
             return "pause"
@@ -43,6 +61,12 @@ class GameScreen(Screen):
         return super().get_input()
 
     def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
         self.data._go_to_next_level()
         for ghost in self.data.ghosts:
             ghost.update(dt)
@@ -52,6 +76,12 @@ class GameScreen(Screen):
         self.ui.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         self.data.maze.render(screen)
         self.data.pacgums.render(self.data.maze.image)
         for ghost in self.data.ghosts:
@@ -62,6 +92,7 @@ class GameScreen(Screen):
         self.data.player.render(self.data.maze.image)
 
     def load_buttons(self) -> None:
+        """Load the buttons sprites."""
         buttons = {
             "exit": (
                 (
@@ -89,6 +120,7 @@ class GameScreen(Screen):
             self.buttons[button] = a
 
     def new(self) -> None:
+        """Make a new player and ghost and maze."""
         self.data.maze.reset()
         self.data.player.reset()
         for ghost in self.data.ghosts:

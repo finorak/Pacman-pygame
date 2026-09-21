@@ -9,10 +9,11 @@ from pydantic import ValidationError
 
 
 def _log(msg: Any) -> None:
+    """Print a message in a the stderr."""
     print(msg, file=sys.stderr)
 
 
-def error_handler(func: Callable[..., None]) -> Callable:
+def error_handler(func: Callable[..., None]) -> Callable[..., Any]:
     """Handle error gracefully.
 
     Instead of checking manually every error in our code
@@ -26,6 +27,7 @@ def error_handler(func: Callable[..., None]) -> Callable:
     Returns:
         wrapper: the wrapper function to wrap our functin.
     """
+
     @wraps(func)
     def wrapper(*arg: Any, **kwarg: Any) -> Any:
         """Wrap function."""

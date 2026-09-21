@@ -1,6 +1,5 @@
 """Helper function module."""
 
-
 from .error_handling import error_handler
 from .utils import (
     can_move,

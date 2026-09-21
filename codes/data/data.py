@@ -1,6 +1,5 @@
 """Data module container for a smooth management."""
 
-import gc
 from pathlib import Path
 
 from codes.entity.ghost import Ghost
@@ -9,7 +8,7 @@ from codes.highscore import HighScoreLoader
 from codes.pacgums.pacgums import Pacgums
 from codes.parsing.parse import GameModel
 from codes.rendering.component.maze import Maze
-from codes.setting import GHOST_START_SETTING, SCREEN_SIZE
+from codes.setting import GHOST_START_SETTING, MAZE_SIZE, SCREEN_SIZE
 from codes.utilities import get_center
 
 
@@ -27,13 +26,12 @@ class Data:
 
         self.screen_size = SCREEN_SIZE
 
-        self.maze = Maze((19, 19), game_model.seed)
+        self.maze = Maze((MAZE_SIZE), game_model.seed)
         self.maze.rect.topleft = self.maze_render_pos = (
             get_center(self.screen_size, self.maze.rect.width),
             get_center(
-                self.screen_size, self.maze.rect.height,
-                horizontal=False
-                ),
+                self.screen_size, self.maze.rect.height, horizontal=False
+            ),
         )
         self.pacgums = Pacgums(
             self.maze.maze,
@@ -73,17 +71,22 @@ class Data:
             new_game: weather to to a start from scratch or not.
         """
         self.finished = None
-        # delete from memory
-        del self.maze
-        gc.collect()
         if new_game:
-            self.maze = Maze((19, 19), seed=self.game_model.seed)
+            self.player.level = 1
+            self.player.score = 0
+            self.player.life = self.game_model.life
+            self.maze = Maze((MAZE_SIZE), seed=self.game_model.seed)
         else:
-            self.maze = Maze((19, 19))
+            self.maze = Maze(MAZE_SIZE)
         self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
-        self.player.reset()
+        self.player.cheat_mode = False
+        self.player.timer = self.game_model.level_max_time
+        if new_game:
+            self.player.new_game()
+        else:
+            self.player.reset()
         for ghost in self.ghosts:
             ghost.maze = self.maze.maze
             ghost.maze_gen = self.maze.maze_gen

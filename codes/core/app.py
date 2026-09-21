@@ -1,3 +1,5 @@
+"""Module used to combine our implementatoin."""
+
 import pygame
 
 from codes.data.data import Data
@@ -17,7 +19,16 @@ from codes.utilities import load_data
 
 
 class Rendering:
+    """Class used to combine all our implementatoin of the pac-man \
+project."""
+
     def __init__(self, screen_size: tuple[int, int], config_file: str) -> None:
+        """Initialize a `Rendering` class instance.
+
+        Args:
+            screen_size: the size of the screen to use.
+            config_file: the configuration file provided at runtime.
+        """
         pygame.init()
         self.game_model = load_data(config_file)
         self.screen = pygame.display.set_mode(screen_size)
@@ -42,6 +53,7 @@ class Rendering:
         self.load_background()
 
     def run(self) -> None:
+        """Run the application."""
         while self.running:
             dt = self.clock.tick(FPS) / 1000
             self.get_event()
@@ -49,6 +61,11 @@ class Rendering:
             self.render()
 
     def get_event(self) -> None:
+        """Extract event from the current screen.
+
+        Instead of doing it all in the same function this one \
+in this case, we do them in each screen fo better mantainability.
+        """
         flags = self.current_screen.get_input()
         if not flags:
             return
@@ -59,6 +76,8 @@ class Rendering:
         if flags == "exit":
             self.running = False
             return
+        if flags == "HighScore":
+            self.data.reset_data(new_game=True)
         self.current_screen = self.screens[flags]
         if isinstance(self.current_screen, PauseScreen):
             self.current_screen.enter(self.screen)
@@ -68,17 +87,24 @@ class Rendering:
             self.current_screen.enter(self.screen)
 
     def update(self, dt: float) -> None:
+        """Update current screen.
+
+        Args:
+            dt: the delta fram used for the frame that occured.
+        """
         if not isinstance(self.current_screen, PauseScreen):
             self.background.rect.left -= BACKGROUND_SPEED * dt
         self.current_screen.update(dt)
 
     def render(self) -> None:
+        """Render what happen in the current screen."""
         if not isinstance(self.current_screen, PauseScreen):
             self._render_background(self.screen)
         self.current_screen.render(self.screen)
         pygame.display.update()
 
     def load_background(self) -> None:
+        """Load background onto screen."""
         self.background = Sprite(
             (0, 0), SpriteLoader.import_image("assets", "background")
         )

@@ -1,3 +1,5 @@
+"""Package that contains every screen for the program."""
+
 from .base_screen import Screen
 from .finished_screen import FinishedScreen
 from .game_screen import GameScreen

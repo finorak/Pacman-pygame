@@ -1,3 +1,5 @@
+"""Module that contains the pause screen for the program."""
+
 import pygame
 
 from codes.data.data import Data
@@ -9,7 +11,18 @@ from codes.rendering.utils.sprite_loader import SpriteLoader
 
 
 class PauseScreen(Screen):
+    """The finished screen for the rendering system."""
+
     def __init__(self, game_model: GameModel, data: Data) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            game_model (GameModel): THe model or variable class for
+            the program.
+            data (Data): The data that stores every data used during
+            the program.
+        """
         super().__init__(game_model, data)
         self.background = SpriteLoader.import_image("assets", "hud", "table")
         self.background_rect = (
@@ -21,9 +34,21 @@ class PauseScreen(Screen):
         self.logo = SpriteLoader.import_image("assets", "screen", "pause")
 
     def enter(self, screen: pygame.Surface) -> None:
+        """
+        Call when we enter the screen.
+
+        Args:
+            screen (pygame.Surface): The current screen.
+        """
         self.back = screen.copy()
 
     def get_input(self) -> str | None:
+        """
+        Get the input from the user.
+
+        Returns:
+            str: a signal if there is any.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -36,9 +61,21 @@ class PauseScreen(Screen):
                         return b.result
         return super().get_input()
 
-    def update(self, dt: float) -> None: ...
+    def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         screen.blit(self.back)
         screen.blit(self.background, self.background_rect)
         screen.blit(
@@ -48,6 +85,7 @@ class PauseScreen(Screen):
             button.draw(screen)
 
     def load_buttons(self) -> None:
+        """Load the buttons sprites."""
         buttons = {
             "exit": ((self.screen_size[0] - 60, 5), "Home"),
             "home": (
