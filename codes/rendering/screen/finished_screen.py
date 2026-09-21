@@ -1,3 +1,5 @@
+"""Module that contains the finished screen for the program."""
+
 from pathlib import Path
 
 import pygame
@@ -12,7 +14,18 @@ from codes.rendering.utils.sprite_loader import SpriteLoader
 
 
 class FinishedScreen(Screen):
+    """The finished screen for the rendering system."""
+
     def __init__(self, game_model: GameModel, data: Data) -> None:
+        """
+        Everything starts here.
+
+        Args:
+            game_model (GameModel): THe model or variable class for
+            the program.
+            data (Data): The data that stores every data used during
+            the program.
+        """
         super().__init__(game_model, data)
         self.background = SpriteLoader.import_image("assets", "hud", "table")
         self.background_rect = (
@@ -40,14 +53,32 @@ class FinishedScreen(Screen):
 
     @property
     def won(self) -> bool:
+        """
+        Check if the player won or not.
+
+        Returns:
+            bool: true if so.
+        """
         return self.data.finished == "win"
 
     def enter(self, screen: pygame.Surface) -> None:
+        """
+        Use when we enter the finished screen.
+
+        Args:
+            screen (pygame.Surface): The surface to get.
+        """
         self.back = screen.copy()
         self.submitted = False
         self.input.active = True
 
     def get_input(self) -> str | None:
+        """
+        Get the input from the user.
+
+        Returns:
+            str: a signal if there is any.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "exit"
@@ -63,17 +94,30 @@ class FinishedScreen(Screen):
                 and self._can_submit()
             ):
                 self._save_score()
+                self.input.text = ''
                 return "HighScore"
         if not self.input.active:
             return super().get_input()
         return None
 
     def update(self, dt: float) -> None:
+        """
+        Update the screen.
+
+        Args:
+            dt (float): The delta time.
+        """
         self.input.update(dt)
         for button in self.buttons.values():
             button.update(dt)
 
     def render(self, screen: pygame.Surface) -> None:
+        """
+        Render the screen into a surface.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the program.
+        """
         screen.blit(self.back)
         screen.blit(self.background, self.background_rect)
         title = "YOU WIN!" if self.won else "GAME OVER"
@@ -98,6 +142,7 @@ class FinishedScreen(Screen):
             button.draw(screen)
 
     def load_buttons(self) -> None:
+        """Load the buttons sprites."""
         buttons = {
             "home": (
                 (self.get_center(47) - 120, self.get_center(52, False)),
@@ -134,10 +179,17 @@ class FinishedScreen(Screen):
             self.buttons[name] = Button(pos, sprites, result)
 
     def _can_submit(self) -> bool:
+        """
+        Check if we can submit the input or not.
+
+        Returns:
+            bool: True if so.
+        """
         name = self.input.text.strip()
         return len(name) >= 3 and name.replace(" ", "").isalpha()
 
     def _save_score(self) -> None:
+        """Save the score in the highscore system."""
         if self.submitted:
             return
         elapsed = max(

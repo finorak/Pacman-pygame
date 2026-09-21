@@ -1,3 +1,5 @@
+"""Entity module container."""
+
 from .entity import Entity
 from .ghost import Ghost
 from .player import Player
