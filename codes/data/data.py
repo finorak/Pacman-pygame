@@ -74,13 +74,13 @@ class Data:
         if new_game:
             self.player.level = 1
             self.player.score = 0
+            self.player.life = self.game_model.life
             self.maze = Maze((MAZE_SIZE), seed=self.game_model.seed)
         else:
             self.maze = Maze(MAZE_SIZE)
         self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
-        self.player.life = self.game_model.life
         self.player.cheat_mode = False
         self.player.timer = self.game_model.level_max_time
         if new_game:

@@ -86,6 +86,7 @@ class FinishedScreen(Screen):
                 pos = pygame.mouse.get_pos()
                 for button in self.buttons.values():
                     if button.current_sprite.rect.collidepoint(pos):
+                        self.input.text = ''
                         return button.result
             self.input.handle_event(event)
             if (

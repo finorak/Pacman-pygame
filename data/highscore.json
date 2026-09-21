@@ -1,52 +1,52 @@
 [
     {
-        "player_name": "nyramana",
-        "player_score": 2430,
-        "player_time": 19
-    },
-    {
-        "player_name": "sdfesfesd",
-        "player_score": 104,
-        "player_time": 90
-    },
-    {
-        "player_name": "Hello",
-        "player_score": 102,
-        "player_time": 88
-    },
-    {
-        "player_name": "asdfasdf",
-        "player_score": 80,
-        "player_time": 17
-    },
-    {
-        "player_name": "hello",
-        "player_score": 60,
-        "player_time": 54
+        "player_name": "test",
+        "player_score": 120,
+        "player_time": 3
     },
     {
         "player_name": "test",
-        "player_score": 50,
-        "player_time": 19
+        "player_score": 100,
+        "player_time": 6
     },
     {
         "player_name": "test",
-        "player_score": 50,
-        "player_time": 19
+        "player_score": 100,
+        "player_time": 2
     },
     {
-        "player_name": "kjlkj",
+        "player_name": "dfad",
         "player_score": 40,
-        "player_time": 20
+        "player_time": 5
     },
     {
-        "player_name": "adfaf",
+        "player_name": "tst",
         "player_score": 40,
-        "player_time": 10
+        "player_time": 5
     },
     {
-        "player_name": "asdfasdf",
+        "player_name": "asdf",
         "player_score": 40,
+        "player_time": 5
+    },
+    {
+        "player_name": "adfsd",
+        "player_score": 30,
+        "player_time": 5
+    },
+    {
+        "player_name": "testdd",
+        "player_score": 30,
+        "player_time": 5
+    },
+    {
+        "player_name": "score",
+        "player_score": 20,
+        "player_time": 5
+    },
+    {
+        "player_name": "test",
+        "player_score": 20,
         "player_time": 5
     }
 ]
