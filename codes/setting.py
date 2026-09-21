@@ -1,13 +1,18 @@
+"""Module that contain all the necessity constant for our implementation."""
+
 SCREEN_SIZE: tuple[int, int] = 1280, 720
 CURRENT_SCREEN_PADDING: tuple[int, int] = 60, 5
 
+MAZE_SIZE = 19, 17
+
+# SUPPOSED CELL SIZE
 CELL_SIZE: int = 32
 GUM_PADDING: int = 2
 CELL_PADDING: int = 3
 PLAYER_PADDING: int = 2
 
 GHOST_ESCAPE_TIME: int = 10  # second
-RADIUS_UPGRAD_PER_LEVEL: int = 5
+RADIUS_UPGRAD_PER_LEVEL: int = 1
 SUPER_GUM_COUNT: int = 4
 
 BACKGROUND_SPEED: int = 20
@@ -29,9 +34,9 @@ DIRECTION: dict[str, tuple[int, int]] = {
 
 GHOST_START_SETTING: dict[str, dict[str, tuple[int, int]]] = {
     "blue": {"coord": (0, 0)},
-    "yellow": {"coord": (18, 0)},
-    "pink": {"coord": (0, 18)},
-    "red": {"coord": (18, 18)},
+    "yellow": {"coord": (MAZE_SIZE[0] - 1, 0)},
+    "pink": {"coord": (0, MAZE_SIZE[1] - 1)},
+    "red": {"coord": (MAZE_SIZE[1] - 1, MAZE_SIZE[1] - 1)},
 }
 
 UP: int = 0b0001

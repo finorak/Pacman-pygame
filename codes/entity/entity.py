@@ -1,25 +1,33 @@
+"""Entity module that contains the base of playe/ghost."""
+
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, ClassVar, Self
+from typing import TYPE_CHECKING, Any
 
 import pygame
 
 from codes.rendering.component import AnimatedSprite
 from codes.setting import (
     CELL_SIZE,
-    DIR_BIT,
     DIR_VEC,
     OPPOSITE,
     PLAYER_PADDING,
 )
-from codes.utilities.utils import in_bounds, player_in_range
+from codes.utilities import can_move, player_in_range
 
 
 class Entity(ABC):
-    ENTITY_STORE: ClassVar[list[Self]] = []
+    """Entity class to manage player/ghost."""
 
     def __init__(
         self, pos: tuple[int, int], maze: list[list[int]], life: int = 3
     ) -> None:
+        """Initialize an entity class instance.
+
+        Args:
+            pos: the current position of the entity.
+            maze: the current maze.
+            life: number of life the entity has.
+        """
         self.grid_x = self.init_grid_x = pos[0]
         self.grid_y = self.init_grid_y = pos[1]
         self.render_x = self.init_render_x = float(pos[0])
@@ -49,12 +57,10 @@ class Entity(ABC):
             self.render_x,
             self.render_y,
         )
-        Entity.ENTITY_STORE.append(self)
 
     @abstractmethod
     def load_image(self) -> dict[str, AnimatedSprite]:
-        """
-        Loads the image for the sprite.
+        """Load sprites images.
 
         The key for the sprite should always be "up", "down", "left", "right"
         to make the movement easier. We can also add another state as long as
@@ -65,37 +71,20 @@ class Entity(ABC):
 
     @property
     def pos(self) -> tuple[int, int]:
+        """Get entity position."""
         return self.grid_x, self.grid_y
 
-    def can_move(self, direction: str) -> bool:
-        dx, dy = DIR_VEC[direction]
-        nx, ny = self.grid_x + dx, self.grid_y + dy
-
-        if not in_bounds(self.grid_x, self.grid_y, self.maze) or not in_bounds(
-            nx, ny, self.maze
-        ):
-            return False
-        # typechecking prevent mypy error.
-        if (
-            not TYPE_CHECKING
-            and hasattr(self, "_cheat_mode")
-            and self.cheat_mode
-        ):
-            return True
-
-        cur_mask = self.maze[self.grid_y][self.grid_x]
-
-        if cur_mask == 15:
-            return False
-
-        out_bit = DIR_BIT[direction]
-
-        return (cur_mask & out_bit) == 0
-
     @abstractmethod
-    def get_input(self, *arg: Any, **kwarg: Any) -> None | str: ...
+    def get_input(self, *arg: Any, **kwarg: Any) -> None | str:
+        """Get input from user."""
 
     def start_move(self, direction: str) -> None:
+        """Start move from current posiion to choosen direction.
+
+        Args:
+            direction: the direction choosen by the player, one of \
+`up`, `down`, `left` and `right`
+        """
         dx, dy = DIR_VEC[direction]
         self.grid_x += dx
         self.grid_y += dy
@@ -107,32 +96,54 @@ class Entity(ABC):
         self._move_target = (self.grid_x, self.grid_y)
 
     def update_sprite(self, sprite_name: str) -> None:
+        """Update entity sprite.
+
+        Args:
+            sprite_name: the name of the choosen sprite.
+        """
         self.current_sprite = self.sprites[sprite_name]
 
     def collides_with(self, other: "Entity") -> bool:
+        """Look for collision between two entity.
+
+        Args:
+            other: an other entity object.
+        Returns:
+            is_collide: the two entity do collide.
+        """
         return player_in_range(
             (self.render_x, self.render_y),
             (other.render_x, other.render_y),
             0.6,
         )
 
+    @abstractmethod
     def update(self, dt: float) -> None:
+        """Update current entity position and animation.
+
+        Args:
+            dt: delta time used so that the animation stays \
+consistent even with other hardware.
+        """
         self.current_sprite.animate(dt)
+        cheat_mode: bool = False
+        if hasattr(self, "_cheat_mode") and not TYPE_CHECKING:
+            cheat_mode = self.cheat_mode
 
         if self._is_moving:
             if (
                 self.next_dir == OPPOSITE[self.current_dir]
                 and self.next_dir != self.current_dir
             ):
-                self.reverse_move(self.next_dir)
-            self.move(dt)
+                self._reverse_move(self.next_dir)
+            self._move(dt)
             return
-        if self.can_move(self.next_dir):
+        if can_move(*self.pos, self.next_dir, self.maze, cheat_mode):
             self.start_move(self.next_dir)
-        elif self.can_move(self.current_dir):
+        elif can_move(*self.pos, self.current_dir, self.maze, cheat_mode):
             self.start_move(self.current_dir)
 
-    def reverse_move(self, direction: str) -> None:
+    def _reverse_move(self, direction: str) -> None:
         old_start = self._move_start
         old_target = self._move_target
 
@@ -145,7 +156,7 @@ class Entity(ABC):
         self._move_target = old_start
         self._is_moving = True
 
-    def move(self, dt: float) -> None:
+    def _move(self, dt: float) -> None:
         self._move_progress += dt * self.speed
         if self._move_progress >= 1.0:
             self._move_progress = 1.0
@@ -157,6 +168,11 @@ class Entity(ABC):
         self.current_sprite.position = (self.render_x, self.render_y)
 
     def render(self, screen: pygame.Surface) -> None:
+        """Render entity onto the screen.
+
+        Args:
+            screen: the surface to where to render the entity.
+        """
         screen.blit(
             self.current_sprite.image,
             (
@@ -165,7 +181,13 @@ class Entity(ABC):
             ),
         )
 
-    def _reset(self, kill: bool = False) -> None:
+    @abstractmethod
+    def reset(self, kill: bool = False) -> None:
+        """Reset the entity's information.
+
+        Args:
+            kill: wether diminue the entity's life or not.
+        """
         if kill:
             self.life -= 1
         if hasattr(self, "can_be_eaten"):
@@ -176,7 +198,8 @@ class Entity(ABC):
         self.render_x = self.init_render_x
         self.render_y = self.init_render_y
 
-        self.current_dir = self.init_current_dir
+        self.current_dir = "up"
+        self.next_dir = "up"
 
         self._is_moving = False
         self._move_progress = 0.0  # 0.0 to 1.0

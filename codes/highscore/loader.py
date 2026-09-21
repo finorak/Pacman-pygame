@@ -1,3 +1,5 @@
+"""High score loader module."""
+
 import json
 import sys
 from pathlib import Path
@@ -6,13 +8,22 @@ from .model import HighScoreModel
 
 
 class HighScoreLoader:
+    """Class to load highscore."""
+
     def __init__(self, path: Path) -> None:
+        """Initialize an `HighScoreLoader` instance.
+
+        Args:
+            path: the path of the highscore file.
+        """
         self.path = path
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         self.highscore = self.load()
 
         self.changed = True
 
     def load(self) -> list[HighScoreModel]:
+        """Load highscore from path."""
         try:
             with open(self.path) as file:
                 highscore = json.load(file)
@@ -28,6 +39,11 @@ class HighScoreLoader:
         return []
 
     def save(self, models: list[HighScoreModel]) -> None:
+        """Save newly highscore into file.
+
+        Args:
+            models: all the highscore model.
+        """
         with open(self.path, "w") as file:
             try:
                 json.dump(
@@ -37,11 +53,18 @@ class HighScoreLoader:
                 )
             except ValueError as e:
                 print(
-                        f"[WARNING] Cannot write the save file: {e}",
-                        file=sys.stderr
-                    )
+                    f"[WARNING] Cannot write the save file: {e}",
+                    file=sys.stderr,
+                )
 
     def add_score(self, name: str, score: int, time: int) -> None:
+        """Add new score into database.
+
+        Args:
+            name: the name of the player.
+            score: score gotten by the player.
+            time: time elapsed to finish the game.
+        """
         self.changed = True
         self.highscore.append(
             HighScoreModel(
