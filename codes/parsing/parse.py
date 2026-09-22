@@ -46,7 +46,7 @@ class GameModel(BaseModel):
             raise ValueError("Super pacgum point should be between 1000 and 1")
         if self.level_max_time > 1000 or self.level_max_time <= 60:
             raise ValueError("Max time should be between 1000 and 60")
-        if self.life > 10 or self.life <= 0:
+        if self.life > 8 or self.life <= 0:
             raise ValueError("Life count should be between 10 and 1")
         if self.level_count < 10:
             raise ValueError("Level count should be at least 10.")
