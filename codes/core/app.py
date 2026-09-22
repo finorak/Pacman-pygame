@@ -1,4 +1,5 @@
 """Module used to combine our implementatoin."""
+
 import pygame
 
 from codes.data.data import Data
@@ -22,7 +23,9 @@ class Rendering:
     """Class used to combine all our implementatoin of the pac-man \
 project."""
 
-    def __init__(self, screen_size: tuple[int, int], config_file: str) -> None:
+    def __init__(
+        self, screen_size: tuple[int, int], config_file: str | None
+    ) -> None:
         """Initialize a `Rendering` class instance.
 
         Args:
@@ -110,7 +113,9 @@ in this case, we do them in each screen fo better mantainability.
             (0, 0), SpriteLoader.import_image("assets", "background")
         )
         self.background.image = pygame.transform.scale2x(self.background.image)
-        self.background.rect = Frect(0, 0, self.background.image.width, self.background.image.height)
+        self.background.rect = Frect(
+            0, 0, self.background.image.width, self.background.image.height
+        )
 
     def _render_background(self, screen: pygame.Surface) -> None:
         image_width = self.background.rect.width

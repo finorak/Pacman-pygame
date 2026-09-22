@@ -36,6 +36,11 @@ class HighScoreLoader:
                 f"[WARNING] Cannot load the save file {self.path}: {e}",
                 file=sys.stderr,
             )
+        except Exception as e:
+            print(
+                f"[WARNING] Cannot load the save file {self.path}: {e}",
+                file=sys.stderr,
+            )
         return []
 
     def save(self, models: list[HighScoreModel]) -> None:
@@ -44,18 +49,23 @@ class HighScoreLoader:
         Args:
             models: all the highscore model.
         """
-        with open(self.path, "w") as file:
-            try:
+        try:
+            with open(self.path, "w") as file:
                 json.dump(
                     [model.model_dump() for model in models[:10]],
                     file,
                     indent=4,
                 )
-            except ValueError as e:
-                print(
-                    f"[WARNING] Cannot write the save file: {e}",
-                    file=sys.stderr,
-                )
+        except ValueError as e:
+            print(
+                f"[WARNING] Cannot write the save file: {e}",
+                file=sys.stderr,
+            )
+        except Exception as e:
+            print(
+                f"[WARNING] Cannot write the save file: {e}",
+                file=sys.stderr,
+            )
 
     def add_score(self, name: str, score: int, time: int) -> None:
         """Add new score into database.
