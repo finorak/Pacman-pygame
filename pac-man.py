@@ -15,7 +15,10 @@ def main() -> None:
     """
     if len(sys.argv) not in (1, 2):
         print("[ERROR] Invalid arguments.", file=sys.stderr)
-        print(f"[USAGE] uv run python3 {sys.argv[0]} <config>", file=sys.stderr)
+        print(
+                f"[USAGE] uv run python3 {sys.argv[0]} <config>",
+                file=sys.stderr
+            )
         sys.exit(1)
     app = Rendering(
             SCREEN_SIZE,
