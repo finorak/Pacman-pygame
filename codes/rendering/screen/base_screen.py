@@ -33,8 +33,8 @@ class Screen(ABC):
     @abstractmethod
     def get_input(self) -> str | None:
         """Get the input from the user."""
-        keys = pygame.key.get_just_pressed()
-        if keys[pygame.K_f]:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_f] and keys[pygame.K_LCTRL]:
             pygame.display.toggle_fullscreen()
         return None
 

@@ -40,6 +40,8 @@ def error_handler(func: Callable[..., None]) -> Callable[..., Any]:
             _log(msg)
         except PermissionError as e:
             _log(e)
+        except KeyboardInterrupt:
+            _log("\nProcess Ended")
         except Exception as e:
             _log(e)
 

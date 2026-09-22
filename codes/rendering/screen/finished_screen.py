@@ -35,14 +35,12 @@ class FinishedScreen(Screen):
             self.get_center(self.background.height, horizontal=False) - 50,
         )
         self.font = pygame.font.Font(
-            Path(
-                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
-                ), 42,
+            Path(ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))),
+            42,
         )
         self.small_font = pygame.font.Font(
-            Path(
-                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
-                ), 24,
+            Path(ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))),
+            24,
         )
         self.input = Input(
             (
@@ -92,14 +90,14 @@ class FinishedScreen(Screen):
                 pos = pygame.mouse.get_pos()
                 for button in self.buttons.values():
                     if button.current_sprite.rect.collidepoint(pos):
-                        self.input.text = ''
+                        self.input.text = ""
                         return button.result
             self.input.handle_event(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and self._can_submit():
                     self._save_score()
-                    self.input.text = ''
-                    return "HighScore"
+                    self.input.text = ""
+                    return "Home"
                 elif event.key == pygame.K_ESCAPE:
                     return "Home"
         if not self.input.active:

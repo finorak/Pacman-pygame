@@ -1,49 +1,7 @@
 [
-
     {
-        "player_name": "tiana an",
-        "player_score": 880,
-        "player_time": 10
-    },
-    {
-        "player_name": "sdfesfesd",
-        "player_score": 104,
-        "player_time": 90
-    },
-    {
-        "player_name": "Hello",
-        "player_score": 102,
-        "player_time": 88
-    },
-    {
-        "player_name": "hello",
-        "player_score": 60,
-        "player_time": 54
-    },
-    {
-        "player_name": "kjlkj",
-        "player_score": 40,
-        "player_time": 20
-    },
-    {
-        "player_name": "nyramanaaa",
-        "player_score": 37,
-        "player_time": 25
-    },
-    {
-        "player_name": "nyramanaaa",
-        "player_score": 33,
-        "player_time": 14
-    },
-    {
-        "player_name": "nyramanaaa",
-        "player_score": 18,
-        "player_time": 10
-    },
-    {
-        "player_name": "nyramana",
-        "player_score": 14,
-        "player_time": 10
-
+        "player_name": "test",
+        "player_score": 10,
+        "player_time": 13
     }
 ]

@@ -74,7 +74,7 @@ class HighScoreScreen(Screen):
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
-        screen.blit(self.logo.image, self.logo.rect)
+        screen.blit(self.logo.image, self.logo.rect.topleft)
         for a in self.buttons.values():
             a.draw(screen)
         screen.blit(self.leaderboard)

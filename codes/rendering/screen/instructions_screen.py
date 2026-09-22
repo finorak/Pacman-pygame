@@ -6,7 +6,6 @@ from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.screen.base_screen import Screen
-from codes.rendering.utils import SpriteLoader
 
 from ..component import AnimatedSprite
 
@@ -65,7 +64,9 @@ class InstructionsScreen(Screen):
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
-        screen.blit(self.assets["logo"].image, self.assets["logo"].rect)
+        screen.blit(
+            self.assets["logo"].image, self.assets["logo"].rect.topleft
+        )
         for a in self.buttons.values():
             a.draw(screen)
 
