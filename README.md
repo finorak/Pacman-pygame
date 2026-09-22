@@ -5,8 +5,13 @@
 <!--toc:start-->
 - [PAC-MAN](#pac-man)
   - [Description](#description)
+    - [Goal](#goal)
+    - [Brief overview](#brief-overview)
   - [Instructions](#instructions)
-  - [Ressources](#ressources)
+    - [Binary run](#binary-run)
+    - [Manual](#manual)
+  - [Resources](#resources)
+    - [AI Usage](#ai-usage)
   - [Configuration](#configuration)
   - [Highscore](#highscore)
   - [Maze Generation](#maze-generation)
@@ -94,13 +99,13 @@ make re
 - Build the binary for the game based on the OS. It will generate a *tar.gz* file and you can just extract it and play it anywhere. But the binary will also be in the `dist` file.
 
 ```bash
-make build_game
+make build
 ```
 
 - Run the built game in the dist file.
 
 ```bash
-make run_built_game
+make run_executable
 ```
 
 - You can also run it via the command line: just run: `uv run python -m pacman.py <config.json>` it will install automatically all the packages needed to lunch the program.

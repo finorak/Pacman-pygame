@@ -99,13 +99,13 @@ class UI:
         """
         value = self.player.life
         surface.blit(self.font.render("LIFE: ", True, "white"), (60, 105))
-        if value < 5:
-            for i in range(value):
+        if value <= 3:
+            for i in range(3):
                 surface.blit(self.heart, (120 + 30 * i, 100))
             return
-        for i in range(4):
+        for i in range(3):
             surface.blit(self.heart, (120 + 30 * i, 100))
-        for i in range(min(value - 4, 6)):
+        for i in range(min(value - 3, 6)):
             surface.blit(self.heart, (60 + 30 * i, 132))
 
     def draw_time(self, surface: pygame.Surface) -> None:
