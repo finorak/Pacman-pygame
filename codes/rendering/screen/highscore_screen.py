@@ -1,5 +1,6 @@
 """Module that contains the highscore screen for the program."""
 
+from os.path import join
 from pathlib import Path
 
 import pygame
@@ -8,6 +9,7 @@ from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.screen.base_screen import Screen
+from codes.utilities.utils import ressource_path
 
 from ..component import AnimatedSprite
 
@@ -32,7 +34,9 @@ class HighScoreScreen(Screen):
         self.load_buttons()
 
         self.fonts = pygame.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), size=32
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
+                ), size=32
         )
         self.leaderboard = self.draw_leaderboard()
 

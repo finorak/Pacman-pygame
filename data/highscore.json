@@ -1,52 +1,7 @@
 [
     {
         "player_name": "test",
-        "player_score": 120,
-        "player_time": 3
-    },
-    {
-        "player_name": "test",
-        "player_score": 100,
-        "player_time": 6
-    },
-    {
-        "player_name": "test",
-        "player_score": 100,
-        "player_time": 2
-    },
-    {
-        "player_name": "dfad",
-        "player_score": 40,
-        "player_time": 5
-    },
-    {
-        "player_name": "tst",
-        "player_score": 40,
-        "player_time": 5
-    },
-    {
-        "player_name": "asdf",
-        "player_score": 40,
-        "player_time": 5
-    },
-    {
-        "player_name": "adfsd",
-        "player_score": 30,
-        "player_time": 5
-    },
-    {
-        "player_name": "testdd",
-        "player_score": 30,
-        "player_time": 5
-    },
-    {
-        "player_name": "score",
-        "player_score": 20,
-        "player_time": 5
-    },
-    {
-        "player_name": "test",
-        "player_score": 20,
-        "player_time": 5
+        "player_score": 10,
+        "player_time": 13
     }
 ]

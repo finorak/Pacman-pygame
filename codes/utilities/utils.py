@@ -5,8 +5,9 @@ This module helpers for the basic of our implementation.
 
 import json
 import math
+import os
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
 
@@ -171,3 +172,13 @@ def load_data(config_file: str) -> GameModel:
         )
         print("[WARNING] Default value will be used", file=sys.stderr)
     return GameModel()
+
+
+def ressource_path(path: str) -> Any:
+    base_path: str = "."
+    try:
+        if not TYPE_CHECKING:
+            base_path = sys._MEIPASS
+    except Exception:
+        pass
+    return os.path.join(base_path, path)

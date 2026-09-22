@@ -43,4 +43,8 @@ build_game:
 run_built_game: build_game
 	@./dist/$(NAME) config.json
 
-.PHONY: install run fclean re clean debug test build_game run_built_game
+build_spec:
+	@$(UV) run pyinstaller \
+		pac-man.spec
+
+.PHONY: install run fclean re clean debug test build_game run_built_game build_spec
