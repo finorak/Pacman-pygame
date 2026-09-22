@@ -39,6 +39,9 @@ build_game:
 		--windowed \
 		--add-data "assets:assets" \
 		pac-man.py
+	@cp ./config.json ./dist/
+	@tar -czvf pac-man.tar.gz -C dist .
+	
 
 run_built_game: build_game
 	@./dist/$(NAME) config.json

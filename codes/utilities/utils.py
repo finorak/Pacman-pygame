@@ -7,7 +7,7 @@ import json
 import math
 import os
 import sys
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
 
@@ -174,7 +174,15 @@ def load_data(config_file: str) -> GameModel:
     return GameModel()
 
 
-def ressource_path(path: str) -> Any:
+def ressource_path(path: str) -> str:
+    """
+    Get the path to the ressource.
+
+    Args:
+        path (str): The path of the file.
+    Returns:
+        str: The real path to use.
+    """
     base_path: str = "."
     try:
         if not TYPE_CHECKING:
