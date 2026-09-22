@@ -2,6 +2,8 @@
 
 import pygame
 
+from codes.rendering.component.rect import Frect
+
 
 class Sprite:
     """The sprite class for the program."""
@@ -19,7 +21,9 @@ class Sprite:
             sprite (pygame.Surface): The surface to be the sprite.
         """
         self.image = sprite
-        self.rect = self.image.get_frect(topleft=pos)
+        self.rect = Frect(
+            pos[0], pos[1], self.image.width, self.image.height
+        )
 
     @property
     def position(self) -> tuple[float, float]:

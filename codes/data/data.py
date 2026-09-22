@@ -27,7 +27,7 @@ class Data:
         self.screen_size = SCREEN_SIZE
 
         self.maze = Maze((MAZE_SIZE), game_model.seed)
-        self.maze.rect.topleft = self.maze_render_pos = (
+        self.maze.rect.pos = self.maze_render_pos = (
             get_center(self.screen_size, self.maze.rect.width),
             get_center(
                 self.screen_size, self.maze.rect.height, horizontal=False
@@ -76,12 +76,12 @@ class Data:
             self.player.score = 0
             self.player.life = self.game_model.life
             self.maze = Maze((MAZE_SIZE), seed=self.game_model.seed)
+            self.player.cheat_mode = False
         else:
             self.maze = Maze(MAZE_SIZE)
-        self.maze.rect.topleft = self.maze_render_pos
+        self.maze.rect.pos = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
-        self.player.cheat_mode = False
         self.player.timer = self.game_model.level_max_time
         if new_game:
             self.player.new_game()

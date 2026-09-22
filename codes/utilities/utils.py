@@ -7,7 +7,7 @@ import json
 import math
 import os
 import sys
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from pydantic import ValidationError
 
@@ -182,13 +182,14 @@ from terminal"
     return GameModel()
 
 
-def ressource_path(path: str) -> Any:
-    """Get ressource path so that it works even with the binary.
+def ressource_path(path: str) -> str:
+    """
+    Get the path to the ressource.
 
     Args:
-        path (str): the ressource path.
+        path (str): The path of the file.
     Returns:
-        path (str | Path): the path of the assets.
+        str: The real path to use.
     """
     base_path: str = "."
     try:

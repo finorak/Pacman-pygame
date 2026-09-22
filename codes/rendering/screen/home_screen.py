@@ -65,9 +65,9 @@ class HomeScreen(Screen):
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
-        screen.blit(self.logo.image, self.logo.rect)
+        screen.blit(self.logo.image, self.logo.rect.topleft)
         for a in self.assets.values():
-            screen.blit(a.image, a.rect)
+            screen.blit(a.image, a.rect.topleft)
         for b in self.buttons.values():
             b.draw(screen)
 
