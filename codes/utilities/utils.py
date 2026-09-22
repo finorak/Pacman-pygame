@@ -175,6 +175,13 @@ def load_data(config_file: str) -> GameModel:
 
 
 def ressource_path(path: str) -> Any:
+    """Get ressource path so that it works even with the binary.
+
+    Args:
+        path (str): the ressource path.
+    Returns:
+        path (str | Path): the path of the assets.
+    """
     base_path: str = "."
     try:
         if not TYPE_CHECKING:

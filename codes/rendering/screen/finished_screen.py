@@ -95,17 +95,14 @@ class FinishedScreen(Screen):
                         self.input.text = ''
                         return button.result
             self.input.handle_event(event)
-            if (
-                event.type == pygame.KEYDOWN
-                and event.key == pygame.K_RETURN
-                and self._can_submit()
-            ):
-                self._save_score()
-                self.input.text = ''
-                return "HighScore"
-        if not self.input.active:
-            return super().get_input()
-        return None
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN and self._can_submit():
+                    self._save_score()
+                    self.input.text = ''
+                    return "HighScore"
+                elif event.key == pygame.K_ESCAPE:
+                    return "Home"
+        return super().get_input()
 
     def update(self, dt: float) -> None:
         """
