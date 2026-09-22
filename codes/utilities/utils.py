@@ -131,7 +131,7 @@ def can_move(
     return (cur_mask & out_bit) == 0
 
 
-def load_data(config_file: str) -> GameModel:
+def load_data(config_file: str | None) -> GameModel:
     """Load game model from a given file.
 
     Given a file, we try to extract the data inside
@@ -143,6 +143,14 @@ def load_data(config_file: str) -> GameModel:
     Returns:
         game_model: the extracted model config.
     """
+    if config_file is None:
+        print(
+                "No config provided, might be running from the binary"
+                " You can also provide argument as follows if running \
+from terminal"
+                f" uv run python {sys.argv[0]} <config.json>", file=sys.stderr
+            )
+        return GameModel()
     lines: list[str] = []
     try:
         with open(config_file, mode="r", encoding="utf-8") as f:

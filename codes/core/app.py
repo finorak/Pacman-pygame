@@ -22,7 +22,10 @@ class Rendering:
     """Class used to combine all our implementatoin of the pac-man \
 project."""
 
-    def __init__(self, screen_size: tuple[int, int], config_file: str) -> None:
+    def __init__(
+            self,
+            screen_size: tuple[int, int],
+            config_file: str | None) -> None:
         """Initialize a `Rendering` class instance.
 
         Args:

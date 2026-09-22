@@ -10,6 +10,11 @@
         "player_time": 10
     },
     {
+        "player_name": "tset",
+        "player_score": 220,
+        "player_time": 1
+    },
+    {
         "player_name": "sdfesfesd",
         "player_score": 104,
         "player_time": 90
@@ -42,11 +47,6 @@
     {
         "player_name": "nyramanaaa",
         "player_score": 18,
-        "player_time": 10
-    },
-    {
-        "player_name": "nyramana",
-        "player_score": 14,
         "player_time": 10
     }
 ]

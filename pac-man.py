@@ -13,11 +13,14 @@ def main() -> None:
 
     This function is used as the entry point of our implementation.
     """
-    if len(sys.argv) != 2:
+    if len(sys.argv) not in (1, 2):
         print("[ERROR] Invalid arguments.", file=sys.stderr)
-        print(f"[USAGE] python3 {sys.argv[0]} <config>", file=sys.stderr)
+        print(f"[USAGE] uv run python3 {sys.argv[0]} <config>", file=sys.stderr)
         sys.exit(1)
-    app = Rendering(SCREEN_SIZE, sys.argv[1])
+    app = Rendering(
+            SCREEN_SIZE,
+            sys.argv[1] if len(sys.argv) == 2 else None
+            )
     app.run()
 
 
