@@ -31,7 +31,7 @@ project."""
         """
         pygame.init()
         self.game_model = load_data(config_file)
-        self.screen = pygame.display.set_mode(screen_size)
+        self.screen = pygame.display.set_mode(screen_size, pygame.NOFRAME)
         pygame.display.set_caption("Pac-Man")
         self.screen_size = screen_size
 
@@ -71,11 +71,14 @@ in this case, we do them in each screen fo better mantainability.
             return
         if flags == "new":
             self.data.reset_data(new_game=True)
-            self.screens["Game"] = GameScreen(self.game_model, self.data)
             flags = "Game"
         if flags == "exit":
             self.running = False
             return
+        # This one is a bit redendent, and consume a lot
+        # of processing, but it fix bugs so here it is.
+        if flags in ("HighScore", "Home", "Instructions"):
+            self.data.reset_data(new_game=True)
         self.current_screen = self.screens[flags]
         if isinstance(self.current_screen, PauseScreen):
             self.current_screen.enter(self.screen)

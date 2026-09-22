@@ -1,6 +1,5 @@
 """Data module container for a smooth management."""
 
-import gc
 from pathlib import Path
 
 from codes.entity.ghost import Ghost
@@ -72,16 +71,18 @@ class Data:
             new_game: weather to to a start from scratch or not.
         """
         self.finished = None
-        # delete from memory
-        del self.maze
-        gc.collect()
         if new_game:
+            self.player.level = 1
+            self.player.score = 0
+            self.player.life = self.game_model.life
             self.maze = Maze((MAZE_SIZE), seed=self.game_model.seed)
         else:
             self.maze = Maze(MAZE_SIZE)
         self.maze.rect.topleft = self.maze_render_pos
         self.pacgums.generate_gums(self.game_model.pacgum_number)
         self.player.maze = self.maze.maze
+        self.player.cheat_mode = False
+        self.player.timer = self.game_model.level_max_time
         if new_game:
             self.player.new_game()
         else:

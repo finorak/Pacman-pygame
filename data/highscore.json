@@ -1,9 +1,5 @@
 [
-    {
-        "player_name": "nyramana",
-        "player_score": 2430,
-        "player_time": 19
-    },
+
     {
         "player_name": "tiana an",
         "player_score": 880,
@@ -48,5 +44,6 @@
         "player_name": "nyramana",
         "player_score": 14,
         "player_time": 10
+
     }
 ]
