@@ -1,5 +1,6 @@
 """Module that contains the finished screen for the program."""
 
+from os.path import join
 from pathlib import Path
 
 import pygame
@@ -11,6 +12,7 @@ from codes.rendering.component.sprite import AnimatedSprite
 from codes.rendering.screen.base_screen import Screen
 from codes.rendering.utils.input import Input
 from codes.rendering.utils.sprite_loader import SpriteLoader
+from codes.utilities.utils import ressource_path
 
 
 class FinishedScreen(Screen):
@@ -33,10 +35,14 @@ class FinishedScreen(Screen):
             self.get_center(self.background.height, horizontal=False) - 50,
         )
         self.font = pygame.font.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), 42
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
+                ), 42,
         )
         self.small_font = pygame.font.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), 24
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
+                ), 24,
         )
         self.input = Input(
             (

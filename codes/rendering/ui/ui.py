@@ -1,10 +1,12 @@
 """Module that contains the UI class."""
 
+from os.path import join
 from pathlib import Path
 
 import pygame
 
 from codes.setting import SCREEN_SIZE
+from codes.utilities.utils import ressource_path
 
 from ...entity import Player
 from ..utils import SpriteLoader
@@ -36,7 +38,9 @@ class UI:
         self.heart = SpriteLoader.import_image("assets", "hud", "heart")
 
         self.font = pygame.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), size=23
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf")),
+                ), size=23
         )
 
         self.current_level_surface = self.font.render(
@@ -56,11 +60,16 @@ class UI:
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
+        cheat_mode_surface = self.font.render(
+            f"CHEAT: {self.player.cheat_mode}", True, "white"
+        )
         self.surface.blit(self.background, (10, 50))
+
         self.draw_heart(self.surface)
         self.draw_time(self.surface)
         self.surface.blit(self.current_level_surface, (60, 198))
         self.surface.blit(self.current_score_surface, (60, 233))
+        self.surface.blit(cheat_mode_surface, (60, 350))
         screen.blit(self.surface)
 
     def update(self, dt: float) -> None:
