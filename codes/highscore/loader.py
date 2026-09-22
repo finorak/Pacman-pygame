@@ -17,6 +17,7 @@ class HighScoreLoader:
             path: the path of the highscore file.
         """
         self.path = path
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         self.highscore = self.load()
 
         self.changed = True
@@ -24,7 +25,6 @@ class HighScoreLoader:
     def load(self) -> list[HighScoreModel]:
         """Load highscore from path."""
         try:
-            self.path.mkdir(parents=True, exist_ok=True)
             with open(self.path) as file:
                 highscore = json.load(file)
             highscores = [
@@ -44,7 +44,6 @@ class HighScoreLoader:
         Args:
             models: all the highscore model.
         """
-        self.path.mkdir(parents=True, exist_ok=True)
         with open(self.path, "w") as file:
             try:
                 json.dump(

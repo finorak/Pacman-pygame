@@ -1,5 +1,6 @@
 """Module that contains the finished screen for the program."""
 
+from os.path import join
 from pathlib import Path
 
 import pygame
@@ -11,6 +12,7 @@ from codes.rendering.component.sprite import AnimatedSprite
 from codes.rendering.screen.base_screen import Screen
 from codes.rendering.utils.input import Input
 from codes.rendering.utils.sprite_loader import SpriteLoader
+from codes.utilities.utils import ressource_path
 
 
 class FinishedScreen(Screen):
@@ -33,10 +35,14 @@ class FinishedScreen(Screen):
             self.get_center(self.background.height, horizontal=False) - 50,
         )
         self.font = pygame.font.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), 42
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
+                ), 42,
         )
         self.small_font = pygame.font.Font(
-            Path("assets", "fonts", "BoldsPixels.ttf"), 24
+            Path(
+                ressource_path(join("assets", "fonts", "BoldsPixels.ttf"))
+                ), 24,
         )
         self.input = Input(
             (
@@ -86,6 +92,7 @@ class FinishedScreen(Screen):
                 pos = pygame.mouse.get_pos()
                 for button in self.buttons.values():
                     if button.current_sprite.rect.collidepoint(pos):
+                        self.input.text = ''
                         return button.result
             self.input.handle_event(event)
             if event.type == pygame.KEYDOWN:
@@ -95,6 +102,17 @@ class FinishedScreen(Screen):
                 elif event.key == pygame.K_ESCAPE:
                     return "Home"
         return super().get_input()
+            if (
+                event.type == pygame.KEYDOWN
+                and event.key == pygame.K_RETURN
+                and self._can_submit()
+            ):
+                self._save_score()
+                self.input.text = ''
+                return "HighScore"
+        if not self.input.active:
+            return super().get_input()
+        return None
 
     def update(self, dt: float) -> None:
         """

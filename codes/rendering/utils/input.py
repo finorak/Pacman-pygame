@@ -44,7 +44,7 @@ class Input:
         if event.type == pygame.KEYDOWN and self.active:
             if event.key == pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
-            elif event.key == pygame.K_RETURN:
+            elif event.key == pygame.K_RETURN and 3 <= len(self.text) < 10:
                 self.active = False
             elif event.key == pygame.K_ESCAPE:
                 self.text = ""
