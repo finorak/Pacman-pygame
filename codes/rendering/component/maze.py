@@ -3,6 +3,7 @@
 import pygame
 from mazegenerator import MazeGenerator
 
+from codes.rendering.component.rect import Frect
 from codes.rendering.utils import SpriteLoader
 from codes.setting import CELL_PADDING, CELL_SIZE
 
@@ -27,7 +28,7 @@ class Maze:
         )
         self.background = self._get_maze_surface()
         self.image = self.background.copy()
-        self.rect: pygame.FRect = self.image.get_frect()
+        self.rect = Frect(0, 0, self.background.width, self.background.height)
         self.width, self.height = size
 
     @property
@@ -183,7 +184,7 @@ class Maze:
         Args:
             surface (pygame.Surface): The surface to draw on.
         """
-        surface.blit(self.image, self.rect)
+        surface.blit(self.image, self.rect.pos)
         self._reset()
 
     def reset(self, seed: int = 0) -> None:

@@ -20,3 +20,8 @@ mazegenerator = { path = "wheel/mazegenerator-2.1.0-py3-none-any.whl" }
 dev = [
     "pyinstaller>=6.22.3",
 ]
+
+[[tool.mypy.overrides]]
+module = ["mazegenerator", "mazegenerator.*"]
+ignore_missing_imports = true
+follow_imports = "skip"

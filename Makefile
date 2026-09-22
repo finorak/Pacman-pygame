@@ -37,6 +37,9 @@ build:
 		--add-data "assets:assets" \
 		--icon=assets/icon.ico \
 		pac-man.py
+	@cp ./config.json ./dist/
+	@tar -czvf pac-man.tar.gz -C dist .
+	
 
 run_executable: build
 	@./dist/$(NAME) config.json

@@ -2,6 +2,7 @@
 
 import pygame
 
+from codes.rendering.component.rect import Frect
 from codes.rendering.utils.sprite_loader import SpriteLoader
 
 
@@ -26,7 +27,9 @@ class Input:
         self.font = font
         self.placeholder = placeholder
         self.background = SpriteLoader.import_image("assets", "hud", "input")
-        self.rect = self.background.get_frect(topleft=pos)
+        self.rect = Frect(
+            pos[0], pos[1], self.background.width, self.background.height
+        )
 
         self.text = ""
         self.active = True
@@ -74,7 +77,7 @@ class Input:
                 surface,
                 (
                     self.rect.x + 20,
-                    self.rect.centery - surface.get_height() // 2,
+                    self.rect.centery - surface.height // 2,
                 ),
             )
 

@@ -64,7 +64,9 @@ class InstructionsScreen(Screen):
         Args:
             screen (pygame.Surface): The surface to draw the program.
         """
-        screen.blit(self.assets["logo"].image, self.assets["logo"].rect)
+        screen.blit(
+            self.assets["logo"].image, self.assets["logo"].rect.topleft
+        )
         for a in self.buttons.values():
             a.draw(screen)
 

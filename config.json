@@ -1,10 +1,26 @@
 {
+    # The number of pacgums in the maze.
+    # Limited to 1 to 343
     "pacgum_number": 1,
+
+    # The number of point gained while eating something.
+    # Limited to 1 to 1000
     "points_per_pacgum": 10,
     "points_per_super_pacgum": 20,
     "points_per_ghost": 100,
+
+    # The maximum time to finish a game.
+    # Limited to 30 to 1000
     "level_max_time": 100,
-    "life": 5,
+
+    # The number of life the player has.
+    # limited to 1 to 10
+    "life": 3,
+
+    # The seed of the first maze
     "seed": 42,
+
+    # The number of level for the game.
+    # 10 or more
 	"level_count": 10
 }

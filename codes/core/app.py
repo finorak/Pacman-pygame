@@ -4,6 +4,7 @@ import pygame
 
 from codes.data.data import Data
 from codes.rendering.component import Sprite
+from codes.rendering.component.rect import Frect
 from codes.rendering.screen import (
     FinishedScreen,
     GameScreen,
@@ -23,9 +24,8 @@ class Rendering:
 project."""
 
     def __init__(
-            self,
-            screen_size: tuple[int, int],
-            config_file: str | None) -> None:
+        self, screen_size: tuple[int, int], config_file: str | None
+    ) -> None:
         """Initialize a `Rendering` class instance.
 
         Args:
@@ -34,7 +34,7 @@ project."""
         """
         pygame.init()
         self.game_model = load_data(config_file)
-        self.screen = pygame.display.set_mode(screen_size, pygame.NOFRAME)
+        self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption("Pac-Man")
         self.screen_size = screen_size
 
@@ -113,7 +113,9 @@ in this case, we do them in each screen fo better mantainability.
             (0, 0), SpriteLoader.import_image("assets", "background")
         )
         self.background.image = pygame.transform.scale2x(self.background.image)
-        self.background.rect = self.background.image.get_frect()
+        self.background.rect = Frect(
+            0, 0, self.background.image.width, self.background.image.height
+        )
 
     def _render_background(self, screen: pygame.Surface) -> None:
         image_width = self.background.rect.width
