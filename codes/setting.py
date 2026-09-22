@@ -36,7 +36,7 @@ GHOST_START_SETTING: dict[str, dict[str, tuple[int, int]]] = {
     "blue": {"coord": (0, 0)},
     "yellow": {"coord": (MAZE_SIZE[0] - 1, 0)},
     "pink": {"coord": (0, MAZE_SIZE[1] - 1)},
-    "red": {"coord": (MAZE_SIZE[1] - 1, MAZE_SIZE[1] - 1)},
+    "red": {"coord": (MAZE_SIZE[0] - 1, MAZE_SIZE[1] - 1)},
 }
 
 UP: int = 0b0001

@@ -46,6 +46,8 @@ class HighScoreScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return "Home"
         return super().get_input()
 
     def update(self, dt: float) -> None:

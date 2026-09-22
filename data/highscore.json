@@ -5,6 +5,11 @@
         "player_time": 19
     },
     {
+        "player_name": "tiana an",
+        "player_score": 880,
+        "player_time": 10
+    },
+    {
         "player_name": "sdfesfesd",
         "player_score": 104,
         "player_time": 90
@@ -43,10 +48,5 @@
         "player_name": "nyramana",
         "player_score": 14,
         "player_time": 10
-    },
-    {
-        "player_name": "nyramana",
-        "player_score": 10,
-        "player_time": 18
     }
 ]

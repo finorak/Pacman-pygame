@@ -6,6 +6,7 @@ from codes.data.data import Data
 from codes.parsing.parse import GameModel
 from codes.rendering.component.button import Button
 from codes.rendering.screen.base_screen import Screen
+from codes.rendering.utils import SpriteLoader
 
 from ..component import AnimatedSprite
 
@@ -43,6 +44,8 @@ class InstructionsScreen(Screen):
                 for b in self.buttons.values():
                     if b.current_sprite.rect.collidepoint(pos):
                         return b.result
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return "Home"
         return super().get_input()
 
     def update(self, dt: float) -> None:
@@ -73,7 +76,7 @@ class InstructionsScreen(Screen):
         Returns:
             dict: A dict containing the assets.
         """
-        image_path = {"logo": ("assets", "highscore", "Logo")}
+        image_path = {"logo": ("assets", "instructions")}
         result = {}
         for name, path in image_path.items():
             result[name] = AnimatedSprite(
